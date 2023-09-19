@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CommandeController!{% endblock %}
+
+{% block body %}
+<h1>Je suis dans le controller commande</h1>
+    <div>
+        {{ form_label(commandeForm.etat) }}
+        {{ form_widget(commandeForm.etat, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(commandeForm.dateHeureLivraison) }}
+        {{ form_widget(commandeForm.dateHeureLivraison, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(commandeForm.dateHeurePreparation) }}
+        {{ form_widget(commandeForm.dateHeurePreparation, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(commandeForm.ajouter) }}
+        {{ form_widget(commandeForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+{% endblock %}

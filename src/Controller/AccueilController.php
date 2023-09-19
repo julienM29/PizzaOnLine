@@ -2,17 +2,18 @@
 
 namespace App\Controller;
 
+use App\Repository\ProduitRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AccueilController extends AbstractController
 {
-    #[Route('/accueil', name: 'app_accueil')]
-    public function index(): Response
+    #[Route('/accueil', name: '_accueil')]
+    public function index(ProduitRepository $produitRepository): Response
     {
-        return $this->render('accueil/index.html.twig', [
-            'controller_name' => 'AccueilController',
-        ]);
+        $pizzas = $produitRepository->findAll();
+
+        return $this->render('accueil/index.html.twig',compact('pizzas'));
     }
 }

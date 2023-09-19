@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h2> Ajout d'un ingrédient</h2>
+    {{ form_start(ingredientForm)}}
+    <div>
+        {{ form_label(ingredientForm.nom) }}
+        {{ form_widget(ingredientForm.nom, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(ingredientForm.quantite) }}
+        {{ form_widget(ingredientForm.quantite, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(ingredientForm.ajouter) }}
+        {{ form_widget(ingredientForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    {{ form_end (ingredientForm) }}
+{% endblock %}
+
+

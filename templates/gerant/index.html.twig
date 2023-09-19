@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello GerantController!{% endblock %}
+
+{% block body %}
+<h1>Je suis dans le gerant controller</h1>
+    <a href="{{ path('_ingredient') }}">Ajouter un ingrédient</a>
+    <br>
+    <a href="{{ path('_produit') }}">Ajouter une Pizza</a>
+{% endblock %}

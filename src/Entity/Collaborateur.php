@@ -20,6 +20,9 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
+//    #[ORM\Column]
+//    private array $roles = [];
+
     /**
      * @var string The hashed password
      */
@@ -32,8 +35,7 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity: Role::class, mappedBy: 'collaborateurs')]
     private Collection $roles;
-//    #[ORM\Column]
-//    private array $roles = [];
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -143,10 +145,6 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Role>
      */
-//    public function getRoles(): Collection
-//    {
-//        return $this->roles;
-//    }
     public function getRoles(): array
     {
         $roles = [];
@@ -157,20 +155,21 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
 
         return array_unique($roles);
     }
-    public function addRoles(Role $role): static // Modification du nom du paramètre
+
+    public function addRoles(Role $roles): static
     {
-        if (!$this->roles->contains($role)) {
-            $this->roles->add($role);
-            $role->addCollaborateur($this);
+        if (!$this->roles->contains($roles)) {
+            $this->roles->add($roles);
+            $roles->addCollaborateur($this);
         }
 
         return $this;
     }
 
-    public function removeRoles(Role $role): static // Modification du nom du paramètre
+    public function removeRoles(Role $roles): static
     {
-        if ($this->roles->removeElement($role)) {
-            $role->removeCollaborateur($this);
+        if ($this->roles->removeElement($roles)) {
+            $roles->removeCollaborateur($this);
         }
 
         return $this;

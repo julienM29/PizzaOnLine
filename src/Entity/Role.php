@@ -18,7 +18,7 @@ class Role
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\ManyToMany(targetEntity: Collaborateur::class, inversedBy: 'rolesCollaborateur')]
+    #[ORM\ManyToMany(targetEntity: Collaborateur::class, inversedBy: 'roles')]
     private Collection $collaborateurs;
 
     public function __construct()
