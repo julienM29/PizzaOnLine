@@ -2,7 +2,7 @@
 
 
 {% block body %}
-<h1> Je suis dans l'accueil</h1>
+<h1> La carte des pizzas : </h1>
     {% for pizza in pizzas %}
 <div>
 {#   <img src="{{ asset('/images' + pizza.nom) }}"> {{}}#}
@@ -20,6 +20,8 @@
     {% for ingredient in pizza.Ingredients %}
     {{ingredient.nom}}
         {% endfor %}
+        <br>
+        <a href="{{ path('_detailPizza', {'id': pizza.id}) }}">Detail</a>
     </div>
 </div>
     {% endfor %}

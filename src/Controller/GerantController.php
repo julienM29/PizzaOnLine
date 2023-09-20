@@ -6,6 +6,7 @@ use App\Entity\Ingredient;
 use App\Entity\Produit;
 use App\Form\IngredientFormType;
 use App\Form\ProduitFormType;
+use App\Repository\IngredientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,9 +23,11 @@ class GerantController extends AbstractController
         ]);
     }
     #[Route('/ingredient', name: '_ingredient')]
-    public function CreationIngredient(Request $requete, EntityManagerInterface $entityManager): Response
+    public function CreationIngredient(Request $requete, EntityManagerInterface $entityManager, IngredientRepository $ingredientRepository): Response
     {
         $ingredient = new Ingredient();
+        $allIngredient = $ingredientRepository->findAll();
+
         $ingredientForm = $this->createForm(IngredientFormType::class, $ingredient);
         $ingredientForm->handleRequest($requete);
 
@@ -34,7 +37,7 @@ class GerantController extends AbstractController
             return $this->redirectToRoute('_gerant');
         }
 
-        return $this->render('gerant/creationIngredient.html.twig',compact('ingredientForm'));
+        return $this->render('gerant/creationIngredient.html.twig',compact('ingredientForm', 'allIngredient'));
     }
     #[Route('/produit', name: '_produit')]
     public function CreationProduit(Request $requete, EntityManagerInterface $entityManager): Response

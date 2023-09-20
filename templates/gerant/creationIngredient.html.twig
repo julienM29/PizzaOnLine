@@ -16,6 +16,15 @@
         {{ form_widget(ingredientForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
     </div>
     {{ form_end (ingredientForm) }}
+
+    <a href="{{ path('_gerant') }}">Retour à la page de gestion</a>
+<div>
+    {% for ingredient in allIngredient %}
+        <div>{{ ingredient.nom }}</div>
+        <div>{{ ingredient.quantite }}</div>
+        <br>
+    {% endfor %}
+</div>
 {% endblock %}
 
 

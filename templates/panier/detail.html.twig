@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div>
+        {#   <img src="{{ asset('/images' + pizza.nom) }}"> {{}}#}
+        <img src="{{ pizza.urlImage }}" style="width: 250px; height: 200px;" >
+        <div>
+            {{pizza.nom}}
+        </div>
+        <div>
+            {{pizza.description}}
+        </div>
+        <div>
+            {{pizza.prix}}
+        </div>
+        <div>
+            {% for ingredient in pizza.Ingredients %}
+                {{ingredient.nom}}
+            {% endfor %}
+        </div>
+        <a href="{{ path('_ajoutPanier', {'id': pizza.id}) }}">Ajout au panier</a>
+        <a href="{{ path('_accueil')}}">Retour à la carte</a>
+    </div>
+{% endblock %}
+
