@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1> Liste des pizzas</h1>
+    {% for pizza in allPizzas%}
+        <div>
+            {#   <img src="{{ asset('/images' + pizza.nom) }}"> {{}}#}
+            <img src="{{ pizza.urlImage }}" style="width: 250px; height: 200px;" >
+            <div>
+                {{pizza.nom}}
+            </div>
+            <div>
+                {{pizza.description}}
+            </div>
+            <div>
+                {{pizza.prix}}
+            </div>
+            <div>
+                {% for ingredient in pizza.Ingredients %}
+                    {{ingredient.nom}} ,
+                {% endfor %}
+                <br>
+                <a href="{{ path('_modificationProduit', {'id': pizza.id}) }}">Modification</a>
+                <a href="{{ path('_supprimerProduit', {'id': pizza.id}) }}">Supprimer</a>
+
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+

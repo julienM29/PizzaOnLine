@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1> Modification de la pizza : {{ pizza.nom }}</h1>
+    {{ form_start(produitForm)}}
+    <div>
+        {{ form_label(produitForm.nom) }}
+        {{ form_widget(produitForm.nom, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(produitForm.description) }}
+        {{ form_widget(produitForm.description, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(produitForm.prix) }}
+        {{ form_widget(produitForm.prix, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(produitForm.urlImage) }}
+        {{ form_widget(produitForm.urlImage, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(produitForm.ingredients) }}
+        {{ form_widget(produitForm.ingredients, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(produitForm.typeProduit) }}
+        {{ form_widget(produitForm.typeProduit, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(produitForm.ajouter) }}
+        {{ form_widget(produitForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    {{ form_end (produitForm) }}
+
+    <a href="{{ path('_listeProduit') }}">Retour à la liste</a>
+{% endblock %}
+

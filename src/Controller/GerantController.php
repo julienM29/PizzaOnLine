@@ -7,6 +7,7 @@ use App\Entity\Produit;
 use App\Form\IngredientFormType;
 use App\Form\ProduitFormType;
 use App\Repository\IngredientRepository;
+use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,8 +23,9 @@ class GerantController extends AbstractController
             'controller_name' => 'GerantController',
         ]);
     }
+    ////////////////////////////////////////////////////// CREATION /////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/ingredient', name: '_ingredient')]
-    public function CreationIngredient(Request $requete, EntityManagerInterface $entityManager, IngredientRepository $ingredientRepository): Response
+    public function creationIngredient(Request $requete, EntityManagerInterface $entityManager, IngredientRepository $ingredientRepository): Response
     {
         $ingredient = new Ingredient();
         $allIngredient = $ingredientRepository->findAll();
@@ -40,7 +42,7 @@ class GerantController extends AbstractController
         return $this->render('gerant/creationIngredient.html.twig',compact('ingredientForm', 'allIngredient'));
     }
     #[Route('/produit', name: '_produit')]
-    public function CreationProduit(Request $requete, EntityManagerInterface $entityManager): Response
+    public function creationProduit(Request $requete, EntityManagerInterface $entityManager): Response
     {
         $produit = new Produit();
         $produitForm = $this->createForm(ProduitFormType::class, $produit);
@@ -53,5 +55,39 @@ class GerantController extends AbstractController
         }
 
         return $this->render('gerant/creationProduit.html.twig',compact('produitForm'));
+    }
+
+    ////////////////////////////////////////////////////// MODIFICATION /////////////////////////////////////////////////////////////////////////////////////////////
+    #[Route('/listeProduit', name: '_listeProduit')]
+    public function listeProduit(Request $requete, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
+    {
+       $allPizzas = $produitRepository->findAll();
+
+        return $this->render('gerant/listeProduit.html.twig',compact('allPizzas'));
+    }
+    #[Route('/modificationProduit/{id}', name: '_modificationProduit')]
+    public function modificationProduit( $id, Request $requete, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
+    {
+        $pizza = $produitRepository->findOneBy(array('id' => $id));
+        $produitForm = $this->createForm(ProduitFormType::class, $pizza );
+        $produitForm->handleRequest($requete);
+
+        if ($produitForm->isSubmitted() && $produitForm->isValid()) {
+            $entityManager->persist($pizza);
+            $entityManager->flush();
+            return $this->redirectToRoute('_listeProduit');
+        }
+        return $this->render('gerant/modificationProduit.html.twig',compact('produitForm', 'pizza'));
+    }
+    #[Route('/supprimerProduit/{id}', name: '_supprimerProduit')]
+    public function suppressionProduit($id, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
+    {
+        $pizza = $produitRepository->findOneBy(array('id' => $id));
+        if($pizza){
+        $entityManager->remove($pizza);
+            $entityManager->flush();
+            return $this->redirectToRoute('_gerant');
+    }
+        return $this->render('gerant/listeProduit.html.twig');
     }
 }

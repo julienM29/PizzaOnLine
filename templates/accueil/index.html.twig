@@ -18,7 +18,7 @@
     </div>
     <div>
     {% for ingredient in pizza.Ingredients %}
-    {{ingredient.nom}}
+    {{ingredient.nom}} ,
         {% endfor %}
         <br>
         <a href="{{ path('_detailPizza', {'id': pizza.id}) }}">Detail</a>
