@@ -38,9 +38,13 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Role::class, mappedBy: 'collaborateurs')]
     private Collection $roles;
 
+    #[ORM\OneToMany(mappedBy: 'collaborateur', targetEntity: Commande::class, orphanRemoval: true)]
+    private Collection $commandes;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
+        $this->commandes = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -172,6 +176,36 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->roles->removeElement($roles)) {
             $roles->removeCollaborateur($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): static
+    {
+        if (!$this->commandes->contains($commande)) {
+            $this->commandes->add($commande);
+            $commande->setCollaborateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommande(Commande $commande): static
+    {
+        if ($this->commandes->removeElement($commande)) {
+            // set the owning side to null (unless already changed)
+            if ($commande->getCollaborateur() === $this) {
+                $commande->setCollaborateur(null);
+            }
         }
 
         return $this;
