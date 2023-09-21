@@ -98,4 +98,15 @@ class PanierController extends AbstractController
         }
         return $this->render('panier/index.html.twig');
     }
+    #[Route('/suppressionDuPanier/{id}', name: '_suppressionDuPanier')]
+    public function suppressionDuPanier($id,DetailCommandeRepository $detailCommandeRepository, EntityManagerInterface $entityManager): Response
+    {
+        $articleASupprimer = $detailCommandeRepository->findOneBy(array('id' => $id));
+        if($articleASupprimer){
+            $entityManager->remove($articleASupprimer);
+            $entityManager->flush();
+            return $this->redirectToRoute('_accueil');
+        }
+        return $this->render('panier/detail.html.twig');
+    }
 }

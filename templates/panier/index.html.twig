@@ -8,6 +8,8 @@
     <div> {{ detailCommande.produit.nom }},    quantité : {{ detailCommande.quantite }} </div>
     </div>
     <br>
-    {% endfor %}
+    <div>{{ detailCommande.id }}</div>
+    <a href="{{ path('_suppressionDuPanier', {'id': detailCommande.id}) }} }}">supprimer l'article</a>
+{% endfor %}
     <a href="{{ path('_payementPanier') }}">Payer la commande</a>
 {% endblock %}
