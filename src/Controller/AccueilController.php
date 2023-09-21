@@ -61,38 +61,40 @@ class AccueilController extends AbstractController
                 $entityManager->persist($derniereCommande);
                 $entityManager->flush();
                 return $this->redirectToRoute('_accueil');
-            } else if ($etatDerniereCommande->getId() >= $etatCreer->getId()) {
-                $commande = new Commande();
-
-                $commande->setEtat($etatCreer);
-                $commande->setCollaborateur($utilisateur);
-                $commande->setDateHeureLivraison($heureLivraison);
-                $commande->setDateHeurePreparation($heurePreparation);
-                $commande->addDetailsCommande($detailCommande);
-                $detailCommande->setCommande($commande);
-
-                $entityManager->persist($detailCommande);
-                $entityManager->persist($commande);
-                $entityManager->flush();
-                return $this->redirectToRoute('_accueil');
+            } else if ($etatDerniereCommande->getId() >= $etatCreer->getId())
+            {
+                $commande = $this->creationCommande($etatCreer, $utilisateur, $heureLivraison, $heurePreparation, $detailCommande);
+                $this->envoieBaseDeDonnee($entityManager, $detailCommande, $commande);
+                return $this->redirectToRoute('_gerant');
             }
-        }else if($derniereCommande === null){
-            $commande = new Commande();
-
-            $commande->setEtat($etatCreer);
-            $commande->setCollaborateur($utilisateur);
-            $commande->setDateHeureLivraison($heureLivraison);
-            $commande->setDateHeurePreparation($heurePreparation);
-            $commande->addDetailsCommande($detailCommande);
-            $detailCommande->setCommande($commande);
-
-            $entityManager->persist($detailCommande);
-            $entityManager->persist($commande);
-            $entityManager->flush();
-            return $this->redirectToRoute('_accueil');
+        }else if($derniereCommande === null)
+        {
+            $commande = $this->creationCommande($etatCreer, $utilisateur, $heureLivraison, $heurePreparation, $detailCommande);
+            $this->envoieBaseDeDonnee($entityManager, $detailCommande, $commande);
+            return $this->redirectToRoute('_gerant');
         }
 
         }
         return $this->render('panier/detail.html.twig', compact('pizza', 'detailCommandeForm'));
     }
+
+    public function creationCommande($etatCreer, $utilisateur, $heureLivraison, $heurePreparation, $detailCommande){
+        $commande = new Commande();
+
+        $commande->setEtat($etatCreer);
+        $commande->setCollaborateur($utilisateur);
+        $commande->setDateHeureLivraison($heureLivraison);
+        $commande->setDateHeurePreparation($heurePreparation);
+        $commande->addDetailsCommande($detailCommande);
+
+        return $commande;
+    }
+     public function envoieBaseDeDonnee($entityManager,$detailCommande, $commande){
+         $detailCommande->setCommande($commande);
+
+         $entityManager->persist($detailCommande);
+         $entityManager->persist($commande);
+         $entityManager->flush();
+
+}
 }
