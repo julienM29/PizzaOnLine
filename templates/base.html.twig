@@ -19,6 +19,9 @@
         <a href="{{ path('_accueil') }}">Commandes</a>
         <a href="{{ path('_commande') }}">Création commande</a>
         <a href="{{ path('_gerant') }}">Gestion</a>
+        {% if app.user %}
+            <a href="{{ path('_profil', {'id': app.user.id}) }}">Profil de {{ app.user.prenom }}</a>
+        {% endif %}
     </header>
     <body>
         {% block body %}{% endblock %}

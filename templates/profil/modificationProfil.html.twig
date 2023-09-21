@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ form_start(profilForm)}}
+    <div>
+        {{ form_label(profilForm.nom) }}
+        {{ form_widget(profilForm.nom, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(profilForm.prenom) }}
+        {{ form_widget(profilForm.prenom, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(profilForm.email) }}
+        {{ form_widget(profilForm.email, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(profilForm.password) }}
+        {{ form_widget(profilForm.password, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    <div>
+        {{ form_label(profilForm.ajouter) }}
+        {{ form_widget(profilForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
+    </div>
+    {{ form_end (profilForm) }}
+
+{#    <a href="{{path ('_modificationProfil', { 'id': user.id }) }}"> Modification du profil</a>#}
+{#    <a href="{{path ('_profil', { 'id': user.id }) }}">Retour au profil</a>#}
+{% endblock %}
+
