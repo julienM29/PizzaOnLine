@@ -28,7 +28,7 @@ class AccueilController extends AbstractController
     #[Route('/detailPizza/{id}', name: '_detailPizza')]
     public function detailPizza($id, Request $requete, ProduitRepository $produitRepository, CommandeRepository $commandeRepository, EntityManagerInterface $entityManager, EtatRepository $etatRepository): Response
     {
-
+////////////////////////////////////////// VARIABLES //////////////////////////////////////////////////////////////////////////////////////
         $pizza = $produitRepository->findOneBy(array('id' => $id));
         $detailCommande = new DetailCommande();
         $now = new DateTime();
@@ -37,6 +37,8 @@ class AccueilController extends AbstractController
         $etatCreer = $etatRepository->findOneBy(array('id' => 1));
         $heurePreparation = $now->add(new DateInterval('PT30M'));
         $heureLivraison = $heurePreparation->add(new DateInterval('PT30M'));
+
+////////////////////////////////////////// FORMULAIRE ET TRAITEMENT //////////////////////////////////////////////////////////////////
 
         $detailCommande->setProduit($pizza);
         $detailCommandeForm = $this->createForm(DetailCommandeFormType::class, $detailCommande);
@@ -51,8 +53,24 @@ class AccueilController extends AbstractController
         if ($derniereCommande != null){
             $etatDerniereCommande = $derniereCommande->getEtat();
             if($etatDerniereCommande->getId() === $etatCreer->getId()){
+                $produitATrouver = false;
+                $detailDuPanier = $derniereCommande->getDetailsCommande();
+                foreach($detailDuPanier as $detail){
+                    if($detail->getProduit() === $pizza){
+                        $donneesFormulaire = $detailCommandeForm->getData();
+                        $quantite = $donneesFormulaire->getQuantite();
+                        $nouvelleQuantite = ($detail->getQuantite())+ $quantite;
+                        $detail->setQuantite($nouvelleQuantite);
+                        $produitATrouver = true;
+                        $derniereCommande->setDateHeureLivraison($heureLivraison);
+                        $derniereCommande->setDateHeurePreparation($heurePreparation);
+                        $entityManager->persist($derniereCommande);
+                        $entityManager->flush();
+                        return $this->redirectToRoute('_accueil');
+                    }
+                }
+                if($produitATrouver){
                 $detailCommande->setCommande($derniereCommande);
-
                 $derniereCommande->setDateHeureLivraison($heureLivraison);
                 $derniereCommande->setDateHeurePreparation($heurePreparation);
                 $derniereCommande->addDetailsCommande($detailCommande);
@@ -61,6 +79,7 @@ class AccueilController extends AbstractController
                 $entityManager->persist($derniereCommande);
                 $entityManager->flush();
                 return $this->redirectToRoute('_accueil');
+                }
             } else if ($etatDerniereCommande->getId() >= $etatCreer->getId())
             {
                 $commande = $this->creationCommande($etatCreer, $utilisateur, $heureLivraison, $heurePreparation, $detailCommande);
