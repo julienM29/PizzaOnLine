@@ -19,9 +19,6 @@
     {% for role in user.roles %}
             <div> {{ role }}</div>
     {% endfor %}
-    <div>Role (rolesUtilisateur) : </div>
-    {% for role in user.rolesUtilisateur %}
-            <div> {{ role.libelle }}</div>
-    {% endfor %}
+
 <a href="{{path ('_modificationProfil', { 'id': user.id }) }}"> Modification du profil</a>
 {% endblock %}

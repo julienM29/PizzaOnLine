@@ -21,10 +21,9 @@ class ProfilController extends AbstractController
         return $this->render('profil/index.html.twig',compact('user'));
     }
     #[Route('/modificationProfil/{id}', name: '_modificationProfil')]
-    public function modificationProfil($id, UserPasswordHasherInterface $userPasswordHasher, RoleRepository $roleRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
+    public function modificationProfil($id, UserPasswordHasherInterface $userPasswordHasher, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
     {
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
-        $roles = $roleRepository->findAll();
         $user->setPassword('');
         $profilForm = $this->createForm(ProfilFormType::class, $user);
         $profilForm->handleRequest($requete);
@@ -40,23 +39,23 @@ class ProfilController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('_profil', ['id' => $id]);
         }
-        return $this->render('profil/modificationProfil.html.twig',compact('user', 'profilForm', 'roles'));
+        return $this->render('profil/modificationProfil.html.twig',compact('user', 'profilForm'));
     }
-    #[Route('/ajoutRoles/{id}', name: '_ajoutRoles')]
-    public function ajoutRoles($id, CollaborateurRepository $collaborateurRepository, RoleRepository $roleRepository, Request $request): Response
-    {
-        $rolesSelectionnes = $request->request->get('objets');
-        $user = $collaborateurRepository->findOneBy(array('id' => $id));
-        if (!empty($rolesSelectionnes)) {
-            foreach ($rolesSelectionnes as $role) {
-                $roleAjouter = $roleRepository->findOneBy(['id' => $role]);
-                if ($roleAjouter) {
-                    $user->addRoles($roleAjouter);
-                }
-            }
-        }
-
-
-        return $this->render('profil/index.html.twig');
-    }
+//    #[Route('/ajoutRoles/{id}', name: '_ajoutRoles')]
+//    public function ajoutRoles($id, CollaborateurRepository $collaborateurRepository, Request $request): Response
+//    {
+//        $rolesSelectionnes = $request->request->get('objets');
+//        $user = $collaborateurRepository->findOneBy(array('id' => $id));
+//        if (!empty($rolesSelectionnes)) {
+//            foreach ($rolesSelectionnes as $role) {
+//                $roleAjouter = $roleRepository->findOneBy(['id' => $role]);
+//                if ($roleAjouter) {
+//                    $user->addRoles($roleAjouter);
+//                }
+//            }
+//        }
+//
+//
+//        return $this->render('profil/index.html.twig');
+//    }
 }
