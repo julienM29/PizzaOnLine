@@ -6,12 +6,10 @@ use App\Repository\CollaborateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: CollaborateurRepository::class)]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -22,30 +20,27 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-//    #[ORM\Column]
-//    private array $roles = [];
+    #[ORM\Column]
+    private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
-    #[ORM\Column]
-    private ?string $nom = null;
-    #[ORM\Column]
-    private ?string $prenom = null;
-
-    #[ORM\ManyToMany(targetEntity: Role::class, mappedBy: 'collaborateurs')]
-    private Collection $roles;
 
     #[ORM\OneToMany(mappedBy: 'collaborateur', targetEntity: Commande::class, orphanRemoval: true)]
     private Collection $commandes;
 
+    #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'collaborateurs')]
+    private Collection $rolesUtilisateur;
+
     public function __construct()
     {
-        $this->roles = new ArrayCollection();
         $this->commandes = new ArrayCollection();
+        $this->rolesUtilisateur = new ArrayCollection();
     }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,21 +71,21 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-//    public function getRoles(): array
-//    {
-//        $roles = $this->roles;
-//        // guarantee every user at least has ROLE_USER
-//        $roles[] = 'ROLE_USER';
-//
-//        return array_unique($roles);
-//    }
-//
-//    public function setRoles(array $roles): static
-//    {
-//        $this->roles = $roles;
-//
-//        return $this;
-//    }
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
 
     /**
      * @see PasswordAuthenticatedUserInterface
@@ -108,77 +103,12 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return string|null
-     */
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
-
-    /**
-     * @param string|null $nom
-     */
-    public function setNom(?string $nom): void
-    {
-        $this->nom = $nom;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
-
-    /**
-     * @param string|null $prenom
-     */
-    public function setPrenom(?string $prenom): void
-    {
-        $this->prenom = $prenom;
-    }
-
-    /**
      * @see UserInterface
      */
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }
-
-    /**
-     * @return Collection<int, Role>
-     */
-    public function getRoles(): array
-    {
-        $roles = [];
-
-        foreach ($this->roles as $role) {
-            $roles[] = $role->getRole();
-        }
-
-        return array_unique($roles);
-    }
-
-    public function addRoles(Role $roles): static
-    {
-        if (!$this->roles->contains($roles)) {
-            $this->roles->add($roles);
-            $roles->addCollaborateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRoles(Role $roles): static
-    {
-        if ($this->roles->removeElement($roles)) {
-            $roles->removeCollaborateur($this);
-        }
-
-        return $this;
     }
 
     /**
@@ -207,6 +137,30 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $commande->setCollaborateur(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Role>
+     */
+    public function getRolesUtilisateur(): Collection
+    {
+        return $this->rolesUtilisateur;
+    }
+
+    public function addRolesUtilisateur(Role $rolesUtilisateur): static
+    {
+        if (!$this->rolesUtilisateur->contains($rolesUtilisateur)) {
+            $this->rolesUtilisateur->add($rolesUtilisateur);
+        }
+
+        return $this;
+    }
+
+    public function removeRolesUtilisateur(Role $rolesUtilisateur): static
+    {
+        $this->rolesUtilisateur->removeElement($rolesUtilisateur);
 
         return $this;
     }
