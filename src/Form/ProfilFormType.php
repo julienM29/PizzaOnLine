@@ -19,12 +19,10 @@ class ProfilFormType extends AbstractType
             ->add('password')
             ->add('nom')
             ->add('prenom')
-            ->add('role2', EntityType::class, [
+            ->add('rolesUtilisateur', EntityType::class, [
                 'class' => Role::class ,
                 'choice_label' => 'libelle',
-                'expanded' => false,
-                'multiple' => false,
-                'mapped' => false
+                'multiple' => true,
 
             ])
             ->add('ajouter', SubmitType::class)

@@ -19,23 +19,15 @@
         {{ form_widget(profilForm.password, {'attr': {'style': 'width : 250px'}}) }}
     </div>
     <div>
-        {{ form_label(profilForm.roles) }}
-        {{ form_widget(profilForm.roles, {'attr': {'style': 'width : 250px'}}) }}
+        {{ form_label(profilForm.rolesUtilisateur) }}
+        {{ form_widget(profilForm.rolesUtilisateur, {'attr': {'style': 'width : 250px'}}) }}
     </div>
     <div>
         {{ form_label(profilForm.ajouter) }}
         {{ form_widget(profilForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
     </div>
     {{ form_end (profilForm) }}
-{#    <form method="post" action="{{ path('_ajoutRoles', { 'id': user.id }) }}">#}
-{#        {% for role in roles %}#}
-{#            <label>#}
-{#                <input type="checkbox" name="objets[]" value="{{ role.id }}">#}
-{#                {{ role.libelle }}#}
-{#            </label><br>#}
-{#        {% endfor %}#}
-{#        <input type="submit" value="Soumettre">#}
-{#    </form>#}
+
     <a href="{{path ('_profil', { 'id': user.id }) }}">Retour au profil</a>
 {% endblock %}
 

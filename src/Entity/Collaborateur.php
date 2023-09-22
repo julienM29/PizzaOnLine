@@ -29,6 +29,10 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\Column]
+    private ?string $nom = null;
+    #[ORM\Column]
+    private ?string $prenom = null;
     #[ORM\OneToMany(mappedBy: 'collaborateur', targetEntity: Commande::class, orphanRemoval: true)]
     private Collection $commandes;
 
@@ -101,7 +105,24 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    public function getNom(): ?string    {
+        return $this->nom;
+    }
 
+    /**     * @param string|null $nom     */
+    public function setNom(?string $nom): void    {
+        $this->nom = $nom;
+    }
+
+    /**     * @return string|null     */
+    public function getPrenom(): ?string    {
+        return $this->prenom;
+    }
+
+    /**     * @param string|null $prenom     */
+    public function setPrenom(?string $prenom): void    {
+        $this->prenom = $prenom;
+    }
     /**
      * @see UserInterface
      */
