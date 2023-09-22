@@ -25,12 +25,14 @@ class Commande
     #[ORM\OneToMany(mappedBy: 'commande', targetEntity: DetailCommande::class, orphanRemoval: true)]
     private Collection $detailsCommande;
 
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Etat $etat = null;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Collaborateur $collaborateur = null;
+
+    #[ORM\ManyToOne(inversedBy: 'commandes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Etat $etat = null;
 
     public function __construct()
     {
@@ -96,17 +98,6 @@ class Commande
         return $this;
     }
 
-    public function getEtat(): ?Etat
-    {
-        return $this->etat;
-    }
-
-    public function setEtat(?Etat $etat): static
-    {
-        $this->etat = $etat;
-
-        return $this;
-    }
 
     public function getCollaborateur(): ?Collaborateur
     {
@@ -116,6 +107,18 @@ class Commande
     public function setCollaborateur(?Collaborateur $collaborateur): static
     {
         $this->collaborateur = $collaborateur;
+
+        return $this;
+    }
+
+    public function getEtat(): ?Etat
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?Etat $etat): static
+    {
+        $this->etat = $etat;
 
         return $this;
     }

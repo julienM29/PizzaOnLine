@@ -21,6 +21,7 @@ class Etat
     #[ORM\OneToMany(mappedBy: 'etat', targetEntity: Commande::class, orphanRemoval: true)]
     private Collection $commandes;
 
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
@@ -72,4 +73,5 @@ class Etat
 
         return $this;
     }
+
 }

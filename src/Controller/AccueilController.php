@@ -49,7 +49,6 @@ class AccueilController extends AbstractController
         $detailCommandeForm->handleRequest($requete);
 
         if($detailCommandeForm->isSubmitted() && $detailCommandeForm->isValid()){
-
         if ($derniereCommande != null){
             $etatDerniereCommande = $derniereCommande->getEtat();
             if($etatDerniereCommande->getId() === $etatCreer->getId()){
@@ -69,7 +68,8 @@ class AccueilController extends AbstractController
                         return $this->redirectToRoute('_accueil');
                     }
                 }
-                if($produitATrouver){
+                if($produitATrouver === false){
+//                    dd("je passe dans le produit non trouvé");
                 $detailCommande->setCommande($derniereCommande);
                 $derniereCommande->setDateHeureLivraison($heureLivraison);
                 $derniereCommande->setDateHeurePreparation($heurePreparation);
@@ -84,13 +84,13 @@ class AccueilController extends AbstractController
             {
                 $commande = $this->creationCommande($etatCreer, $utilisateur, $heureLivraison, $heurePreparation, $detailCommande);
                 $this->envoieBaseDeDonnee($entityManager, $detailCommande, $commande);
-                return $this->redirectToRoute('_gerant');
+                return $this->redirectToRoute('_accueil');
             }
         }else if($derniereCommande === null)
         {
             $commande = $this->creationCommande($etatCreer, $utilisateur, $heureLivraison, $heurePreparation, $detailCommande);
             $this->envoieBaseDeDonnee($entityManager, $detailCommande, $commande);
-            return $this->redirectToRoute('_gerant');
+            return $this->redirectToRoute('_accueil');
         }
 
         }
