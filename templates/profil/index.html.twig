@@ -14,6 +14,9 @@
     <div>
     <div>Email : </div>
     <div> {{ user.email }}</div>
-</div>
+    </div>
+    {% for role in user.roles %}
+
+    {% endfor %}
 <a href="{{path ('_modificationProfil', { 'id': user.id }) }}"> Modification du profil</a>
 {% endblock %}

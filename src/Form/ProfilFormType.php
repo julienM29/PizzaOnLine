@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Collaborateur;
+use App\Entity\Role;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,6 +19,14 @@ class ProfilFormType extends AbstractType
             ->add('password')
             ->add('nom')
             ->add('prenom')
+            ->add('role2', EntityType::class, [
+                'class' => Role::class ,
+                'choice_label' => 'libelle',
+                'expanded' => false,
+                'multiple' => false,
+                'mapped' => false
+
+            ])
             ->add('ajouter', SubmitType::class)
         ;
     }

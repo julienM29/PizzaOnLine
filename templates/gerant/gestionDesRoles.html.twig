@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1> Gestion des collaborateurs</h1>
+    {% for collaborateur in collaborateurs %}
+        <div>{{ collaborateur.nom }}</div>
+        <div>{{ collaborateur.prenom }}</div>
+        <div>{{ collaborateur.email }}</div>
+        {% if collaborateur.roles is not empty %}
+            <div> rôles : </div>
+            {% for role in collaborateur.roles %}
+        <span>{{ role }}</span>
+            {%  endfor %}
+        {%  endif %}
+        <br>
+        <a href="{{ path('_modificationProfil', { 'id': collaborateur.id }) }}">Modifier le profil</a>
+    {% endfor %}
+{% endblock %}
+

@@ -18,8 +18,10 @@ class Role
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\ManyToMany(targetEntity: Collaborateur::class, inversedBy: 'roles')]
+    #[ORM\ManyToMany(targetEntity: Collaborateur::class, mappedBy: 'rolesUtilisateur')]
     private Collection $collaborateurs;
+
+
 
     public function __construct()
     {
@@ -46,6 +48,10 @@ class Role
     /**
      * @return Collection<int, Collaborateur>
      */
+
+    /**
+     * @return Collection<int, Collaborateur>
+     */
     public function getCollaborateurs(): Collection
     {
         return $this->collaborateurs;
@@ -55,6 +61,7 @@ class Role
     {
         if (!$this->collaborateurs->contains($collaborateur)) {
             $this->collaborateurs->add($collaborateur);
+            $collaborateur->addRolesUtilisateur($this);
         }
 
         return $this;
@@ -62,8 +69,11 @@ class Role
 
     public function removeCollaborateur(Collaborateur $collaborateur): static
     {
-        $this->collaborateurs->removeElement($collaborateur);
+        if ($this->collaborateurs->removeElement($collaborateur)) {
+            $collaborateur->removeRolesUtilisateur($this);
+        }
 
         return $this;
     }
+
 }

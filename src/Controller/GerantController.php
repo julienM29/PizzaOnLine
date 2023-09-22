@@ -6,6 +6,7 @@ use App\Entity\Ingredient;
 use App\Entity\Produit;
 use App\Form\IngredientFormType;
 use App\Form\ProduitFormType;
+use App\Repository\CollaborateurRepository;
 use App\Repository\IngredientRepository;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -89,5 +90,13 @@ class GerantController extends AbstractController
             return $this->redirectToRoute('_gerant');
     }
         return $this->render('gerant/listeProduit.html.twig');
+    }
+    ////////////////////////////////////////////////////// Gestion /////////////////////////////////////////////////////////////////////////////////////////////
+    #[Route('/gestionDesRoles', name: '_gestionDesRoles')]
+    public function gestionDesRoles(CollaborateurRepository $collaborateurRepository, EntityManagerInterface $entityManager): Response
+    {
+        $collaborateurs = $collaborateurRepository->findAll();
+
+        return $this->render('gerant/gestionDesRoles.html.twig', compact('collaborateurs'));
     }
 }

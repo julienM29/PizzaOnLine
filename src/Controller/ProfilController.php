@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Form\ProfilFormType;
 use App\Repository\CollaborateurRepository;
+use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\MakerBundle\Tests\tmp\current_project_xml\src\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -21,9 +21,10 @@ class ProfilController extends AbstractController
         return $this->render('profil/index.html.twig',compact('user'));
     }
     #[Route('/modificationProfil/{id}', name: '_modificationProfil')]
-    public function modificationProfil($id, UserPasswordHasherInterface $userPasswordHasher, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
+    public function modificationProfil($id, UserPasswordHasherInterface $userPasswordHasher, RoleRepository $roleRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
     {
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
+        $roles = $roleRepository->findAll();
         $user->setPassword('');
         $profilForm = $this->createForm(ProfilFormType::class, $user);
         $profilForm->handleRequest($requete);
@@ -39,6 +40,23 @@ class ProfilController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('_profil', ['id' => $id]);
         }
-        return $this->render('profil/modificationProfil.html.twig',compact('user', 'profilForm'));
+        return $this->render('profil/modificationProfil.html.twig',compact('user', 'profilForm', 'roles'));
+    }
+    #[Route('/ajoutRoles/{id}', name: '_ajoutRoles')]
+    public function ajoutRoles($id, CollaborateurRepository $collaborateurRepository, RoleRepository $roleRepository, Request $request): Response
+    {
+        $rolesSelectionnes = $request->request->get('objets');
+        $user = $collaborateurRepository->findOneBy(array('id' => $id));
+        if (!empty($rolesSelectionnes)) {
+            foreach ($rolesSelectionnes as $role) {
+                $roleAjouter = $roleRepository->findOneBy(['id' => $role]);
+                if ($roleAjouter) {
+                    $user->addRoles($roleAjouter);
+                }
+            }
+        }
+
+
+        return $this->render('profil/index.html.twig');
     }
 }

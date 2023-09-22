@@ -3,6 +3,7 @@
 
 {% block body %}
     <h1> Votre panier </h1>
+    {% if detailsCommandes is not empty %}
 {% for detailCommande in detailsCommandes  %}
     <div>
     <div> {{ detailCommande.produit.nom }},    quantité : {{ detailCommande.quantite }} </div>
@@ -12,4 +13,9 @@
     <a href="{{ path('_suppressionDuPanier', {'id': detailCommande.id}) }} }}">supprimer l'article</a>
 {% endfor %}
     <a href="{{ path('_payementPanier') }}">Payer la commande</a>
+    {% endif %}
+    {% if detailsCommandes is empty %}
+
+            <h3><a href="{{ path('_accueil') }}">Votre panier est vide, Choisissez une pizza</a></h3>
+    {% endif %}
 {% endblock %}

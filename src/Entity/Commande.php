@@ -25,7 +25,6 @@ class Commande
     #[ORM\OneToMany(mappedBy: 'commande', targetEntity: DetailCommande::class, orphanRemoval: true)]
     private Collection $detailsCommande;
 
-    #[ORM\ManyToOne(inversedBy: 'commandes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Etat $etat = null;
 
@@ -120,4 +119,5 @@ class Commande
 
         return $this;
     }
+
 }
