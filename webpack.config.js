@@ -54,11 +54,11 @@ Encore
     })
 
     // enables Sass/SCSS support
-    //.enableSassLoader()
+    .enableSassLoader()
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
-
+    .enablePostCssLoader()
     // uncomment if you use React
     //.enableReactPreset()
 

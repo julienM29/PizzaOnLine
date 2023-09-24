@@ -1,4 +1,5 @@
-body {
-    background-color: BDB8B8;
-    height : 2000px;
-}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
