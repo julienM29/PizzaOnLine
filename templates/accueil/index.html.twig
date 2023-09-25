@@ -3,7 +3,7 @@
 
 {% block body %}
     <h2 class="flex item-center justify-center text-5xl mt-8 mb-20"> La carte des pizzas : </h2>
-    <div class="grid grid-cols-4 gap-4 mx-32">
+    <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
         {% for pizza in pizzas %}
             <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between">
                 <img src="{{ pizza.urlImage }}" style="width: 300px; height: 250px;" class="mb-2">
