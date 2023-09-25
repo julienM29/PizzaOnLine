@@ -1,14 +1,33 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h1>Je suis dans le gerant controller</h1>
-    <a href="{{ path('_ingredient') }}">Ajouter un ingrédient</a>
-    <br>
-    <a href="{{ path('_produit') }}">Ajouter une Pizza</a>
-    <br>
-    <a href="{{ path('_listeProduit') }}">Modifier une Pizza</a>
-    <br>
-    <a href="{{ path('_gestionDesRoles') }}">Gestion des rôles</a>
-    <br>
-    <a href="{{ path('_listeProduit') }}">Commandes en cours</a>
+
+    <h1 class="flex content-center justify-center text-5xl mt-8 mb-10"> Gestion </h1>
+    <div class="flex flex-col items-center justify-center">
+        <div class="flex mt-8 w-72 text-3xl hover:text-red-500 duration-200">
+            <div >
+                <a href="{{ path('_ingredient') }}">Ajouter un ingrédient</a>
+            </div>
+        </div>
+        <div class="flex mt-8 w-72 text-3xl hover:text-red-500 duration-200">
+            <div >
+                <a href="{{ path('_produit') }}">Ajouter une Pizza</a>
+            </div>
+        </div>
+        <div class="flex mt-8 w-72 text-3xl hover:text-red-500 duration-200">
+            <div >
+                <a href="{{ path('_listeProduit') }}">Modifier une Pizza</a>
+            </div>
+        </div>
+        <div class="flex mt-8 w-72 text-3xl hover:text-red-500 duration-200">
+            <div >
+                <a href="{{ path('_gestionDesRoles') }}">Gestion des rôles</a>
+            </div>
+        </div>
+        <div class="flex mt-8 w-72 text-3xl hover:text-red-500 duration-200">
+            <div >
+                <a href="{{ path('_listeProduit') }}">Commandes en cours</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

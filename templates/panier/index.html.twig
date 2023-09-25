@@ -3,26 +3,40 @@
 
 {% block body %}
 
-    <h1 class="text-3xl font-bold underline">
-        Hello world!
-    </h1>
-    <h2 class="mt-24"> Votre panier </h2>
-    <div id="panier" class="fixed inset-0 items-center justify-center">
-    {% if detailsCommandes is not empty %}
-{% for detailCommande in detailsCommandes  %}
-    <div class="mt-24">
-    <div> {{ detailCommande.produit.nom }},    quantité : {{ detailCommande.quantite }} , prix : {{ (detailCommande.produit.prix * detailCommande.quantite) | number_format(2, '.', ',')}} euros
-    <a href="{{ path('_suppressionDuPanier', {'id': detailCommande.id}) }} }}">supprimer l'article</a></div>
-    </div>
-    <br>
-{% endfor %}
-        <div> Prix total du panier : {{ prixDuPanier | number_format(2, '.', ',') }} euros </div>
-        <br>
-    <a href="{{ path('_payementPanier') }}">Commander</a>
-    {% endif %}
 
-    {% if detailsCommandes is empty %}
+    <h2 class="flex item-center justify-center text-5xl mt-8"> Votre panier </h2>
+    <div class="flex items-center justify-center mt-10">
+        {% if detailsCommandes is not empty %}
+            <div class="flex flex-col mt-4 w-full">
+                <div class="flex space-x-4 w-full">
+                    <div class="w-full text-2xl">
+                        {% for detailCommande in detailsCommandes %}
+                            <div class="flex justify-center items-center w-full space-x-8 mt-6">
+                                <p> {{ detailCommande.produit.nom }} </p>
+                                <p class="ml-4"> quantité : {{ detailCommande.quantite }}</p>
+                                <p class="ml-4"> prix :
+                                    {{ (detailCommande.produit.prix * detailCommande.quantite) | number_format(2, '.', ',') }}
+                                    €</p>
+                                <a href="{{ path('_suppressionDuPanier', {'id': detailCommande.id}) }} }}"
+                                   class="ml-5 hover:text-red-500 duration-200">supprimer l'article</a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="flex justify-center items-center w-full mt-10">
+                    <div class="text-2xl">
+                        Prix total : {{ prixDuPanier | number_format(2, '.', ',') }} €
+                    </div>
+                    <div class="text-2xl ">
+                        <a href="{{ path('_payementPanier') }}" class="ml-7 h-6 w-auto hover:text-red-500 duration-200 mt-8 text-2xl">Commander</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if detailsCommandes is empty %}
             <h3><a href="{{ path('_accueil') }}">Votre panier est vide, Choisissez une pizza</a></h3>
-    {% endif %}
+        {% endif %}
     </div>
+
 {% endblock %}
