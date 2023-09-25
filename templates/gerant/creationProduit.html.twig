@@ -5,8 +5,8 @@
     <h1 class="flex item-center justify-center text-5xl mt-8 mb-20"> Création d'une pizza</h1>
     {{ form_start(produitForm) }}
 
-    <div class="flex space-x-4 justify-center items-center"> <!-- Utilisation de flexbox pour aligner deux colonnes -->
-        <div class="w-1/2 flex flex-col justify-end"> <!-- Colonne de gauche -->
+    <div class="flex justify-center items-center"> <!-- Utilisation de flexbox pour aligner deux colonnes -->
+        <div class="w-1/2 flex flex-col "> <!-- Colonne de gauche -->
             <div class="mb-4">
                 <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
                     <div class="mr-4">
@@ -59,17 +59,20 @@
             </div>
         </div>
 
-        <div class="w-1/2 flex flex-col justify-start ml-6"> <!-- Colonne de droite pour les ingrédients -->
-            <div class="custom-checkbox">
-                <div>
-                    {{ form_label(produitForm.ingredients, 'Ingredient', {'label_attr': {'class': 'labelIngredient'}}) }}
+        <div class="w-1/2 ml-6"> <!-- Colonne de droite pour les ingrédients -->
+            <div class="space-y-1"> <!-- Utilisez space-y pour ajouter de l'espace vertical entre les éléments enfants en colonne -->
+                {{ form_label(produitForm.ingredients, 'Ingrédients', {'label_attr': {'class': 'labelIngredient'}}) }}
+                <div class="grid grid-cols-3"> <!-- Retirez la classe "gap" pour supprimer l'espace entre les colonnes -->
+                    {% for ingredient in produitForm.ingredients %}
+                        <div class="custom-checkbox">
+                            {{ form_widget(ingredient, {'attr': {'class': 'custom-checkbox'}}) }}
+                            {{ form_label(ingredient) }}
+                        </div>
+                    {% endfor %}
                 </div>
-                <div>
-                    {{ form_widget(produitForm.ingredients, {'attr': {'style': 'width: 750px', 'class': 'custom-checkbox'}}) }}
-                </div>
-
             </div>
         </div>
+
     </div>
 
     <div class="flex justify-center item-center text-xl hover:text-red-500 duration-200 font-bold mt-5">
