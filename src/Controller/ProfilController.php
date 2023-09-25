@@ -41,21 +41,5 @@ class ProfilController extends AbstractController
         }
         return $this->render('profil/modificationProfil.html.twig',compact('user', 'profilForm'));
     }
-//    #[Route('/ajoutRoles/{id}', name: '_ajoutRoles')]
-//    public function ajoutRoles($id, CollaborateurRepository $collaborateurRepository, Request $request): Response
-//    {
-//        $rolesSelectionnes = $request->request->get('objets');
-//        $user = $collaborateurRepository->findOneBy(array('id' => $id));
-//        if (!empty($rolesSelectionnes)) {
-//            foreach ($rolesSelectionnes as $role) {
-//                $roleAjouter = $roleRepository->findOneBy(['id' => $role]);
-//                if ($roleAjouter) {
-//                    $user->addRoles($roleAjouter);
-//                }
-//            }
-//        }
-//
-//
-//        return $this->render('profil/index.html.twig');
-//    }
+
 }

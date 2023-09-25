@@ -23,7 +23,11 @@ class ProduitFormType extends AbstractType
             ->add('ingredients', EntityType::class, [
                 'class' => Ingredient::class,
                 'choice_label' => 'nom',
-                'multiple' => true, // Activez le choix multiple
+                'expanded' => true,
+                'multiple' => true,
+                'attr' => [
+                    'class' => 'custom-checkbox', // Classe pour les cases à cocher
+                ],
             ])
             ->add('typeProduit', EntityType::class, [
                 'class' => TypeProduit::class,
