@@ -25,9 +25,6 @@ class ProduitFormType extends AbstractType
                 'choice_label' => 'nom',
                 'expanded' => true,
                 'multiple' => true,
-                'attr' => [
-                    'class' => 'custom-checkbox', // Classe pour les cases à cocher
-                ],
             ])
             ->add('typeProduit', EntityType::class, [
                 'class' => TypeProduit::class,

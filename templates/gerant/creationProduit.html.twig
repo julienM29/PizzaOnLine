@@ -61,11 +61,11 @@
 
         <div class="w-1/2 flex flex-col justify-start ml-6"> <!-- Colonne de droite pour les ingrédients -->
             <div class="custom-checkbox">
-                <div class="custom-label">
-                    {{ form_label(produitForm.ingredients, '', {'attr': {'class': 'mr-2'}}) }}
+                <div>
+                    {{ form_label(produitForm.ingredients, 'Ingredient', {'label_attr': {'class': 'labelIngredient'}}) }}
                 </div>
                 <div>
-                    {{ form_widget(produitForm.ingredients, {'attr': {'style': 'width: 750px', 'class': 'inputIngredient'}}) }}
+                    {{ form_widget(produitForm.ingredients, {'attr': {'style': 'width: 750px', 'class': 'custom-checkbox'}}) }}
                 </div>
 
             </div>
