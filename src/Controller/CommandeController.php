@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Commande;
 use App\Entity\DetailCommande;
 use App\Form\CommandeFormType;
+use App\Repository\CollaborateurRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\DetailCommandeRepository;
 use App\Repository\EtatRepository;
@@ -93,11 +94,28 @@ class CommandeController extends AbstractController
             $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commande]);
             $commandeDetails[$commande->getId()] = $detailsCommande;
         }
-//        dd($commandeDetails);
         return $this->render('commande/preparationCommande.html.twig', [
             'commandes' => $commandes,
             'commandeDetails' => $commandeDetails,
             'pizzas' => $pizzas,
         ]);
+    }
+    #[Route('/livraisonCommande/{id}', name: '_livraisonCommande')]
+    public function livraisonCommande($id,CollaborateurRepository $collaborateurRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
+    {
+
+        $client = $collaborateurRepository->findOneBy(array('id' => $id));
+        $etatPrepare = $etatRepository->findOneBy(array('id' => 3));
+        $pizzas = $produitRepository->findAll();
+        $commandesClient = $commandeRepository->findBy([
+            'collaborateur' => $client,
+            'etat' => $etatPrepare,
+        ]);
+        $commandeDetails = [];
+        foreach ($commandesClient as $commande) {
+            $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commande]);
+            $commandeDetails[$commande->getId()] = $detailsCommande;
+        }
+        return $this->render('commande/livraisonCommande.html.twig', compact('client', 'commandeDetails', 'pizzas'));
     }
 }

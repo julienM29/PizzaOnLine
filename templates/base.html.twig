@@ -44,7 +44,10 @@
                     <a href="{{ path('_profil', {'id': app.user.id}) }}">Profil de {{ app.user.prenom }}</a>
                 </li>
                 <li class="p-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
-                    <a href="{{ path('_preparationCommande') }}">Preparation</a>
+                    <a href="{{ path('_preparationCommande', {'id': app.user.id}) }}">Preparation</a>
+                </li>
+                <li class="p-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
+                    <a href="{{ path('_livraisonCommande', {'id': app.user.id}) }}">Livraison</a>
                 </li>
                 <li class="p-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
                     <a href="{{ path('app_logout') }}">Logout</a>
