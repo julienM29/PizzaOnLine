@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PanierController extends AbstractController
 {
     #[Route('/panier', name: '_panier')]
-    public function index(CommandeRepository $commandeRepository, ProduitRepository $produitRepository): Response
+    public function index(CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EtatRepository $etatRepository): Response
     {
         $utilisateur = $this->getUser();
         $derniereCommande = $commandeRepository->findOneBy(
@@ -25,19 +25,21 @@ class PanierController extends AbstractController
             ['id' => 'DESC']
         );
         $prixDuPanier = 0;
-        if($derniereCommande != null){
-
-            $detailsCommandes = $derniereCommande->getDetailsCommande();
-        foreach ($detailsCommandes as $detail){
-            $idProduit = $detail->getProduit()->getId();
-            $pizza = $produitRepository->findOneBy(array('id' => $idProduit));
-            $prixDuDetail = ($pizza->getPrix()*$detail->getQuantite());
-            $prixDuPanier = ($prixDuPanier + $prixDuDetail);
+        if ($derniereCommande != null) {
+            $etatDerniereCommande = $derniereCommande->getEtat();
+            if ($etatDerniereCommande->getId() == 1) {
+                $detailsCommandes = $derniereCommande->getDetailsCommande();
+                foreach ($detailsCommandes as $detail) {
+                    $idProduit = $detail->getProduit()->getId();
+                    $pizza = $produitRepository->findOneBy(array('id' => $idProduit));
+                    $prixDuDetail = ($pizza->getPrix() * $detail->getQuantite());
+                    $prixDuPanier = ($prixDuPanier + $prixDuDetail);
+                }
+            } else {
+                $detailsCommandes = [];
+            }
         }
-    } else {
-            $detailsCommandes = [];
-        }
-        return $this->render('panier/index.html.twig',compact('detailsCommandes', 'prixDuPanier'));
+        return $this->render('panier/index.html.twig', compact('detailsCommandes', 'prixDuPanier'));
     }
 
     #[Route('/payementPanier', name: '_payementPanier')]
@@ -54,7 +56,7 @@ class PanierController extends AbstractController
             ['id' => 'DESC']
         );
 
-        if( ($derniereCommande->getEtat()->getId()) === $etatCreer->getId() ) {
+        if (($derniereCommande->getEtat()->getId()) === $etatCreer->getId()) {
             $derniereCommande->setEtat($etatPayer);
             $derniereCommande->setDateHeurePreparation($heurePreparation);
             $derniereCommande->setDateHeureLivraison($heureLivraison);
@@ -64,15 +66,28 @@ class PanierController extends AbstractController
         }
         return $this->render('panier/index.html.twig');
     }
+
     #[Route('/suppressionDuPanier/{id}', name: '_suppressionDuPanier')]
-    public function suppressionDuPanier($id,DetailCommandeRepository $detailCommandeRepository, EntityManagerInterface $entityManager): Response
+    public function suppressionDuPanier($id, DetailCommandeRepository $detailCommandeRepository, EntityManagerInterface $entityManager): Response
     {
         $articleASupprimer = $detailCommandeRepository->findOneBy(array('id' => $id));
-        if($articleASupprimer){
+        if ($articleASupprimer) {
             $entityManager->remove($articleASupprimer);
             $entityManager->flush();
             return $this->redirectToRoute('_accueil');
         }
         return $this->render('panier/detail.html.twig');
+    }
+    #[Route('/etatPrepare/{id}', name: '_etatPrepare')]
+    public function etatPrepare($id, CommandeRepository $commandeRepository,EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
+    {
+        $article = $commandeRepository->findOneBy(array('id' => $id));
+        $etatPreparee = $etatRepository->findOneBy(array('id' => 3));
+        if ($article) {
+            $article->setEtat($etatPreparee);
+            $entityManager->flush();
+            return $this->redirectToRoute('_accueil');
+        }
+        return $this->render('commande/preparationCommande.html.twig');
     }
 }

@@ -2,12 +2,12 @@
 
 {% block body %}
 
-    <h1 class="flex item-center justify-center text-5xl mt-8 mb-20"> Création d'une pizza</h1>
+    <h2 class="flex item-center justify-center text-5xl mt-8 mb-20"> Création d'une pizza</h2>
     {{ form_start(produitForm) }}
 
     <div class="flex justify-center items-center"> <!-- Utilisation de flexbox pour aligner deux colonnes -->
         <div class="w-1/2 flex flex-col "> <!-- Colonne de gauche -->
-            <div class="mb-4">
+            <div class="mb-4 text-xl">
                 <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
                     <div class="mr-4">
                         {{ form_label(produitForm.nom) }}
@@ -17,7 +17,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-4">
+            <div class="mb-4 text-xl">
                 <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
                     <div>
                         {{ form_label(produitForm.description) }}
@@ -27,7 +27,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-4">
+            <div class="mb-4 text-xl">
                 <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
                     <div>
                         {{ form_label(produitForm.prix) }}
@@ -37,7 +37,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-4">
+            <div class="mb-4 text-xl">
                 <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
                     <div>
                         {{ form_label(produitForm.urlImage) }}
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-4">
+            <div class="mb-4 text-xl">
                 <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
                     <div>
                         {{ form_label(produitForm.typeProduit) }}
@@ -60,7 +60,7 @@
         </div>
 
         <div class="w-1/2 ml-6"> <!-- Colonne de droite pour les ingrédients -->
-            <div class="space-y-1"> <!-- Utilisez space-y pour ajouter de l'espace vertical entre les éléments enfants en colonne -->
+            <div class="space-y-1 text-xl"> <!-- Utilisez space-y pour ajouter de l'espace vertical entre les éléments enfants en colonne -->
                 {{ form_label(produitForm.ingredients, 'Ingrédients', {'label_attr': {'class': 'labelIngredient'}}) }}
                 <div class="grid grid-cols-3"> <!-- Retirez la classe "gap" pour supprimer l'espace entre les colonnes -->
                     {% for ingredient in produitForm.ingredients %}
@@ -75,12 +75,12 @@
 
     </div>
 
-    <div class="flex justify-center item-center text-xl hover:text-red-500 duration-200 font-bold mt-5">
+    <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-12">
         {{ form_label(produitForm.ajouter) }}
         {{ form_widget(produitForm.ajouter, {'attr': {'style': 'width: 250px'}}) }}
     </div>
 
     {{ form_end(produitForm) }}
 
-    <a href="{{ path('_gerant') }}" class="flex justify-center item-center text-2xl hover:text-red-500 duration-200 font-bold mt-12">Retour à la page de gestion</a>
+    <a href="{{ path('_gerant') }}" class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-12">Retour à la page de gestion</a>
 {% endblock %}

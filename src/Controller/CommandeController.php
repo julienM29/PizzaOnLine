@@ -6,6 +6,7 @@ use App\Entity\Commande;
 use App\Entity\DetailCommande;
 use App\Form\CommandeFormType;
 use App\Repository\CommandeRepository;
+use App\Repository\DetailCommandeRepository;
 use App\Repository\EtatRepository;
 use App\Repository\ProduitRepository;
 use DateInterval;
@@ -26,6 +27,7 @@ class CommandeController extends AbstractController
         $commandeForm = $this->createForm(CommandeFormType::class, $commande);
         return $this->render('commande/index.html.twig', compact('commandeForm'));
     }
+
     #[Route('/ajoutPanier/{id}', name: '_ajoutPanier')]
     public function ajoutPanier($id, ProduitRepository $produitRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager, CommandeRepository $commandeRepository): Response
     {
@@ -44,7 +46,7 @@ class CommandeController extends AbstractController
         $detailCommande->setProduit($pizza);
         $detailCommande->setQuantite(1);
 
-        if( $etatDerniereCommande->getId() === $etatCreer->getId() ){
+        if ($etatDerniereCommande->getId() === $etatCreer->getId()) {
 
             $detailCommande->setCommande($derniereCommande);
 
@@ -58,7 +60,7 @@ class CommandeController extends AbstractController
 
             return $this->redirectToRoute('_accueil');
 
-        } else if ($etatDerniereCommande->getId() >= $etatCreer->getId()){
+        } else if ($etatDerniereCommande->getId() >= $etatCreer->getId()) {
             $commande = new Commande();
 
             $commande->setEtat($etatCreer);
@@ -76,5 +78,26 @@ class CommandeController extends AbstractController
 
 
         return $this->render('panier/detail.html.twig', compact('pizza'));
+    }
+
+    #[Route('/preparationCommande', name: '_preparationCommande')]
+    public function preparationCommande(DetailCommandeRepository $detailCommandeRepository, EtatRepository $etatRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
+    {
+        $etatPayeer = $etatRepository->findOneBy(['id' => 2]);
+        $commandes = $commandeRepository->findBy(['etat' => $etatPayeer]);
+        $pizzas = $produitRepository->findAll();
+
+        $commandeDetails = [];
+
+        foreach ($commandes as $commande) {
+            $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commande]);
+            $commandeDetails[$commande->getId()] = $detailsCommande;
+        }
+//        dd($commandeDetails);
+        return $this->render('commande/preparationCommande.html.twig', [
+            'commandes' => $commandes,
+            'commandeDetails' => $commandeDetails,
+            'pizzas' => $pizzas,
+        ]);
     }
 }
