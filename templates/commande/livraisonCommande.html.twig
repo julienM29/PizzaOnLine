@@ -1,12 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
     <h2 class="flex item-center justify-center text-5xl mt-8"> Livraison</h2>
 
+    <div class="flex justify-center items-center text-2xl"> Votre commande est en cours de livraison vers : 2 B rue Benjamin Franklin, 44612 Saint Herblain</div>
+<div class="flex">
     <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
 
-    {% for commandeId, commandeDetail in commandeDetails %}
+        {% for commandeId, commandeDetail in commandeDetails %}
         <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between">
             <div class=" flex justify-center item-center mb-2 text-xl text-black mb-4 font-bold">Commande n°
                 : {{ commandeId }}</div>
@@ -19,10 +20,20 @@
                     {% endif %}
                 {% endfor %}
             {% endfor %}
-            <div> Heure de livraison : {{ commandeDetail[0].commande.dateHeureLivraison|date(' H:i:s') }}</div>
+            <div> Heure de préparation : {{ commandeDetail[0].commande.dateHeurePreparation|date(' H:i:s') }}</div>
+            <div> Heure de Livraison : {{ commandeDetail[0].commande.dateHeureLivraison|date(' H:i:s') }}</div>
         </div>
-        </div>
-    {% endfor %}
     </div>
+    {% endfor %}
+    <div id="map" class="z-49"></div>
+</div>
+{#    <div> Si vous constatez une erreur sur l'adresse ou quelque chose à dire au livreur :</div>#}
+{#    <div id="livreur"></div>#}
+    <script src="{{ asset('build/app.js') }}"></script>
+    <script>
+        window.onload = function () {
+            init();
+        };
+    </script>
 {% endblock %}
 
