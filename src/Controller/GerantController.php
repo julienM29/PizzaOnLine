@@ -30,7 +30,7 @@ class GerantController extends AbstractController
     {
         $ingredient = new Ingredient();
         $allIngredient = $ingredientRepository->findAll();
-
+        $count = count($allIngredient) - 1;
         $ingredientForm = $this->createForm(IngredientFormType::class, $ingredient);
         $ingredientForm->handleRequest($requete);
 
@@ -40,7 +40,7 @@ class GerantController extends AbstractController
             return $this->redirectToRoute('_gerant');
         }
 
-        return $this->render('gerant/creationIngredient.html.twig',compact('ingredientForm', 'allIngredient'));
+        return $this->render('gerant/creationIngredient.html.twig',compact('ingredientForm', 'allIngredient', 'count'));
     }
     #[Route('/produit', name: '_produit')]
     public function creationProduit(Request $requete, EntityManagerInterface $entityManager): Response

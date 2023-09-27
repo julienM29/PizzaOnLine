@@ -1,9 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h2 class="flex content-center justify-center text-5xl mt-12 mb-8"> Ajout d'un ingrédient</h2>
-    <div class="flex justify-center space-x-20">
-        <div class="mt-32">
+    <h2 class="flex content-center justify-center text-5xl mt-12 "> Ajout d'un ingrédient</h2>
+        <div class="mt-12 flex justify-center">
             {{ form_start(ingredientForm) }}
             <div>
                 <div>
@@ -22,35 +21,73 @@
                 </div>
             </div>
             <div>
-                <div>
+                <div class="flex justify-center item-center text-2xl hover:text-red-500 duration-200 font-bold mt-8">
                     {{ form_label(ingredientForm.ajouter) }}
                     {{ form_widget(ingredientForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
                 </div>
             </div>
             {{ form_end(ingredientForm) }}
         </div>
-        <div>
-            <table>
-                <thead>
-                <tr>
-                    <th>Nom</th>
-                    <th>Quantité</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for ingredient in allIngredient %}
+        <div class="row mt-12 flex justify-center space-x-6">
+            <div class="col-md-4 text-center">
+                <table>
+                    <thead>
                     <tr>
-                        <td>{{ ingredient.nom }}</td>
-                        <td class="text-center">{{ ingredient.quantite }}</td>
+                        <th>Ingrédient</th>
+                        <th>Quantité</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for i in range(0, count // 3) %}
+                        <tr>
+                            <td>{{ allIngredient[i].nom }}</td>
+                            <td>{{ allIngredient[i].quantite }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4 text-center">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Ingrédient</th>
+                        <th>Quantité</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in range(count // 3, 2 * count // 3) %}
+                        <tr>
+                            <td>{{ allIngredient[i].nom }}</td>
+                            <td>{{ allIngredient[i].quantite }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4 text-center">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Ingrédient</th>
+                        <th>Quantité</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in range(2 * count // 3, count) %}
+                        <tr>
+                            <td>{{ allIngredient[i].nom }}</td>
+                            <td>{{ allIngredient[i].quantite }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
     <div class="flex justify-center item-center text-2xl hover:text-red-500 duration-200 font-bold mt-6">
-    <a href="{{ path('_gerant') }}">Retour à la page de gestion</a>
+        <a href="{{ path('_gerant') }}" class="mt-12">Retour à la page de gestion</a>
     </div>
 {% endblock %}
+
 
 
