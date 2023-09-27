@@ -18,7 +18,20 @@
             </div>
             <div class="text-2xl mb-6 flex items-center">
                 <span>Ingrédients :</span>
-                <img src="{{ asset('images/legume.png') }}" style="width: 35px; height: 35px;" class="ml-4">
+                {% set viandePresente = false %}
+                {% for viande in viandes %}
+                    {% for ingredient in pizza.Ingredients %}
+                        {% if viande == ingredient.nom %}
+                            {% set viandePresente = true %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+
+                {% if viandePresente %}
+                    <img src="{{ asset('images/bifteck.png') }}" style="width: 35px; height: 35px;" class="ml-4">
+                {% else %}
+                    <img src="{{ asset('images/legume.png') }}" style="width: 35px; height: 35px;" class="ml-4">
+                {% endif %}
             </div>
             <div class="text-2xl">
                 {% for ingredient in pizza.Ingredients %}

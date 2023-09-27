@@ -16,7 +16,12 @@
                                 <p class="ml-4"> quantité : {{ detailCommande.quantite }}</p>
                                 <p class="ml-4"> taille : {{ detailCommande.taille.libelle }}</p>
                                 <p class="ml-4"> prix :
-                                    {{ (detailCommande.produit.prix * detailCommande.quantite) | number_format(2, '.', ',') }}
+                                    {% if detailCommande.taille.id == 2  %}
+                                        {{ ((1.20*detailCommande.produit.prix) * detailCommande.quantite) | number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ (detailCommande.produit.prix * detailCommande.quantite) | number_format(2, '.', ',') }}
+                                    {% endif %}
+
                                     €</p>
                                 <a href="{{ path('_suppressionDuPanier', {'id': detailCommande.id}) }} }}"
                                    class="ml-5 hover:text-red-500 duration-200">supprimer l'article</a>
@@ -36,7 +41,7 @@
         {% endif %}
 
         {% if detailsCommandes is empty %}
-            <h3 ><a href="{{ path('_accueil') }}" class="ml-7 h-6 w-auto hover:text-red-500 duration-200 mt-20 text-2xl">Votre panier est vide, Choisissez une pizza</a></h3>
+            <h3 ><a href="{{ path('_accueil') }}" class="ml-7 h-6 w-auto hover:text-red-500 duration-200 mt-20 text-2xl">Votre panier est vide, cliquer ici pour commander une pizza ! </a></h3>
         {% endif %}
     </div>
 

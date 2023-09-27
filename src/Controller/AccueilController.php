@@ -37,7 +37,8 @@ class AccueilController extends AbstractController
         $etatCreer = $etatRepository->findOneBy(array('id' => 1));
         $heurePreparation = $now->add(new DateInterval('PT30M'));
         $heureLivraison = $heurePreparation->add(new DateInterval('PT30M'));
-
+////////////////////////////////////////// Liste Mot //////////////////////////////////////////////////////////////////
+        $viandes = ["Jambon Cru" ,"Lardon", "Viande haché", "Merguez","Jambon"];
 ////////////////////////////////////////// FORMULAIRE ET TRAITEMENT //////////////////////////////////////////////////////////////////
 
         $detailCommande->setProduit($pizza);
@@ -54,9 +55,10 @@ class AccueilController extends AbstractController
             if($etatDerniereCommande->getId() === $etatCreer->getId()){
                 $produitATrouver = false;
                 $detailDuPanier = $derniereCommande->getDetailsCommande();
+                $donneesFormulaire = $detailCommandeForm->getData();
+                $taille = $donneesFormulaire->getTaille();
                 foreach($detailDuPanier as $detail){
-                    if($detail->getProduit() === $pizza){
-                        $donneesFormulaire = $detailCommandeForm->getData();
+                    if($detail->getProduit() === $pizza && $detail->getTaille()->getId() === $taille->getId()){
                         $quantite = $donneesFormulaire->getQuantite();
                         $nouvelleQuantite = ($detail->getQuantite())+ $quantite;
                         $detail->setQuantite($nouvelleQuantite);
@@ -69,7 +71,7 @@ class AccueilController extends AbstractController
                     }
                 }
                 if($produitATrouver === false){
-//                    dd("je passe dans le produit non trouvé");
+//                    dd("le produit n a pas été trouvé");
                 $detailCommande->setCommande($derniereCommande);
                 $derniereCommande->setDateHeureLivraison($heureLivraison);
                 $derniereCommande->setDateHeurePreparation($heurePreparation);
@@ -94,7 +96,7 @@ class AccueilController extends AbstractController
         }
 
         }
-        return $this->render('panier/detail.html.twig', compact('pizza', 'detailCommandeForm'));
+        return $this->render('panier/detail.html.twig', compact('pizza', 'detailCommandeForm', 'viandes'));
     }
 
     public function creationCommande($etatCreer, $utilisateur, $heureLivraison, $heurePreparation, $detailCommande){

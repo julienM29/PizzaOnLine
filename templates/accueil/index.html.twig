@@ -7,7 +7,7 @@
         {% for pizza in pizzas %}
             <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between">
                 <img src="{{ pizza.urlImage }}" style="width: 300px; height: 250px;" class="mb-2">
-                <div class="mb-2 text-xl text-black">{{ pizza.nom }}</div>
+                <div class="mb-2 text-2xl text-black font-bold">{{ pizza.nom }}</div>
                 <div class="mb-2 text-xl text-black">{{ pizza.description }}</div>
                 <div class="mb-2 text-xl text-black">
                     {% for ingredient in pizza.Ingredients %}
@@ -15,7 +15,10 @@
                     {% endfor %}
                 </div>
                 <div class="mb-4 text-xl text-black">prix : {{ (pizza.prix) | number_format(2, '.', ',') }} €</div>
-                <a href="{{ path('_detailPizza', {'id': pizza.id}) }}" class="flex justify-center item-center text-2xl hover:text-red-500 duration-200 text-black font-bold">Detail</a>
+                <div class="flex item-center justify-center">
+                    <a href="{{ path('_detailPizza', {'id': pizza.id}) }}" class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold mr-5">Detail</a>
+                    <a href="{{ path('_detailPizza', {'id': pizza.id}) }}" class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold ml-5">Ajouter</a>
+                </div>
             </div>
         {% endfor %}
     </div>

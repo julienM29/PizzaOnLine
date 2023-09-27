@@ -7,6 +7,7 @@ use App\Repository\CommandeRepository;
 use App\Repository\DetailCommandeRepository;
 use App\Repository\EtatRepository;
 use App\Repository\ProduitRepository;
+use App\Repository\TailleProduitRepository;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PanierController extends AbstractController
 {
     #[Route('/panier', name: '_panier')]
-    public function index(CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EtatRepository $etatRepository): Response
+    public function index(TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EtatRepository $etatRepository): Response
     {
         $utilisateur = $this->getUser();
         $derniereCommande = $commandeRepository->findOneBy(
@@ -25,6 +26,7 @@ class PanierController extends AbstractController
             ['id' => 'DESC']
         );
         $prixDuPanier = 0;
+        $tailleLarge = $tailleProduitRepository->findOneBy(array('id' => 2));
         if ($derniereCommande != null) {
             $etatDerniereCommande = $derniereCommande->getEtat();
             if ($etatDerniereCommande->getId() == 1) {
@@ -32,7 +34,12 @@ class PanierController extends AbstractController
                 foreach ($detailsCommandes as $detail) {
                     $idProduit = $detail->getProduit()->getId();
                     $pizza = $produitRepository->findOneBy(array('id' => $idProduit));
-                    $prixDuDetail = ($pizza->getPrix() * $detail->getQuantite());
+                    if ($detail->getTaille() === $tailleLarge) {
+                        $prixDuDetail = 1.20 * ($pizza->getPrix() * $detail->getQuantite());
+                    } else {
+                        $prixDuDetail = ($pizza->getPrix() * $detail->getQuantite());
+                    }
+
                     $prixDuPanier = ($prixDuPanier + $prixDuDetail);
                 }
             } else {
@@ -78,8 +85,9 @@ class PanierController extends AbstractController
         }
         return $this->render('panier/detail.html.twig');
     }
+
     #[Route('/etatPrepare/{id}', name: '_etatPrepare')]
-    public function etatPrepare($id, CommandeRepository $commandeRepository,EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
+    public function etatPrepare($id, CommandeRepository $commandeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
         $article = $commandeRepository->findOneBy(array('id' => $id));
         $etatPreparee = $etatRepository->findOneBy(array('id' => 3));
