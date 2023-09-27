@@ -27,6 +27,7 @@ class PanierController extends AbstractController
         );
         $prixDuPanier = 0;
         $tailleLarge = $tailleProduitRepository->findOneBy(array('id' => 2));
+        $pizzas = $produitRepository->findAll();
         if ($derniereCommande != null) {
             $etatDerniereCommande = $derniereCommande->getEtat();
             if ($etatDerniereCommande->getId() == 1) {
@@ -46,11 +47,11 @@ class PanierController extends AbstractController
                 $detailsCommandes = [];
             }
         }
-        return $this->render('panier/index.html.twig', compact('detailsCommandes', 'prixDuPanier'));
+        return $this->render('panier/index.html.twig', compact('detailsCommandes', 'prixDuPanier','pizzas'));
     }
 
     #[Route('/payementPanier', name: '_payementPanier')]
-    public function payementPanier(CommandeRepository $commandeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
+    public function payementPanier(ProduitRepository $produitRepository,CommandeRepository $commandeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
         $etatCreer = $etatRepository->findOneBy(array('id' => 1));
         $etatPayer = $etatRepository->findOneBy(array('id' => 2));

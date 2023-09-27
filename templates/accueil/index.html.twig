@@ -14,10 +14,17 @@
                         {{ ingredient.nom }}{% if not loop.last %}, {% endif %}
                     {% endfor %}
                 </div>
-                <div class="mb-4 text-xl text-black">prix : {{ (pizza.prix) | number_format(2, '.', ',') }} €</div>
+                <div class="flex ">
+                    <div class="mb-4 text-xl text-black mr-5">médium : {{ (pizza.prix) | number_format(2, '.', ',') }}€
+                    </div>
+                    <div class="mb-4 text-xl text-black justify-end">large : {{ (pizza.prix*1.20) | number_format(2, '.', ',') }}€
+                    </div>
+                </div>
                 <div class="flex item-center justify-center">
-                    <a href="{{ path('_detailPizza', {'id': pizza.id}) }}" class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold mr-5">Detail</a>
-                    <a href="{{ path('_detailPizza', {'id': pizza.id}) }}" class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold ml-5">Ajouter</a>
+                    <a href="{{ path('_detailPizza', {'id': pizza.id}) }}"
+                       class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold mr-5">Detail</a>
+                    <a href="{{ path('_detailPizza', {'id': pizza.id}) }}"
+                       class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold ml-5">Ajouter</a>
                 </div>
             </div>
         {% endfor %}
