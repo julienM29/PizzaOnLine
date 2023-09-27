@@ -51,7 +51,7 @@
         <div class="text-3xl hover:text-red-500 duration-200 font-bold">
             Prix total : {{ prixDuPanier | number_format(2, '.', ',') }} €
         </div>
-        <div>
+        <div class="ml-12" >
             <a href="{{ path('_payementPanier') }}"
                class="ml-10 text-3xl hover:text-red-500 duration-200 font-bold ">Commander</a>
         </div>

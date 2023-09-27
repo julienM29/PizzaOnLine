@@ -6,37 +6,32 @@
     <div class="flex justify-center items-center text-2xl"> Votre commande est en cours de livraison vers : 2 B rue
         Benjamin Franklin, 44612 Saint Herblain
     </div>
-    <div class="flex justify-center items-center mt-8">
-        <div class="m-auto">
-            <div class="block mr-12 "> <!-- DIV 001 -->
-                {% for commandeId, commandeDetail in commandeDetails %}
-                <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between rounded">
-                    <div class=" flex justify-center item-center mb-2 text-xl text-black mb-4 font-bold">Commande n°
-                        : {{ commandeId }}</div>
+    <div class="flex mt-8">
+        <div class="w-1/2 flex justify-end mr-8"> <!-- DIV 001 -->
+            {% for commandeId, commandeDetail in commandeDetails %}
+                <div class="bg-gray-200 p-4 w-80 flex flex-col justify-between rounded">
+                    <div class="flex justify-center item-center text-xl text-black font-bold">Commande n° : {{ commandeId }}</div>
                     {% for detailCommande in commandeDetail %}
                         {% for pizza in pizzas %}
                             {% if detailCommande.produit.id == pizza.id %}
                                 <div class="flex justify-between">
-                                    <div class="mb-2 text-xl text-black">{{ pizza.nom }}
-                                        X {{ detailCommande.quantite }}  </div>
+                                    <div class=" text-xl text-black">{{ pizza.nom }} X {{ detailCommande.quantite }}</div>
                                 </div>
                             {% endif %}
                         {% endfor %}
                     {% endfor %}
-                    <div> Heure de préparation
-                        : {{ commandeDetail[0].commande.dateHeurePreparation|date(' H:i:s') }}</div>
-                    <div> Heure de Livraison : {{ commandeDetail[0].commande.dateHeureLivraison|date(' H:i:s') }}</div>
+                    <div class="flex item-center justify-center hover:text-red-500 duration-200 text-black text-xl">Heure de Livraison : {{ commandeDetail[0].commande.dateHeureLivraison|date(' H:i:s') }}</div>
                 </div>
-            </div>
             {% endfor %}
         </div>
-        <div class="block ml-12"> <!-- DIV 002 -->
-            <div id="map" class="z-49 w-1/4"></div>
+        <div class="w-1/2 ml-8"> <!-- DIV 002 -->
+            <div id="map" class="z-49 "></div>
         </div>
     </div>
 
-        <div class="flex justify-center items-center text-2xl mt-6 "> Si vous constatez une erreur sur l'adresse ou quelque chose à dire au livreur :</div>
-        <div id="livreur"></div>
+
+    <div class="flex justify-center items-center text-2xl mt-6 "> Si vous constatez une erreur sur l'adresse ou quelque chose à dire au livreur :</div>
+    <div id="livreur"></div>
     <div id="latitude"></div>
     <div id="longitude"></div>
     <script src="{{ asset('build/app.js') }}"></script>
@@ -46,4 +41,3 @@
         };
     </script>
 {% endblock %}
-

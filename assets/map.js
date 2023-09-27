@@ -65,7 +65,7 @@ function affichageRoute() {
             ]
         }
     }).addTo(map);
-    affichageLivreur(routeLayer);
+    // affichageLivreur(routeLayer);
 
 }
 function cacherLesMarkerAuto(){
