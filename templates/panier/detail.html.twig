@@ -2,44 +2,73 @@
 
 {% block body %}
 
-    <div>
-        {#   <img src="{{ asset('/images' + pizza.nom) }}"> {{}}#}
-        <img src="{{ pizza.urlImage }}" style="width: 250px; height: 200px;" >
-        <div>
-            {{pizza.nom}}
-        </div>
-        <div>
-            {{pizza.description}}
-        </div>
-        <div>
-            {{pizza.prix}}
-        </div>
-        <div>
-            {% for ingredient in pizza.Ingredients %}
-                {{ingredient.nom}}
-            {% endfor %}
-        </div>
-        <br>
-        <br>
-        {{ form_start(detailCommandeForm)}}
+    <h2 class="flex item-center justify-center text-5xl mt-8 "> {{ pizza.nom }} </h2>
 
-        <div>
-            {{ form_label(detailCommandeForm.quantite) }}
-            {{ form_widget(detailCommandeForm.quantite, {'attr': {'style': 'width : 250px'}}) }}
+    <div class="flex items-center justify-center mt-16">
+        <div class="w-1/2 flex flex-col ">
+            <div class="mb-4 text-xl">
+                <div class="flex justify-end mt-2">
+                    <img src="{{ pizza.urlImage }}" style="width: 400px; height: 300px;">
+                </div>
+            </div>
         </div>
-        <div>
-            {{ form_label(detailCommandeForm.taille) }}
-            {{ form_widget(detailCommandeForm.taille, {'attr': {'style': 'width : 250px'}}) }}
+        <div class="w-1/2 ml-6">
+            <div class="text-2xl mb-6">
+                {{ pizza.description }}
+            </div>
+            <div class="text-2xl mb-6 flex items-center">
+                <span>Ingrédients :</span>
+                <img src="{{ asset('images/legume.png') }}" style="width: 35px; height: 35px;" class="ml-4">
+            </div>
+            <div class="text-2xl">
+                {% for ingredient in pizza.Ingredients %}
+                    {{ ingredient.nom }}{{ not loop.last ? ', ' }}
+                {% endfor %}
+            </div>
+            <div class="flex text-2xl mt-5">
+                <div>Prix :</div>
+                <div>
+                    <div class="ml-8">médium : {{ (pizza.prix) | number_format(2, '.', ',') }} €</div>
+                    <div class="ml-8">large : {{ (pizza.prix * 1.2) | number_format(2, '.', ',') }} €</div>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <div class="flex items-center justify-center mt-16">
+        <div class="w-1/2 flex flex-col mr-6">
+            <div class="mb-4 text-2xl flex justify-end">
+                {{ form_start(detailCommandeForm) }}
+                <div>
+                    {{ form_label(detailCommandeForm.quantite) }}
+                    {{ form_widget(detailCommandeForm.quantite, {'attr': {'style': 'width : 250px'}}) }}
+                </div>
+            </div>
+        </div>
+        <div class="w-1/2 flex flex-col ml-6">
+            <div class="mb-4 text-2xl flex items-center">
+                <div class="mr-4">
+                    {{ form_label(detailCommandeForm.taille) }}
+                </div>
+                <div class="mr-6">
+                    {{ form_widget(detailCommandeForm.taille, {'attr': {'class': 'custom-checkbox'}}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-6">
         <div>
             {{ form_label(detailCommandeForm.ajouter) }}
             {{ form_widget(detailCommandeForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
         </div>
-        {{ form_end (detailCommandeForm) }}
-
-        <a href="{{ path('_gerant') }}">Retour à la page de gestion</a>
-        <br>
-        <a href="{{ path('_accueil')}}">Retour à la carte</a>
     </div>
+    {{ form_end (detailCommandeForm) }}
+    <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-20">
+        <div>
+            <a href="{{ path('_accueil') }}">Retour à la carte</a>
+        </div>
+    </div>
+
+
 {% endblock %}
 
