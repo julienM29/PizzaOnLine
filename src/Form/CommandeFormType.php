@@ -18,18 +18,19 @@ class CommandeFormType extends AbstractType
         $currentDateTime = new \DateTime();
 
         $builder
-            ->add('dateHeureLivraison', DateTimeType::class, array(
-                'widget' => 'single_text',
-                'attr' => ['min' => $currentDateTime->format('Y-m-d\TH:i')],
-            ))
-            ->add('dateHeurePreparation', DateTimeType::class, array(
-                'widget' => 'single_text',
-                'attr' => ['min' => $currentDateTime->format('Y-m-d\TH:i')],
-            ))
-            ->add('etat', EntityType::class, [
-                'class' => Etat::class,
-                'choice_label' => 'libelle'
-            ])
+//            ->add('dateHeureLivraison', DateTimeType::class, array(
+//                'widget' => 'single_text',
+//                'attr' => ['min' => $currentDateTime->format('Y-m-d\TH:i')],
+//            ))
+//            ->add('dateHeurePreparation', DateTimeType::class, array(
+//                'widget' => 'single_text',
+//                'attr' => ['min' => $currentDateTime->format('Y-m-d\TH:i')],
+//            ))
+//            ->add('etat', EntityType::class, [
+//                'class' => Etat::class,
+//                'choice_label' => 'libelle'
+//            ])
+            ->add('adresse')
             ->add('ajouter', SubmitType::class)
         ;
     }

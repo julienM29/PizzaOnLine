@@ -11,5 +11,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/leaflet.js';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.js';
+import 'leaflet.animatedmarker/src/AnimatedMarker';
 import './map.js';
+import './adresse.js';
 import './styles/app.css';

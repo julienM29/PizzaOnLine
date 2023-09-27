@@ -1,7 +1,7 @@
-// window.init = init;
 
 function init() {
 affichageMapVille();
+console.log('je suis dans init')
 }
 window.init = init;
 
@@ -12,13 +12,15 @@ function affichageMapVille(){
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright"></a>'
     }).addTo(map);
-    map.on('click', onMapClick);
     affichagePointeurs();
     affichageRoute();
     cacherLesMarkerAuto();
 }
 
 function affichagePointeurs(){
+    var startPoint = [47.2264, -1.62076];
+    var endPoint = [47.22540, -1.63017];
+
     var defaultIcon = L.icon({
         iconUrl: './images/marker-icon.png',
         iconSize: [25, 41],
@@ -26,10 +28,8 @@ function affichagePointeurs(){
         popupAnchor: [0, -41]
     });
 
-// Configurez le marqueur par défaut de Leaflet
     L.Marker.prototype.options.icon = defaultIcon;
 
-// Créez vos marqueurs personnalisés
     var pizzeriaIcon = L.icon({
         iconUrl: '/images/pizzeria.png',
         iconSize: [50, 50],
@@ -37,7 +37,7 @@ function affichagePointeurs(){
         shadowAnchor: [4, 62],
         popupAnchor: [-3, -76]
     });
-    L.marker([47.2264, -1.62076], { icon: pizzeriaIcon }).addTo(map);
+    L.marker(startPoint, { icon: pizzeriaIcon }).addTo(map);
 
     var clientIcone = L.icon({
         iconUrl: '/images/client.png',
@@ -46,61 +46,27 @@ function affichagePointeurs(){
         shadowAnchor: [4, 62],
         popupAnchor: [-3, -76]
     });
-    L.marker([47.22540, -1.63017], { icon: clientIcone }).addTo(map);
-    var voitureIcone = L.icon({
-        iconUrl: '/images/voiturePizza.png',
-        iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        shadowAnchor: [4, 62],
-        popupAnchor: [-3, -76]
-    });
-    L.marker([47.22537, -1.62304], {icon: voitureIcone}).addTo(map);
+    L.marker(endPoint, { icon: clientIcone }).addTo(map);
 }
 
-function affichageRoute(){
+
+
+function affichageRoute() {
     var startPoint = L.latLng(47.2264, -1.62076);
     var endPoint = L.latLng(47.22540, -1.63017);
-    L.Routing.control({
+
+    var routeLayer = L.Routing.control({
         waypoints: [startPoint, endPoint],
-        routeWhileDragging: true, // Permet de mettre à jour l'itinéraire pendant le glissement
-        show: false, // Cache l'itinéraire par défaut
+        routeWhileDragging: true,
+        show: false,
         lineOptions: {
             styles: [
-                {color: 'blue', opacity: 0.6, weight: 4, dashArray: '10, 10'}, // Ligne pointillée
+                {color: 'blue', opacity: 0.6, weight: 4, dashArray: '10, 10'},
             ]
         }
     }).addTo(map);
-    // L.Routing.control({
-    //     waypoints: [
-    //         L.latLng(startPoint),
-    //         L.latLng(endPoint)
-    //     ],
-    //     routeWhileDragging: false,
-    //     show:false
-    // }).addTo(map);
-}
-function onMapClick(e) {
-    let latitude = e.latlng.lat;
-    let longitude = e.latlng.lng;
-    let str = "latitude : " + latitude + "longitude : " + longitude ;
+    affichageLivreur(routeLayer);
 
-    let balise  = document.createElement("a");
-    balise.setAttribute("id", 'boutonCreaMap');
-    let createAText = document.createTextNode(str);
-    balise.appendChild(createAText);
-    let popup = L.popup();
-
-    popup
-
-        .setLatLng(e.latlng)
-        .setContent(balise)
-        .openOn(map)
-
-    console.log('je suis dans le map on click');
-    let longitudeText = document.getElementById('longitude');
-    longitudeText.value = longitude;
-    let latitudeText =document.getElementById('latitude')
-    latitudeText.value = latitude;
 }
 function cacherLesMarkerAuto(){
     var markersGroup = L.layerGroup();
@@ -113,5 +79,48 @@ function cacherLesMarkerAuto(){
     markersGroup.eachLayer(function (marker) {
         map.removeLayer(marker);
     });
-
 }
+// function affichageLivreur(routeLayer) {
+//     var voitureIcone = L.icon({
+//         iconUrl: '/images/voiturePizza.png',
+//         iconSize: [40, 40], // Les dimensions réelles de votre icône
+//         iconAnchor: [20, 40], // L'ancre devrait être au milieu en bas de l'icône
+//         shadowAnchor: [4, 62],
+//         popupAnchor: [-3, -76]
+//     });
+//
+//     // Obtenez les waypoints du trajet généré par 'leaflet-routing-machine'
+//     var waypoints = routeLayer._routes[0].instructions[0].path;
+//     console.log(waypoints);
+//
+//     // Fonction pour animer la voiture entre deux waypoints
+//     function animateCar(start, end) {
+//         var carMarker = L.marker(start, { icon: voitureIcone }).addTo(map);
+//         var duration = 2000; // Durée de l'animation en millisecondes
+//         var numSteps = 100; // Nombre d'étapes pour l'animation
+//         var step = {
+//             lat: (end[0] - start[0]) / numSteps,
+//             lng: (end[1] - start[1]) / numSteps
+//         };
+//         var currentStep = 0;
+//
+//         var interval = setInterval(function () {
+//             if (currentStep === numSteps) {
+//                 clearInterval(interval);
+//                 carMarker.setLatLng([end[0], end[1]]);
+//             } else {
+//                 var newLatLng = [
+//                     start[0] + step.lat * currentStep,
+//                     start[1] + step.lng * currentStep
+//                 ];
+//                 carMarker.setLatLng(newLatLng);
+//                 currentStep++;
+//             }
+//         }, duration / numSteps);
+//     }
+//
+//     // Animer la voiture le long de la route en utilisant les waypoints
+//     for (var i = 0; i < waypoints.length - 1; i++) {
+//         animateCar(waypoints[i], waypoints[i + 1]);
+//     }
+// }

@@ -36,6 +36,9 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'collaborateur', targetEntity: Commande::class, orphanRemoval: true)]
     private Collection $commandes;
 
+    #[ORM\Column(length: 255)]
+    private ?string $adresse = null;
+
 
     public function __construct()
     {
@@ -155,6 +158,18 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $commande->setCollaborateur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(string $adresse): static
+    {
+        $this->adresse = $adresse;
 
         return $this;
     }

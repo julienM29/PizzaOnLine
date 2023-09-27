@@ -1,19 +1,74 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
-
 {% block body %}
-    <h1>Register</h1>
+    <h1 class="flex content-center justify-center text-5xl mt-12 mb-6">Création d'un compte</h1>
 
-    {{ form_errors(registrationForm) }}
+    <div class="flex justify-center items-center mt-12">
+        <div class="mt-12">
+            <div class="block mr-12">
+                {{ form_errors(registrationForm) }}
+                {{ form_start(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+                <div class="text-2xl mb-6 flex">
+                    <div style="flex: 1; text-align: start;">
+                        {{ form_label(registrationForm.nom) }}
+                    </div>
+                    <div style="text-align: end;">
+                        {{ form_widget(registrationForm.nom) }}
+                    </div>
+                </div>
+                <div class="text-2xl mb-6 flex">
+                    <div style="flex: 1; text-align: start;">
+                        {{ form_label(registrationForm.prenom) }}
+                    </div>
+                    <div style="text-align: end;">
+                    {{ form_widget(registrationForm.prenom) }}
+                    </div>
+                </div>
+                <div class="text-2xl mb-6 flex">
+                    <div style="flex: 1; text-align: start;">
+                        {{ form_label(registrationForm.email) }}
+                    </div>
+                    <div style="text-align: end;">
+                    {{ form_widget(registrationForm.email) }}
+                    </div>
+                </div>
+                <div class="text-2xl mb-6 flex">
+                    <div style="flex: 1; text-align: start;" class="mr-2">
+                        {{ form_label(registrationForm.plainPassword, 'Password') }}
+                    </div>
+                    <div style="text-align: end;">
+                    {{ form_widget(registrationForm.plainPassword, {
+                            label: 'Password'
+                        }) }}                    </div>
+                </div>
+                <div class="invisible">
+                    {{ form_label(registrationForm.adresse) }}
+                    {{ form_widget(registrationForm.adresse, {'attr': {'id': 'registration_form_adresse'}}) }}
+                </div>
+                <div class="flex justify-center items-center">
+                    <button type="submit" class="btn flex justify-center items-center text-2xl hover:text-red-500 duration-200 font-bold">Enregistrer son compte</button>
+                </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+
+        <div class="block ml-12 text-2xl ">
+            <div class="mb-6">
+                <label class="mr-2 ">Saisissez une adresse</label>
+                <input type="text" style="width: 250px;" class="flex-grow" id="adresseUser" name="adresse"
+                       onchange="window.flyToAdresse()"/>
+            </div>
+            <div>
+                <div id="mapAdresse" class="z-50 w-1/4"></div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ asset('build/app.js') }}"></script>
+    <script>
+        window.onload = function () {
+            initAdresse();
+        };
+    </script>
 {% endblock %}
