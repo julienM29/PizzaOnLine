@@ -14,6 +14,7 @@
                             <div class="flex justify-center items-center w-full space-x-8 mt-6">
                                 <p> {{ detailCommande.produit.nom }} </p>
                                 <p class="ml-4"> quantité : {{ detailCommande.quantite }}</p>
+                                <p class="ml-4"> taille : {{ detailCommande.taille.libelle }}</p>
                                 <p class="ml-4"> prix :
                                     {{ (detailCommande.produit.prix * detailCommande.quantite) | number_format(2, '.', ',') }}
                                     €</p>

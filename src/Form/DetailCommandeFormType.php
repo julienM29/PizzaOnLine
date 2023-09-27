@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\DetailCommande;
+use App\Entity\TailleProduit;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,8 +16,12 @@ class DetailCommandeFormType extends AbstractType
     {
         $builder
             ->add('quantite')
-//            ->add('produit')
-//            ->add('commande')
+            ->add('taille', EntityType::class, [
+                'class' => TailleProduit::class,
+                'choice_label' => 'libelle',
+                'expanded' => true,
+                'multiple' => false,
+            ])
             ->add('ajouter', SubmitType::class)
         ;
     }

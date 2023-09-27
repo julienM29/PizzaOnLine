@@ -24,6 +24,10 @@ class DetailCommande
     #[ORM\JoinColumn(nullable: false)]
     private ?Commande $commande = null;
 
+    #[ORM\ManyToOne(inversedBy: 'detailCommandes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?TailleProduit $taille = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +65,18 @@ class DetailCommande
     public function setCommande(?Commande $commande): static
     {
         $this->commande = $commande;
+
+        return $this;
+    }
+
+    public function getTaille(): ?TailleProduit
+    {
+        return $this->taille;
+    }
+
+    public function setTaille(?TailleProduit $taille): static
+    {
+        $this->taille = $taille;
 
         return $this;
     }
