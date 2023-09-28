@@ -3,6 +3,7 @@
 {% block body %}
     <h2 class="flex item-center justify-center text-5xl mt-8 mb-12"> Livraison</h2>
 
+    <div class="invisible" id="premiereAdresse"> {{ premiereAdresseLivreur }}</div>
     <div class="flex justify-center items-center text-2xl"> Votre commande est en cours de livraison vers : 2 B rue
         Benjamin Franklin, 44612 Saint Herblain
     </div>
@@ -12,7 +13,7 @@
                 <div class="w-1/2 flex justify-end mr-8"> <!-- DIV 001 -->
                     {% set commandesParLigne = countTabCommandeLivreur|batch(3) %}
                     {% for commandeId, commandeDetail in commandeDetailsClient %}
-                        <div class="bg-gray-200 p-4 w-80 flex flex-col justify-between rounded">
+                        <div class="bg-gray-200 p-4 w-80 flex flex-col  justify-between rounded">
                             <div class="flex justify-center item-center text-xl text-black font-bold">Commande n°
                                 : {{ commandeId }}</div>
                             {% for detailCommande in commandeDetail %}
@@ -39,7 +40,7 @@
     {% endfor %}
     {% if is_granted('ROLE_LIVREUR') %}
         <div class="flex mt-8">
-            <div class="w-1/2 grid grid-cols-4 gap-4 ml-4"> <!-- DIV 001 -->
+            <div class="w-1/2 grid grid-cols-4-reverse gap-4 ml-4">
                 {% for commandeId, commandeDetail in commandeDetailsLivreur %}
                     <div class="bg-gray-200 p-4 w-52 flex flex-col justify-between rounded mr-6">
                         <div class="flex justify-center item-center text-xl text-black font-bold mb-2">Commande n°
@@ -56,8 +57,8 @@
                         {% endfor %}
                         {% for commande in allCommande %}
                         {% if commande.id == commandeId %}
-                                    <div>{{ commande.collaborateur.adresse }}</div>
-                                    <div class="invisible afficherAdresse"></div>
+                            <div> {{ commande.collaborateur.prenom }} {{ commande.collaborateur.nom }} </div>
+                            <div>{{ commande.collaborateur.adresse }}</div>
                             {% endif %}
                         {% endfor %}
 

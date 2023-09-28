@@ -13,13 +13,12 @@ function affichageMapVille(){
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright"></a>'
     }).addTo(map);
     affichagePointeurs();
-    affichageRoute();
+    affichageMarkerPointB();
     cacherLesMarkerAuto();
 }
 
 function affichagePointeurs(){
     var startPoint = [47.2264, -1.62076];
-    var endPoint = [47.22540, -1.63017];
 
     var defaultIcon = L.icon({
         iconUrl: './images/marker-icon.png',
@@ -38,23 +37,12 @@ function affichagePointeurs(){
         popupAnchor: [-3, -76]
     });
     L.marker(startPoint, { icon: pizzeriaIcon }).addTo(map);
-
-    var clientIcone = L.icon({
-        iconUrl: '/images/client.png',
-        iconSize: [50, 50],
-        iconAnchor: [20, 40],
-        shadowAnchor: [4, 62],
-        popupAnchor: [-3, -76]
-    });
-    L.marker(endPoint, { icon: clientIcone }).addTo(map);
 }
 
 
 
-function affichageRoute() {
-    var startPoint = L.latLng(47.2264, -1.62076);
-    var endPoint = L.latLng(47.22540, -1.63017);
-
+function affichageRoute(startPoint, endPoint) {
+console.log('je passe dans affichageRoute')
     var routeLayer = L.Routing.control({
         waypoints: [startPoint, endPoint],
         routeWhileDragging: true,
@@ -124,3 +112,31 @@ function cacherLesMarkerAuto(){
 //         animateCar(waypoints[i], waypoints[i + 1]);
 //     }
 // }
+function affichageMarkerPointB() {
+    let startPoint = [47.2264, -1.62076];
+    let endPoint;
+    var adresse = document.getElementById("premiereAdresse").textContent;
+    console.log(adresse);
+    let adresseFinal = adresse.replaceAll(" ", "+");
+    fetch(`https://nominatim.openstreetmap.org/search?q=${adresseFinal}&format=geojson`)
+        .then(res => res.json())
+        .then(json => {
+            let coordonnees = json['features'][0]['geometry']['coordinates'];
+            let rue = json['features'][0]['properties']['name'];
+            let longitude = coordonnees[0];
+            let latitude = coordonnees[1];
+console.log(latitude);
+console.log(longitude);
+             endPoint = [latitude, longitude];
+            var clientIcone = L.icon({
+                iconUrl: '/images/client.png',
+                iconSize: [50, 50],
+                iconAnchor: [20, 40],
+                shadowAnchor: [4, 62],
+                popupAnchor: [-3, -76]
+            });
+            L.marker(endPoint, { icon: clientIcone }).addTo(map);
+
+    affichageRoute(startPoint,endPoint);  });
+}
+window.affichageMarkerPointB = affichageMarkerPointB;

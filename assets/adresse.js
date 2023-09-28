@@ -53,8 +53,10 @@ function flyToAdresse() {
             mapAdresse.flyTo([latitude, longitude], 16);
 
             // Affectez la valeur à l'input du formulaire
-            document.getElementById('registration_form_adresse').value = adresse;
+            let formAdresse = document.getElementById('registration_form_adresse');
+            formAdresse.value = adresse;
             console.log('je suis après le value');
         });
 }
 window.flyToAdresse = flyToAdresse;
+

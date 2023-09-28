@@ -46,4 +46,8 @@
 .custom-checkbox{
 
 }
+.grid-cols-4-reverse {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    direction: rtl; /* Inversion de l'ordre de lecture */
+}
 

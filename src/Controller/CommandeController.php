@@ -143,6 +143,12 @@ class CommandeController extends AbstractController
         $commandesLivreur = $commandeRepository->findBy([
             'etat' => $etatLivraison,
         ]);
+        $premiereCommandeLivreur = null;
+        $premiereAdresseLivreur = null;
+        if($commandesLivreur){
+            $premiereCommandeLivreur = $commandesLivreur[0];
+            $premiereAdresseLivreur = $premiereCommandeLivreur->getCollaborateur()->getAdresse();
+        }
         $commandeDetailsClient = [];
         $commandeDetailsLivreur = [];
         $idClients = [];
@@ -157,6 +163,6 @@ class CommandeController extends AbstractController
             $idClients[]= $idClient;
             $commandeDetailsLivreur[$commandeLivreur->getId()] = $detailsCommande;
         }
-        return $this->render('commande/livraisonCommande.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'pizzas', 'idClients','allUser','allCommande'));
+        return $this->render('commande/livraisonCommande.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'pizzas', 'idClients','allUser','allCommande','premiereAdresseLivreur'));
     }
 }
