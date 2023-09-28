@@ -72,8 +72,10 @@
 {% endblock %}
 {% if app.request.attributes.get('_route') == '_accueil' %}
     <footer class="text-center " style="height: 4rem;">
-    {% else %}
-        <footer class="text-center absolute bottom-0 right-0 left-0" style="height: 4rem;">
+        {% elseif app.request.attributes.get('_route') == '_listeProduit' %}
+        <footer class="text-center " style="height: 4rem;">
+            {% else %}
+        <div  id="footer" class="text-center absolute bottom-0 right-0 left-0" >
             {% endif %}
             <section class="bg-white">
                 <div class="max-w-screen-xl mx-auto px-4 py-12 space-x-8 overflow-hidden sm:px-6 lg:px-8 h-16 flex justify-center items-center">
@@ -117,6 +119,6 @@
             </div>
         </div>
     </section>
-</footer>
+</div>
 </body>
 </html>
