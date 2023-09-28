@@ -2,20 +2,24 @@
 
 {% block body %}
 
-    <h2 class="flex item-center justify-center text-5xl mt-8 mb-20"> La carte des pizzas : </h2>
+    <h2 class="flex item-center justify-center text-5xl mt-8 mb-20"> Modifier une pizza : </h2>
     <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
         {% for pizza in allPizzas %}
             <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between">
                 <img src="{{ pizza.urlImage }}" style="width: 300px; height: 250px;" class="mb-2">
-                <div class="mb-2 text-xl text-black">{{ pizza.nom }}</div>
+                <div class="mb-2 text-2xl text-black font-bold">{{ pizza.nom }}</div>
                 <div class="mb-2 text-xl text-black">{{ pizza.description }}</div>
                 <div class="mb-2 text-xl text-black">
                     {% for ingredient in pizza.Ingredients %}
                         {{ ingredient.nom }}{% if not loop.last %}, {% endif %}
                     {% endfor %}
                 </div>
-                <div class="mb-4 text-xl text-black">prix : {{ (pizza.prix) | number_format(2, '.', ',') }} €</div>
-                <div class="flex space-x-4 mt-5 w-64">
+                <div class="flex ">
+                    <div class="mb-4 text-xl text-black mr-5">médium : {{ (pizza.prix) | number_format(2, '.', ',') }}€
+                    </div>
+                    <div class="mb-4 text-xl text-black justify-end">large : {{ (pizza.prix*1.20) | number_format(2, '.', ',') }}€
+                    </div>
+                </div>                <div class="flex space-x-4 mt-5 w-64">
                     <a href="{{ path('_modificationProduit', {'id': pizza.id}) }}"
                        class="flex-1 flex justify-center items-center text-2xl hover:text-red-500 duration-200 text-black font-bold">Modifier</a>
                     <a href="{{ path('_supprimerProduit', {'id': pizza.id}) }}"

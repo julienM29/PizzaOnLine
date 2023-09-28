@@ -86,36 +86,77 @@ class CommandeController extends AbstractController
     {
         $etatPayeer = $etatRepository->findOneBy(['id' => 2]);
         $commandes = $commandeRepository->findBy(['etat' => $etatPayeer]);
+        $etatPrepare = $etatRepository->findOneBy(array('id' => 3));
         $pizzas = $produitRepository->findAll();
+        $commandesAttenteLivraison = $commandeRepository->findBy(['etat' => $etatPrepare]);
+        $premierePizza = null;
+        if($commandes){
+            $premierePizza = $commandes[0];
 
+        }
         $commandeDetails = [];
-
+        $commandeDetailsLivraison =[];
         foreach ($commandes as $commande) {
             $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commande]);
             $commandeDetails[$commande->getId()] = $detailsCommande;
+        }
+        foreach ($commandesAttenteLivraison as $commandeAttenteLivraison) {
+            $detailsCommandeEnAttente = $detailCommandeRepository->findBy(['commande' => $commandeAttenteLivraison]);
+            $commandeDetailsLivraison[$commandeAttenteLivraison->getId()] = $detailsCommandeEnAttente;
         }
         return $this->render('commande/preparationCommande.html.twig', [
             'commandes' => $commandes,
             'commandeDetails' => $commandeDetails,
             'pizzas' => $pizzas,
+            'commandeDetailsLivraison' => $commandeDetailsLivraison,
+            'premierePizza' => $premierePizza
         ]);
+    }
+    #[Route('/livrer/{id}', name: '_livrer')]
+    public function livrerCommande($id,EntityManagerInterface $entityManager, CommandeRepository $commandeRepository, EtatRepository $etatRepository): Response
+    {
+        $commande = $commandeRepository->findOneBy(array('id' => $id));
+        $etatEnLivraison = $etatRepository->findOneBy(array('id' => 4));
+
+        if ($commande) {
+            $commande->setEtat($etatEnLivraison);
+            $entityManager->persist($commande);
+            $entityManager->flush();
+            return $this->redirectToRoute('_preparationCommande');
+        }
+
+        return $this->render('commande/preparationCommande.html.twig');
     }
     #[Route('/livraisonCommande/{id}', name: '_livraisonCommande')]
     public function livraisonCommande($id,CollaborateurRepository $collaborateurRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
     {
 
         $client = $collaborateurRepository->findOneBy(array('id' => $id));
-        $etatPrepare = $etatRepository->findOneBy(array('id' => 3));
+        $allUser = $collaborateurRepository->findAll();
+        $allCommande = $commandeRepository->findAll();
+        $etatLivraison = $etatRepository->findOneBy(array('id' => 4));
         $pizzas = $produitRepository->findAll();
         $commandesClient = $commandeRepository->findBy([
             'collaborateur' => $client,
-            'etat' => $etatPrepare,
+            'etat' => $etatLivraison,
         ]);
-        $commandeDetails = [];
-        foreach ($commandesClient as $commande) {
-            $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commande]);
-            $commandeDetails[$commande->getId()] = $detailsCommande;
+        $commandesLivreur = $commandeRepository->findBy([
+            'etat' => $etatLivraison,
+        ]);
+        $commandeDetailsClient = [];
+        $commandeDetailsLivreur = [];
+        $idClients = [];
+
+        foreach ($commandesClient as $commandeClient) {
+            $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commandeClient]);
+            $commandeDetailsClient[$commandeClient->getId()] = $detailsCommande;
         }
-        return $this->render('commande/livraisonCommande.html.twig', compact('client', 'commandeDetails', 'pizzas'));
+        foreach ($commandesLivreur as $commandeLivreur) {
+            $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commandeLivreur]);
+            $idClient = $commandeLivreur->getCollaborateur()->getId();
+            $idClients[]= $idClient;
+            $commandeDetailsLivreur[$commandeLivreur->getId()] = $detailsCommande;
+        }
+        return $this->render('commande/livraisonCommande.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'pizzas', 'idClients','allUser','allCommande'));
     }
 }
