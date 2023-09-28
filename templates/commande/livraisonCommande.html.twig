@@ -42,30 +42,27 @@
         <div class="flex mt-8">
             <div class="w-1/2 grid grid-cols-4-reverse gap-4 ml-4">
                 {% for commandeId, commandeDetail in commandeDetailsLivreur %}
-                    <div class="bg-gray-200 p-4 w-52 flex flex-col justify-between rounded mr-6">
-                        <div class="flex justify-center item-center text-xl text-black font-bold mb-2">Commande n°
-                            : {{ commandeId }}</div>
-                        {% for detailCommande in commandeDetail %}
-                            {% for pizza in pizzas %}
-                                {% if detailCommande.produit.id == pizza.id %}
-                                    <div class="flex">
-                                        <div class=" text-xl text-black mb-2">{{ pizza.nom }}
-                                            X {{ detailCommande.quantite }}</div>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                        {% for commande in allCommande %}
+                <div class="bg-gray-200 p-4 w-52 flex flex-col justify-between rounded mr-6">
+                    <div class="flex justify-center item-center text-xl text-black font-bold mb-2">Commande n°
+                        : {{ commandeId }}</div>
+                    {% for detailCommande in commandeDetail %}
+                    <div class=" text-xl text-black mb-2 reverseTexte">{{ detailCommande.produit.nom }} X {{ detailCommande.quantite }}</div>
+                                            {% endfor %}
+                    {% for commande in allCommande %}
                         {% if commande.id == commandeId %}
-                            <div> {{ commande.collaborateur.prenom }} {{ commande.collaborateur.nom }} </div>
-                            <div>{{ commande.collaborateur.adresse }}</div>
-                            {% endif %}
-                        {% endfor %}
+                            <div class="reverseTexte text-black text-xl"> {{ commande.collaborateur.prenom }} {{ commande.collaborateur.nom }} </div>
+                            <div class="reverseTexte text-black text-xl">{{ commande.collaborateur.adresse }}</div>
+                        {% endif %}
+                    {% endfor %}
 
-                        <div class="flex item-center justify-center hover:text-red-500 duration-200 text-black text-xl">
-                            Heure de Livraison
-                            : {{ commandeDetail[0].commande.dateHeureLivraison|date(' H:i:s') }}</div>
-                    </div>
+                    <div class="flex item-center justify-center hover:text-red-500 duration-200 text-black text-xl reverseTexte">
+                        Heure de Livraison
+                        : {{ commandeDetail[0].commande.dateHeureLivraison|date(' H:i:s') }}</div>
+
+                    <a href="{{ path('_finDeLivraison', {'id': commandeId}) }} }}"
+                       class="h-6 flex justify-center item-center hover:text-red-500 duration-200 text-xl mt-4 mb-2 font-bold">Commande
+                        livrée</a>
+                </div>
                 {% endfor %}
             </div>
             <div class="w-1/2 ml-8"> <!-- DIV 002 -->
@@ -75,8 +72,7 @@
     {% endif %}
     {% if not is_granted('ROLE_LIVREUR') %}
         <div class="flex justify-center items-center text-2xl mt-6 "> Si vous constatez une erreur sur l'adresse ou
-            quelque
-            chose à dire au livreur :
+            quelque chose à dire au livreur :
         </div>
         <div id="livreur"></div>
     {% endif %}

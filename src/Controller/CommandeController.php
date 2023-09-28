@@ -127,6 +127,21 @@ class CommandeController extends AbstractController
 
         return $this->render('commande/preparationCommande.html.twig');
     }
+    #[Route('/finDeLivraison/{id}', name: '_finDeLivraison')]
+    public function finDeLivraison($id,EntityManagerInterface $entityManager, CommandeRepository $commandeRepository, EtatRepository $etatRepository): Response
+    {
+        $commande = $commandeRepository->findOneBy(array('id' => $id));
+        $etatLivree = $etatRepository->findOneBy(array('id' => 5));
+
+        if ($commande) {
+            $commande->setEtat($etatLivree);
+            $entityManager->persist($commande);
+            $entityManager->flush();
+            return $this->redirectToRoute('_preparationCommande');
+        }
+
+        return $this->render('commande/livraisonCommande.html.twig');
+    }
     #[Route('/livraisonCommande/{id}', name: '_livraisonCommande')]
     public function livraisonCommande($id,CollaborateurRepository $collaborateurRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
     {
