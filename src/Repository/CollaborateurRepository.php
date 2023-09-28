@@ -63,4 +63,14 @@ class CollaborateurRepository extends ServiceEntityRepository implements Passwor
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findUsersByRole($role): array
+    {
+        $users = $this->findAll();
+        $filteredUsers = array_filter($users, function($user) use ($role) {
+            return in_array($role, $user->getRoles());
+        });
+
+        return $filteredUsers;
+    }
+
 }

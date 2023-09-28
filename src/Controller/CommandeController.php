@@ -147,6 +147,7 @@ class CommandeController extends AbstractController
     {
 
         $client = $collaborateurRepository->findOneBy(array('id' => $id));
+        $livreur = $collaborateurRepository->findUsersByRole('ROLE_LIVREUR');
         $allCommande = $commandeRepository->findAll();
         $etatLivraison = $etatRepository->findOneBy(array('id' => 4));
         $commandesClient = $commandeRepository->findBy([
@@ -180,6 +181,6 @@ class CommandeController extends AbstractController
             $idClients[]= $idClient;
             $commandeDetailsLivreur[$commandeLivreur->getId()] = $detailsCommande;
         }
-        return $this->render('commande/livraisonCommande.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide'));
+        return $this->render('commande/livraisonCommande.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur'));
     }
 }
