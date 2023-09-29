@@ -23,8 +23,10 @@
                 <div class="flex item-center justify-center">
                     <a href="{{ path('_detailPizza', {'id': pizza.id}) }}"
                        class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold mr-5">Detail</a>
+                    {% if app.user %}
                     <a href="{{ path('_detailPizza', {'id': pizza.id}) }}"
                        class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold ml-5">Ajouter</a>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}

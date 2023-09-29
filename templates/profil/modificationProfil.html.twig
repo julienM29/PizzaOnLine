@@ -36,36 +36,20 @@
                 {{ form_widget(profilForm.password, {'attr': {'style': 'width: 250px'}}) }}
             </div>
         </div>
-        {% if is_granted('ROLE_GERANT') %}
+{#        <div class="w-full flex space-x-4  w-64">#}
+{#            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">#}
+{#                {{ form_label(profilForm.roles) }} :#}
+{#            </div>#}
+{#            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">#}
+{#                {% for role in profilForm.roles %}#}
+{#                    {{ form_widget(role, {'attr': {'class': 'custom-checkbox'}}) }}#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        </div>#}
+        <label for="countries_multiple" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>
+        {{ form_widget(profilForm.roles, {'id': 'countries_multiple', 'attr': {'class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'}}) }}
 
-            <div class="w-full space-y-1 text-3xl w-64 ">
 
-                {{ form_label(profilForm.roles, 'Roles : ', {'label_attr': {'class': 'labelIngredient'}}) }}
-                <div class="grid grid-cols-3">
-                    <!-- Retirez la classe "gap" pour supprimer l'espace entre les colonnes -->
-                    {% for role in profilForm.roles %}
-                        <div class="custom-checkbox">
-                            {{ form_widget(role, {'attr': {'class': 'custom-checkbox'}}) }}
-                            {{ form_label(role) }}
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endif %}
-        {% if not is_granted('ROLE_GERANT') %}
-            <div class="w-full space-y-1 text-3xl w-64 invisible">
-                {{ form_label(profilForm.roles, 'Roles : ', {'label_attr': {'class': 'labelIngredient'}}) }}
-                <div class="grid grid-cols-3">
-                    <!-- Retirez la classe "gap" pour supprimer l'espace entre les colonnes -->
-                    {% for role in profilForm.roles %}
-                        <div class="custom-checkbox">
-                            {{ form_widget(role, {'attr': {'class': 'custom-checkbox'}}) }}
-                            {{ form_label(role) }}
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endif %}
         <div class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-16">
             {{ form_label(profilForm.ajouter) }}
             {{ form_widget(profilForm.ajouter, {'attr': {'style': 'width: 250px'}}) }}

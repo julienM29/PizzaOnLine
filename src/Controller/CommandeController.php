@@ -189,6 +189,7 @@ class CommandeController extends AbstractController
 
         $client = $collaborateurRepository->findOneBy(array('id' => $id));
         $livreur = $collaborateurRepository->findUsersByRole('ROLE_LIVREUR');
+
         $allCommande = $commandeRepository->findAll();
         $etatLivraison = $etatRepository->findOneBy(array('id' => 4));
         $commandesClient = $commandeRepository->findBy([
@@ -223,5 +224,25 @@ class CommandeController extends AbstractController
             $commandeDetailsLivreur[$commandeLivreur->getId()] = $detailsCommande;
         }
         return $this->render('commande/livraisonClient.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur'));
+    }
+    #[Route('/commandeEnCours', name: '_commandeEnCours')]
+    public function commandeEnCours(EntityManagerInterface $entityManager,ProduitRepository $produitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, CollaborateurRepository $collaborateurRepository, DetailCommandeRepository $detailCommandeRepository): Response
+    {
+
+        $client = $collaborateurRepository->findOneBy(array('id' => $this->getUser()->getId()));
+        $etatLivraison = $etatRepository->findOneBy(array('id' => 4));
+        $pizzas = $produitRepository->findAll();
+        $commandesClient = $commandeRepository->findBy([
+            'collaborateur' => $client,
+        ]);
+        $commandeDetailsClient = [];
+        $etatsCommandes=[];
+        foreach ($commandesClient as $commandeClient) {
+            $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commandeClient]);
+            $etatCommande = $commandeClient->getEtat();
+            $commandeDetailsClient[] = $detailsCommande;
+            $etatsCommandes[]=$etatCommande;
+        }
+        return $this->render('commande/commandeEnCours.html.twig', compact('commandesClient','commandeDetailsClient','pizzas','etatsCommandes'));
     }
 }

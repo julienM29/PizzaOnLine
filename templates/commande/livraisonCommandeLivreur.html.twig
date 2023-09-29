@@ -42,12 +42,6 @@
                 </div>
             </div>
         {% endif %}
-        {% if not is_granted('ROLE_LIVREUR') and (commandeVide is not empty) %}
-            <div class="flex justify-center items-center text-2xl mt-6 "> Si vous constatez une erreur sur l'adresse ou
-                quelque chose à dire au livreur :
-            </div>
-            <div>{{ livreur.nom }} {{ livreur.prenom }}</div>
-        {% endif %}
 
         <script src="{{ asset('build/app.js') }}"></script>
         <script>

@@ -47,35 +47,43 @@
             </div>
         </div>
     </div>
-
-    <div class="flex items-center justify-center mt-16">
-        <div class="w-1/2 flex flex-col mr-6">
-            <div class="mb-4 text-2xl flex justify-end">
-                {{ form_start(detailCommandeForm) }}
-                <div>
-                    {{ form_label(detailCommandeForm.quantite) }}
-                    {{ form_widget(detailCommandeForm.quantite, {'attr': {'style': 'width : 250px'}}) }}
+    {% if app.user %}
+        <div class="flex items-center justify-center mt-16">
+            <div class="w-1/2 flex flex-col mr-6">
+                <div class="mb-4 text-2xl flex justify-end">
+                    {{ form_start(detailCommandeForm) }}
+                    <div>
+                        {{ form_label(detailCommandeForm.quantite) }}
+                        {{ form_widget(detailCommandeForm.quantite, {'attr': {'style': 'width : 250px'}}) }}
+                    </div>
+                </div>
+            </div>
+            <div class="w-1/2 flex flex-col ml-6">
+                <div class="mb-4 text-2xl flex items-center">
+                    <div class="mr-4">
+                        {{ form_label(detailCommandeForm.taille) }}
+                    </div>
+                    <div class="mr-6">
+                        {{ form_widget(detailCommandeForm.taille, {'attr': {'class': 'custom-checkbox'}}) }}
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="w-1/2 flex flex-col ml-6">
-            <div class="mb-4 text-2xl flex items-center">
-                <div class="mr-4">
-                    {{ form_label(detailCommandeForm.taille) }}
-                </div>
-                <div class="mr-6">
-                    {{ form_widget(detailCommandeForm.taille, {'attr': {'class': 'custom-checkbox'}}) }}
-                </div>
+        <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-6">
+            <div>
+                {{ form_label(detailCommandeForm.ajouter) }}
+                {{ form_widget(detailCommandeForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
             </div>
         </div>
-    </div>
-    <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-6">
-        <div>
-            {{ form_label(detailCommandeForm.ajouter) }}
-            {{ form_widget(detailCommandeForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
+        {{ form_end (detailCommandeForm) }}
+    {% endif %}
+    {% if not app.user %}
+        <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-20">
+            <div>
+                <a href="{{ path('app_login') }}">Connectez-vous pour commander</a>
+            </div>
         </div>
-    </div>
-    {{ form_end (detailCommandeForm) }}
+    {% endif %}
     <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-20">
         <div>
             <a href="{{ path('_accueil') }}">Retour à la carte</a>

@@ -24,7 +24,6 @@ class ProfilController extends AbstractController
     public function modificationProfil($id, UserPasswordHasherInterface $userPasswordHasher, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
     {
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
-        $user->setPassword('');
         $profilForm = $this->createForm(ProfilFormType::class, $user);
         $profilForm->handleRequest($requete);
 

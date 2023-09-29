@@ -28,7 +28,6 @@ class ProfilFormType extends AbstractType
                     'Role PIZZAIOLO' => 'ROLE_PIZZAIOLO',
                 ],
                 'multiple' => true,
-                'expanded' => true,
             ])
             ->add('ajouter', SubmitType::class)
         ;
