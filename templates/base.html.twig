@@ -39,12 +39,12 @@
                     <a href="{{ path('_preparationCommande', {'id': app.user.id}) }}">Preparation</a>
                 </li>
             {% endif %}
-                {% if is_granted("ROLE_LIVREUR") %}
+                {% if is_granted("ROLE_LIVREUR") and app.user %}
                     <li class="p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
                         <a href="{{ path('_livraisonCommande', {'id': app.user.id}) }}">Livraison</a>
                     </li>
                 {% endif %}
-            {% if not is_granted("ROLE_LIVREUR") %}
+            {% if not is_granted("ROLE_LIVREUR") and app.user %}
                 <li class="p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
                     <a href="{{ path('_livraisonClient', {'id': app.user.id}) }}">Livraison</a>
                 </li>

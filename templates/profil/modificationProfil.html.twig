@@ -3,35 +3,69 @@
 {% block body %}
     <h2 class="flex item-center justify-center text-5xl mt-8 mb-20"> Modification du profil de : {{ user.prenom }}</h2>
     <div class="flex justify-center items-center ">
-        {{ form_start(profilForm)}}
-        <div class="mb-6 text-2xl">
-            {{ form_label(profilForm.nom) }} :
-            {{ form_widget(profilForm.nom, {'attr': {'style': 'width: 250px'}}) }}
+        {{ form_start(profilForm) }}
+        <div class="w-full flex space-x-4  w-64">
+            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">
+                {{ form_label(profilForm.nom) }} :
+            </div>
+            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">
+                {{ form_widget(profilForm.nom, {'attr': {'style': 'width: 250px'}}) }}
+            </div>
         </div>
-        <div class="mb-6 text-2xl">
-            {{ form_label(profilForm.prenom) }} :
-            {{ form_widget(profilForm.prenom, {'attr': {'style': 'width: 250px'}}) }}
+        <div class="w-full flex space-x-4  w-64">
+            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">
+                {{ form_label(profilForm.prenom) }} :
+            </div>
+            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">
+                {{ form_widget(profilForm.prenom, {'attr': {'style': 'width: 250px'}}) }}
+            </div>
         </div>
-        <div class="mb-6 text-2xl">
-            {{ form_label(profilForm.email) }} :
-            {{ form_widget(profilForm.email, {'attr': {'style': 'width: 250px'}}) }}
+        <div class="w-full flex space-x-4  w-64">
+            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">
+                {{ form_label(profilForm.email) }} :
+            </div>
+            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">
+                {{ form_widget(profilForm.email, {'attr': {'style': 'width: 250px'}}) }}
+            </div>
         </div>
-        <div class="mb-6 text-2xl">
-            {{ form_label(profilForm.password) }} :
-            {{ form_widget(profilForm.password, {'attr': {'style': 'width: 250px'}}) }}
+        <div class="w-full flex space-x-4  w-64">
+            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">
+                {{ form_label(profilForm.password) }} :
+            </div>
+            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">
+                {{ form_widget(profilForm.password, {'attr': {'style': 'width: 250px'}}) }}
+            </div>
         </div>
-                <div class="space-y-1 text-2xl"> <!-- Utilisez space-y pour ajouter de l'espace vertical entre les éléments enfants en colonne -->
-                    {{ form_label(profilForm.roles, 'Roles : ', {'label_attr': {'class': 'labelIngredient'}}) }}
-                    <div class="grid grid-cols-3"> <!-- Retirez la classe "gap" pour supprimer l'espace entre les colonnes -->
-                        {% for role in profilForm.roles %}
-                            <div class="custom-checkbox">
-                                {{ form_widget(role, {'attr': {'class': 'custom-checkbox'}}) }}
-                                {{ form_label(role) }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
+        {% if is_granted('ROLE_GERANT') %}
 
+            <div class="w-full space-y-1 text-3xl w-64 ">
+
+                {{ form_label(profilForm.roles, 'Roles : ', {'label_attr': {'class': 'labelIngredient'}}) }}
+                <div class="grid grid-cols-3">
+                    <!-- Retirez la classe "gap" pour supprimer l'espace entre les colonnes -->
+                    {% for role in profilForm.roles %}
+                        <div class="custom-checkbox">
+                            {{ form_widget(role, {'attr': {'class': 'custom-checkbox'}}) }}
+                            {{ form_label(role) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        {% if not is_granted('ROLE_GERANT') %}
+            <div class="w-full space-y-1 text-3xl w-64 invisible">
+                {{ form_label(profilForm.roles, 'Roles : ', {'label_attr': {'class': 'labelIngredient'}}) }}
+                <div class="grid grid-cols-3">
+                    <!-- Retirez la classe "gap" pour supprimer l'espace entre les colonnes -->
+                    {% for role in profilForm.roles %}
+                        <div class="custom-checkbox">
+                            {{ form_widget(role, {'attr': {'class': 'custom-checkbox'}}) }}
+                            {{ form_label(role) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
         <div class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-16">
             {{ form_label(profilForm.ajouter) }}
             {{ form_widget(profilForm.ajouter, {'attr': {'style': 'width: 250px'}}) }}
@@ -39,6 +73,8 @@
         {{ form_end(profilForm) }}
 
     </div>
-    <a href="{{path ('_profil', { 'id': user.id }) }}" class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-16">Retour au profil</a>
+    <a href="{{ path ('_profil', { 'id': user.id }) }}"
+       class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-16">Retour au
+        profil</a>
 {% endblock %}
 

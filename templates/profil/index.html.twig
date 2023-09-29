@@ -2,37 +2,39 @@
 
 {% block body %}
 <h1 class="flex content-center justify-center text-5xl mt-12"> Profil de {{ user.prenom }} </h1>
-    <div class="flex flex-col items-center justify-center mt-12">
+    <div class="flex flex-col items-center justify-center mt-24">
         <div class="w-full flex space-x-4  w-64">
-            <div class="flex justify-end w-1/2 text-2xl mr-5">
+            <div class="flex justify-end w-1/2 text-3xl mr-5">
                 Nom :
             </div>
-            <div class="flex justify-start w-1/2 text-2xl ml-5">
+            <div class="flex justify-start w-1/2 text-3xl ml-5">
                 {{ user.nom }}
             </div>
         </div>
     <div class=" w-full flex space-x-4 mt-5 w-64">
-        <div class="flex justify-end w-1/2 text-2xl mr-5 ">Prenom : </div>
-        <div class="flex justify-start w-1/2 text-2xl ml-5"> {{ user.prenom }}</div>
+        <div class="flex justify-end w-1/2 text-3xl mr-5 ">Prenom : </div>
+        <div class="flex justify-start w-1/2 text-3xl ml-5"> {{ user.prenom }}</div>
     </div>
     <div class="w-full flex space-x-4 mt-5 w-64">
-    <div class="flex justify-end w-1/2 text-2xl mr-5">Email : </div>
-    <div class="flex justify-start w-1/2 text-2xl ml-5"> {{ user.email }}</div>
+    <div class="flex justify-end w-1/2 text-3xl mr-5">Email : </div>
+    <div class="flex justify-start w-1/2 text-3xl ml-5"> {{ user.email }}</div>
     </div>
         <div class="w-full flex space-x-4 mt-5 w-64">
-            <div class="flex justify-end w-1/2 text-2xl mr-5">Adresse : </div>
-            <div class="flex justify-start w-1/2 text-2xl ml-5"> {{ user.adresse }}</div>
+            <div class="flex justify-end w-1/2 text-3xl mr-5">Adresse : </div>
+            <div class="flex justify-start w-1/2 text-3xl ml-5"> {{ user.adresse }}</div>
         </div>
         {% if is_granted('ROLE_GERANT') %}
         <div class="w-full flex space-x-4 mt-5 w-64">
-            <div class="flex justify-end w-1/2 text-2xl mr-5">Role : </div>
-            <div class="flex-col justify-start w-1/2 text-2xl ml-14">
+            <div class="flex justify-end w-1/2 text-3xl mr-5">Role : </div>
+            <div class="flex-col justify-start w-1/2 text-3xl ml-14">
             {% for role in user.roles %}
                   <div> {{ role }} </div>
             {% endfor %}
         </div>
         </div>
         {% endif %}
-<a href="{{path ('_modificationProfil', { 'id': user.id }) }}" class="h-6 w-auto hover:text-red-500 duration-200 mt-12 text-2xl"> Modification du profil</a>
+        <a href="{{path ('_accueil') }}" class="h-6 w-auto hover:text-red-500 duration-200 mt-20 text-4xl">accueil</a>
+
+        <a href="{{path ('_modificationProfil', { 'id': user.id }) }}" class="h-6 w-auto hover:text-red-500 duration-200 mt-20 text-4xl"> Modification du profil</a>
     </div>
 {% endblock %}
