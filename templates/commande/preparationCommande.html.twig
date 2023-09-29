@@ -3,12 +3,10 @@
 {% block body %}
 
     <h2 class="flex item-center justify-center text-5xl mt-8 mb-20"> Préparation des commandes </h2>
-    {% if is_granted('ROLE_GERANT') %}
-        <h4 class="h-6 mb-6 text-2xl mt-4 mb-3 font-bold"> Commandes en attente de livraison :</h4>
-    {% endif %}
-    <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
-        {% if is_granted('ROLE_GERANT') or is_granted('ROLE_LIVREUR') %}
 
+    {% if is_granted('ROLE_GERANT') or is_granted('ROLE_LIVREUR') %}
+        <h4 class="h-6 mb-6 text-2xl mt-4 mb-3 font-bold"> Commandes en attente de livraison :</h4>
+        <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
             {% for commandeId, commande in commandeDetailsLivraison %}
                 <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between">
                     <div class=" flex justify-center item-center mb-2 text-xl text-black mb-4 font-bold">Commande n°
@@ -31,11 +29,13 @@
                     {% endif %}
                 </div>
             {% endfor %}
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
     {% if is_granted('ROLE_GERANT') %}
-        <h4 class="h-6 mb-6 text-2xl mt-4 mb-3 font-bold"> Commandes en attente de préparation
-            pour {{ premierePizza.dateHeurePreparation|date(' H:i') }} : </h4>
+        {% if premierePizza is not empty %}
+            <h4 class="h-6 mb-6 text-2xl mt-4 mb-3 font-bold"> Commandes en attente de préparation
+                pour {{ premierePizza.dateHeurePreparation|date(' H:i') }} : </h4>
+        {% endif %}
     {% endif %}
     <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
 

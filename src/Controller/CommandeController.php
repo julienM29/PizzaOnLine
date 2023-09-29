@@ -140,7 +140,7 @@ class CommandeController extends AbstractController
             return $this->redirectToRoute('_preparationCommande');
         }
 
-        return $this->render('commande/livraisonCommande.html.twig');
+        return $this->render('livraisonCommandeLivreur.html.twig');
     }
     #[Route('/livraisonCommande/{id}', name: '_livraisonCommande')]
     public function livraisonCommande($id,CollaborateurRepository $collaborateurRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
@@ -181,6 +181,47 @@ class CommandeController extends AbstractController
             $idClients[]= $idClient;
             $commandeDetailsLivreur[$commandeLivreur->getId()] = $detailsCommande;
         }
-        return $this->render('commande/livraisonCommande.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur'));
+        return $this->render('livraisonCommandeLivreur.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur'));
+    }
+    #[Route('/livraisonClient/{id}', name: '_livraisonClient')]
+    public function livraisonClient($id,CollaborateurRepository $collaborateurRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
+    {
+
+        $client = $collaborateurRepository->findOneBy(array('id' => $id));
+        $livreur = $collaborateurRepository->findUsersByRole('ROLE_LIVREUR');
+        $allCommande = $commandeRepository->findAll();
+        $etatLivraison = $etatRepository->findOneBy(array('id' => 4));
+        $commandesClient = $commandeRepository->findBy([
+            'collaborateur' => $client,
+            'etat' => $etatLivraison,
+        ]);
+        $commandesLivreur = $commandeRepository->findBy([
+            'etat' => $etatLivraison,
+        ]);
+        $commandeVide = null;
+        $premiereCommandeLivreur = null;
+        $premiereAdresseLivreur = null;
+        if( empty($commandesClient)){
+            $commandeVide = [];
+        }
+        if($commandesLivreur){
+            $premiereCommandeLivreur = $commandesLivreur[0];
+            $premiereAdresseLivreur = $premiereCommandeLivreur->getCollaborateur()->getAdresse();
+        }
+        $commandeDetailsClient = [];
+        $commandeDetailsLivreur = [];
+        $idClients = [];
+
+        foreach ($commandesClient as $commandeClient) {
+            $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commandeClient]);
+            $commandeDetailsClient[$commandeClient->getId()] = $detailsCommande;
+        }
+        foreach ($commandesLivreur as $commandeLivreur) {
+            $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commandeLivreur]);
+            $idClient = $commandeLivreur->getCollaborateur()->getId();
+            $idClients[]= $idClient;
+            $commandeDetailsLivreur[$commandeLivreur->getId()] = $detailsCommande;
+        }
+        return $this->render('commande/livraisonClient.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur'));
     }
 }
