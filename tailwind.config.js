@@ -10,6 +10,6 @@ module.exports = {
   },
   plugins: [
       require('daisyui'),
-      require("flowbite"),
+      require("flowbite/plugin"),
   ],
 }

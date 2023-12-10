@@ -42,19 +42,23 @@
                 <div>Prix :</div>
                 <div>
                     <div class="ml-8">médium : {{ (pizza.prix) | number_format(2, '.', ',') }} €</div>
-                    <div class="ml-8">large : {{ (pizza.prix * 1.2) | number_format(2, '.', ',') }} €</div>
+                    <div class="ml-8">large : {{ (pizza.prix + 5) | number_format(2, '.', ',') }} €</div>
                 </div>
             </div>
         </div>
     </div>
     {% if app.user %}
-        <div class="flex items-center justify-center mt-16">
+        <div class="flex items-center justify-center mt-8">
             <div class="w-1/2 flex flex-col mr-6">
                 <div class="mb-4 text-2xl flex justify-end">
                     {{ form_start(detailCommandeForm) }}
-                    <div>
-                        {{ form_label(detailCommandeForm.quantite) }}
-                        {{ form_widget(detailCommandeForm.quantite, {'attr': {'style': 'width : 250px'}}) }}
+                    <div class="mb-7 mt-7 flex justify-center items-center ">
+                        <div class="mr-5 text-2xl mb-2 ">
+                            {{ form_label(detailCommandeForm.quantite) }}
+                        </div>
+                        <div class="text-2xl text-black font-bold flex items-center"> <!-- Ajout de la classe flex -->
+                            {{ form_widget(detailCommandeForm.quantite, {'id': 'quantiteModal','attr': {'style': 'width : 200px;  text-align: center; font-size: 1.25rem;'}}) }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -78,13 +82,13 @@
         {{ form_end (detailCommandeForm) }}
     {% endif %}
     {% if not app.user %}
-        <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-20">
+        <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-10">
             <div>
                 <a href="{{ path('app_login') }}">Connectez-vous pour commander</a>
             </div>
         </div>
     {% endif %}
-    <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-20">
+    <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-10">
         <div>
             <a href="{{ path('_accueil') }}">Retour à la carte</a>
         </div>

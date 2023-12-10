@@ -39,6 +39,8 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $panier = null;
 
     public function __construct()
     {
@@ -170,6 +172,18 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAdresse(string $adresse): static
     {
         $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getPanier(): ?int
+    {
+        return $this->panier;
+    }
+
+    public function setPanier(?int $panier): static
+    {
+        $this->panier = $panier;
 
         return $this;
     }

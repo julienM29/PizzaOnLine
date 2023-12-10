@@ -28,7 +28,7 @@
                                 : {{ commandeId }}</div>
                             {% for detailCommande in commandeDetail %}
                                 <div class=" text-xl text-black mb-2 reverseTexte">{{ detailCommande.produit.nom }}
-                                    X {{ detailCommande.quantite }}</div>
+                                    X {{ detailCommande.quantite }} {{ detailCommande.taille.libelle }}</div>
                             {% endfor %}
                             {% for commande in allCommande %}
                                 {% if commande.id == commandeId %}
@@ -37,7 +37,7 @@
                                 {% endif %}
                             {% endfor %}
 
-                            <div class="flex item-center justify-center hover:text-red-500 duration-200 text-black text-xl reverseTexte">
+                            <div class="flex item-center font-bold justify-center hover:text-red-500 duration-200 text-black text-xl reverseTexte">
                                 Heure de Livraison
                                 : {{ commandeDetail[0].commande.dateHeureLivraison|date(' H:i:s') }}</div>
 
@@ -55,7 +55,6 @@
 {#        <div class="flex justify-center items-center text-2xl mt-6 ">#}
 {#            Si vous constatez une erreur sur l'adresse ou#}
 {#                quelque chose à dire au livreur :#}
-{#            </div>#}
 
 {#            <div class="flex justify-center items-center text-2xl mt-6 ">{{ livreur[1].nom }} {{ livreur[1].prenom }}</div>#}
 {#            <div class="flex justify-center items-center text-2xl mt-6 mb-32">  06 01 02 03 04</div>#}

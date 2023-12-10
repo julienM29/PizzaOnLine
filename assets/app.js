@@ -12,6 +12,8 @@ import 'leaflet/dist/leaflet.js';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.js';
 import 'leaflet.animatedmarker/src/AnimatedMarker';
+import 'flowbite/dist/flowbite.min.js'
 import './map.js';
 import './adresse.js';
+import './modal.js';
 import './styles/app.css';

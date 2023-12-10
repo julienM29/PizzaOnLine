@@ -20,11 +20,22 @@ body {
 #detail_commande_form_taille_1{
     margin-left: 20px;
     margin-right: 10px;
+    width : 15px;
+    height : 15px;
 }
 #detail_commande_form_taille_2{
     margin-left: 20px;
     margin-right: 10px;
+    width : 15px;
+    height : 15px;
+}
+.cart-icon {
+    display: inline-block;
+    transition: transform 0.3s ease; /* Transition pour un effet de zoom fluide */
+}
 
+.cart-icon:hover {
+    transform: scale(1.2); /* Zoom de 110% au survol */
 }
 #map {
     height: 350px;

@@ -18,7 +18,7 @@
                                 : {{ commandeId }}</div>
                             {% for detailCommande in commandeDetail %}
                                 <div class=" text-xl text-black mb-2 reverseTexte">{{ detailCommande.produit.nom }}
-                                    X {{ detailCommande.quantite }}</div>
+                                    X {{ detailCommande.quantite }}  {{ detailCommande.taille }}</div>
                             {% endfor %}
                             {% for commande in allCommande %}
                                 {% if commande.id == commandeId %}

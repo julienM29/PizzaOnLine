@@ -33,8 +33,9 @@
         </div>
         </div>
         {% endif %}
-        <a href="{{path ('_accueil') }}" class="h-6 w-auto hover:text-red-500 duration-200 mt-20 text-4xl">accueil</a>
-
         <a href="{{path ('_modificationProfil', { 'id': user.id }) }}" class="h-6 w-auto hover:text-red-500 duration-200 mt-20 text-4xl"> Modification du profil</a>
+        <a href="{{path ('_accueil') }}" class="h-6 w-auto hover:text-red-500 duration-200 mt-20 text-4xl">accueil</a>
     </div>
+
+
 {% endblock %}

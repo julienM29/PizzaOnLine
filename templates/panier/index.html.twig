@@ -6,8 +6,8 @@
 
     <h2 class="flex item-center justify-center text-5xl mt-8"> Votre panier </h2>
 
-    {% if detailsCommandes is not empty %}
-        {% for detailCommande in detailsCommandes %}
+    {% if detailsCommandePanier is not empty %}
+        {% for detailCommande in detailsCommandePanier %}
             <div class="flex items-center justify-center mt-8">
                 <div class="mb-4 text-xl" id="photo">
                     <div class="flex mt-2 mr-4">
@@ -54,7 +54,7 @@
             </div>
         </div>
     {% endif %}
-    {% if detailsCommandes is empty %}
+    {% if detailsCommandePanier is empty %}
         <h3><a href="{{ path('_accueil') }}" class="ml-7 flex item-center justify-center hover:text-red-500 duration-200 mt-20 text-4xl">Votre
                 panier est vide, cliquer ici pour commander une pizza ! </a></h3>
     {% endif %}

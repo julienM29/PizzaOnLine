@@ -10,6 +10,7 @@ use App\Repository\CommandeRepository;
 use App\Repository\DetailCommandeRepository;
 use App\Repository\EtatRepository;
 use App\Repository\ProduitRepository;
+use App\Repository\TailleProduitRepository;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -82,13 +83,22 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/preparationCommande', name: '_preparationCommande')]
-    public function preparationCommande(DetailCommandeRepository $detailCommandeRepository, EtatRepository $etatRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
+    public function preparationCommande(DetailCommandeRepository $detailCommandeRepository,TailleProduitRepository $tailleProduitRepository, EtatRepository $etatRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
     {
         $etatPayeer = $etatRepository->findOneBy(['id' => 2]);
         $commandes = $commandeRepository->findBy(['etat' => $etatPayeer]);
         $etatPrepare = $etatRepository->findOneBy(array('id' => 3));
         $pizzas = $produitRepository->findAll();
         $commandesAttenteLivraison = $commandeRepository->findBy(['etat' => $etatPrepare]);
+        $utilisateur = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur],
+            ['id' => 'DESC']
+        );
+        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
+        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+
+
         $premierePizza = null;
         if($commandes){
             $premierePizza = $commandes[0];
@@ -109,7 +119,9 @@ class CommandeController extends AbstractController
             'commandeDetails' => $commandeDetails,
             'pizzas' => $pizzas,
             'commandeDetailsLivraison' => $commandeDetailsLivraison,
-            'premierePizza' => $premierePizza
+            'premierePizza' => $premierePizza,
+            'detailsCommandePanier' => $detailsCommandePanier,
+            'prixDuPanier' => $prixDuPanier
         ]);
     }
     #[Route('/livrer/{id}', name: '_livrer')]
@@ -143,7 +155,7 @@ class CommandeController extends AbstractController
         return $this->render('livraisonCommandeLivreur.html.twig');
     }
     #[Route('/livraisonCommande/{id}', name: '_livraisonCommande')]
-    public function livraisonCommande($id,CollaborateurRepository $collaborateurRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
+    public function livraisonCommande($id,CollaborateurRepository $collaborateurRepository,TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
     {
 
         $client = $collaborateurRepository->findOneBy(array('id' => $id));
@@ -157,6 +169,15 @@ class CommandeController extends AbstractController
         $commandesLivreur = $commandeRepository->findBy([
             'etat' => $etatLivraison,
         ]);
+        $utilisateur = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur],
+            ['id' => 'DESC']
+        );
+        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
+        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+
+
         $commandeVide = null;
         $premiereCommandeLivreur = null;
         $premiereAdresseLivreur = null;
@@ -181,10 +202,10 @@ class CommandeController extends AbstractController
             $idClients[]= $idClient;
             $commandeDetailsLivreur[$commandeLivreur->getId()] = $detailsCommande;
         }
-        return $this->render('livraisonCommandeLivreur.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur'));
+        return $this->render('commande/livraisonCommandeLivreur.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur', 'detailsCommandePanier', 'prixDuPanier'));
     }
     #[Route('/livraisonClient/{id}', name: '_livraisonClient')]
-    public function livraisonClient($id,CollaborateurRepository $collaborateurRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
+    public function livraisonClient($id,CollaborateurRepository $collaborateurRepository,TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
     {
 
         $client = $collaborateurRepository->findOneBy(array('id' => $id));
@@ -199,6 +220,15 @@ class CommandeController extends AbstractController
         $commandesLivreur = $commandeRepository->findBy([
             'etat' => $etatLivraison,
         ]);
+        $utilisateur = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur],
+            ['id' => 'DESC']
+        );
+        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
+        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+
+
         $commandeVide = null;
         $premiereCommandeLivreur = null;
         $premiereAdresseLivreur = null;
@@ -223,10 +253,10 @@ class CommandeController extends AbstractController
             $idClients[]= $idClient;
             $commandeDetailsLivreur[$commandeLivreur->getId()] = $detailsCommande;
         }
-        return $this->render('commande/livraisonClient.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur'));
+        return $this->render('commande/livraisonClient.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur', 'detailsCommandePanier', 'prixDuPanier'));
     }
     #[Route('/commandeEnCours', name: '_commandeEnCours')]
-    public function commandeEnCours(EntityManagerInterface $entityManager,ProduitRepository $produitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, CollaborateurRepository $collaborateurRepository, DetailCommandeRepository $detailCommandeRepository): Response
+    public function commandeEnCours(EntityManagerInterface $entityManager, TailleProduitRepository $tailleProduitRepository,ProduitRepository $produitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, CollaborateurRepository $collaborateurRepository, DetailCommandeRepository $detailCommandeRepository): Response
     {
 
         $client = $collaborateurRepository->findOneBy(array('id' => $this->getUser()->getId()));
@@ -235,6 +265,13 @@ class CommandeController extends AbstractController
         $commandesClient = $commandeRepository->findBy([
             'collaborateur' => $client,
         ]);
+        $utilisateur = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur],
+            ['id' => 'DESC']
+        );
+        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
+        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
         $commandeDetailsClient = [];
         $etatsCommandes=[];
         foreach ($commandesClient as $commandeClient) {
@@ -243,6 +280,26 @@ class CommandeController extends AbstractController
             $commandeDetailsClient[] = $detailsCommande;
             $etatsCommandes[]=$etatCommande;
         }
-        return $this->render('commande/commandeEnCours.html.twig', compact('commandesClient','commandeDetailsClient','pizzas','etatsCommandes'));
+        return $this->render('commande/commandeEnCours.html.twig', compact('commandesClient','commandeDetailsClient','pizzas','etatsCommandes','detailsCommandePanier', 'prixDuPanier'));
+    }
+    public function prixDuPanier ($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier){
+        $prixDuPanier = 0; // Instancie une variable de prix de panier à 0 qui sera envoyé au twig
+        $tailleLarge = $tailleProduitRepository->findOneBy(array('id' => 2)); // récupère la taille large pour une condition (prix)
+        if ($derniereCommande != null) { // Si il y a une dernière commande
+            $etatDerniereCommande = $derniereCommande->getEtat();
+            if ($etatDerniereCommande->getId() == 1) { // Si elle est a l'état créé
+                foreach ($detailsCommandePanier as $detail) {
+                    $idProduit = $detail->getProduit()->getId();
+                    $pizza = $produitRepository->findOneBy(array('id' => $idProduit));
+                    if ($detail->getTaille() === $tailleLarge) { // Si il y a une taille large on change le prix
+                        $prixDuDetail = 5 + ($pizza->getPrix() * $detail->getQuantite());
+                    } else {
+                        $prixDuDetail = ($pizza->getPrix() * $detail->getQuantite());
+                    }
+
+                    $prixDuPanier = ($prixDuPanier + $prixDuDetail); // Total du panier
+                }
+            } }
+        return $prixDuPanier;
     }
 }

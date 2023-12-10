@@ -17,19 +17,68 @@
                 <div class="flex ">
                     <div class="mb-4 text-xl text-black mr-5">médium : {{ (pizza.prix) | number_format(2, '.', ',') }}€
                     </div>
-                    <div class="mb-4 text-xl text-black justify-end">large : {{ (pizza.prix*1.20) | number_format(2, '.', ',') }}€
+                    <div class="mb-4 text-xl text-black justify-end">large : {{ (pizza.prix + 5) | number_format(2, '.', ',') }}€
                     </div>
                 </div>
                 <div class="flex item-center justify-center">
                     <a href="{{ path('_detailPizza', {'id': pizza.id}) }}"
                        class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold mr-5">Detail</a>
-                    {% if app.user %}
-                    <a href="{{ path('_detailPizza', {'id': pizza.id}) }}"
-                       class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold ml-5">Ajouter</a>
-                    {% endif %}
+                    <button class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold mr-5 afficherModal"
+                            data-pizza-id="{{ pizza.id }}"
+                            data-pizza-nom="{{ pizza.nom }}"
+                            data-pizza-prix="{{ pizza.prix }}"
+                    > Ajouter </button>
                 </div>
             </div>
         {% endfor %}
     </div>
+    <div id="modalAjout" class="fixed rounded inset-0 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+        <div id="conteneurModal" class="bg-gray-200 w-1/4 h-3/6 p-4 border-4 border-red-400 rounded relative">
+            <button class="hiddenModal absolute top-0 right-0 p-2">
+                <img id="plus" style="height: 30px; width: 30px;" src="{{ asset('images/fermer-la-croix.png') }}">
+            </button>
+            <h2 class=" flex mt-2 mb-20 items-center justify-center font-bold text-5xl text-black" id="nom">  </h2>
 
+            {{ form_start(detailCommandeForm) }}
+            <div class="hidden" >
+                <input id="idPizzaModal" name="idPizzaModal">
+            </div>
+            <div class="mb-7 mt-7 flex justify-center items-center text-black">
+                <div class="mr-5 text-4xl mb-2 text-black">
+                    {{ form_label(detailCommandeForm.quantite) }}
+                </div>
+                <div class="text-4xl text-black font-bold flex items-center"> <!-- Ajout de la classe flex -->
+                    {{ form_widget(detailCommandeForm.quantite, {'id': 'quantiteModal','attr': {'style': 'width : 65px; height: 35px; text-align: center; font-size: 1.25rem;'}}) }}
+                </div>
+            </div>
+
+            <div class="mb-7 text-4xl flex justify-center items-center text-black">
+                    {{ form_widget(detailCommandeForm.taille, {'id': 'tailleModal','attr': {'class': 'custom-checkbox'}}) }}
+            </div>
+            <div class="mb-7 mt-9 flex justify-center items-center text-black " >
+                <div class="mr-5 text-4xl mb-2 text-black">
+                    Prix :
+                </div>
+                <div class="flex items-center text-4xl mb-2 text-black">
+                    <div id="prixPizza"></div>
+                    <div class="ml-1">euros</div>
+                </div>
+            </div>
+            <div class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-12 text-black">
+            <div>
+                {{ form_label(detailCommandeForm.ajouter) }}
+                {{ form_widget(detailCommandeForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
+            </div>
+        </div>
+        {{ form_end (detailCommandeForm) }}
+        </div>
+    </div>
+</div>
+
+    <script src="{{ asset('build/app.js') }}"></script>
+<script>
+    window.onload = function () {
+       initModal();
+    };
+</script>
 {% endblock %}
