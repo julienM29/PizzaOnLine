@@ -7,6 +7,7 @@ use App\Entity\Produit;
 use App\Entity\TypeProduit;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,7 +20,9 @@ class ProduitFormType extends AbstractType
             ->add('nom')
             ->add('description')
             ->add('prix')
-            ->add('urlImage')
+            ->add('urlImage', FileType::class, [
+                'label' => 'Choisir un fichier',
+            ])
             ->add('ingredients', EntityType::class, [
                 'class' => Ingredient::class,
                 'choice_label' => 'nom',

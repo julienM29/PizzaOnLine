@@ -16,6 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class GerantController extends AbstractController
 {
@@ -55,19 +57,41 @@ class GerantController extends AbstractController
         return $this->render('gerant/creationIngredient.html.twig',compact('ingredientForm', 'allIngredient', 'count'));
     }
     #[Route('/produit', name: '_produit')]
-    public function creationProduit(Request $requete, EntityManagerInterface $entityManager): Response
+    public function creationProduit(Request $requete,CommandeRepository $commandeRepository, SluggerInterface $slugger, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
     {
         $produit = new Produit();
         $produitForm = $this->createForm(ProduitFormType::class, $produit);
+        $utilisateur = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur],
+            ['id' => 'DESC']
+        );
+        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
+        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+
+
         $produitForm->handleRequest($requete);
 
         if ($produitForm->isSubmitted() && $produitForm->isValid()) {
+            $file = $produitForm->get('urlImage')->getData();
+            if($file){
+              $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+              $safeFilename = $slugger->slug($originalFileName);
+              $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+
+                  $file->move(
+                      $this->getParameter('uploaded_images_directory'),
+                      $newFilename
+                  );
+
+            }
+            $produit->setUrlImage($newFilename);
             $entityManager->persist($produit);
             $entityManager->flush();
             return $this->redirectToRoute('_gerant');
         }
 
-        return $this->render('gerant/creationProduit.html.twig',compact('produitForm'));
+        return $this->render('gerant/creationProduit.html.twig',compact('produitForm', 'detailsCommandePanier', 'prixDuPanier'));
     }
 
     ////////////////////////////////////////////////////// MODIFICATION /////////////////////////////////////////////////////////////////////////////////////////////
