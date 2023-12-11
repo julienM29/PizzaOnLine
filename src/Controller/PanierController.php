@@ -79,13 +79,15 @@ class PanierController extends AbstractController
         return $this->render('panier/detail.html.twig');
     }
 
-    #[Route('/etatPrepare/{id}', name: '_etatPrepare')]
-    public function etatPrepare($id, CommandeRepository $commandeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
+    #[Route('/etatPrepare{id}/{idLivreur}', name: '_etatPrepare')]
+    public function etatPrepare($id,$idLivreur, CommandeRepository $commandeRepository,CollaborateurRepository $collaborateurRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
-        $article = $commandeRepository->findOneBy(array('id' => $id));
+        $commande = $commandeRepository->findOneBy(array('id' => $id));
+        $livreur = $collaborateurRepository->findOneBy(array('id' => $idLivreur));
         $etatPreparee = $etatRepository->findOneBy(array('id' => 3));
-        if ($article) {
-            $article->setEtat($etatPreparee);
+        if ($commande) {
+            $commande->setEtat($etatPreparee);
+            $commande->setLivreur($livreur);
             $entityManager->flush();
             return $this->redirectToRoute('_accueil');
         }

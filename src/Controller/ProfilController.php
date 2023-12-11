@@ -29,7 +29,9 @@ class ProfilController extends AbstractController
         $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
 
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
-        return $this->render('profil/index.html.twig',compact('user','detailsCommandePanier', 'prixDuPanier'));
+        $numero = $user->getTelephone();
+        $numeroAvecEspaces = chunk_split($numero, 2, ' ');
+        return $this->render('profil/index.html.twig',compact('user','detailsCommandePanier', 'prixDuPanier','numeroAvecEspaces'));
     }
     #[Route('/modificationProfil/{id}', name: '_modificationProfil')]
     public function modificationProfil($id, UserPasswordHasherInterface $userPasswordHasher, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response

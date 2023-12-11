@@ -23,6 +23,10 @@
             <div class="flex justify-end w-1/2 text-3xl mr-5">Adresse : </div>
             <div class="flex justify-start w-1/2 text-3xl ml-5"> {{ user.adresse }}</div>
         </div>
+        <div class="w-full flex space-x-4 mt-5 w-64">
+            <div class="flex justify-end w-1/2 text-3xl mr-5">Téléphone : </div>
+            <div class="flex justify-start w-1/2 text-3xl ml-5"> {{ numeroAvecEspaces }}</div>
+        </div>
         {% if is_granted('ROLE_GERANT') %}
         <div class="w-full flex space-x-4 mt-5 w-64">
             <div class="flex justify-end w-1/2 text-3xl mr-5">Role : </div>

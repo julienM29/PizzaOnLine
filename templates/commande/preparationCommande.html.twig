@@ -33,7 +33,7 @@
     {% endif %}
     {% if is_granted('ROLE_GERANT') %}
         {% if premierePizza is not empty %}
-            <h4 class="h-6 mb-6 text-2xl mt-4 mb-3 font-bold"> Commandes en attente de préparation
+            <h4 class="h-6 mb-6 text-2xl mt-4  font-bold"> Commandes en attente de préparation
                 pour {{ premierePizza.dateHeurePreparation|date(' H:i') }} : </h4>
         {% endif %}
     {% endif %}
@@ -53,9 +53,11 @@
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
-                <a href="{{ path('_etatPrepare', {'id': commandeId}) }} }}"
+                {% if is_granted('ROLE_LIVREUR') %}
+                <a href="{{ path('_etatPrepare', {'id': commandeId, 'idLivreur': app.user.id}) }} }}"
                    class="h-6 flex justify-center item-center hover:text-red-500 duration-200 text-2xl mt-4 mb-2 font-bold">Fin
                     de préparation</a>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
