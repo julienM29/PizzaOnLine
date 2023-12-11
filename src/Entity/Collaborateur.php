@@ -42,9 +42,18 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?int $panier = null;
 
+    #[ORM\Column(length: 10)]
+    private ?string $telephone = null;
+
+    #[ORM\OneToMany(mappedBy: 'livreur', targetEntity: Commande::class)]
+    private Collection $commandesLivreur;
+
+
+
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->commandesLivreur = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -187,5 +196,48 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(string $telephone): static
+    {
+        $this->telephone = $telephone;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandesLivreur(): Collection
+    {
+        return $this->commandesLivreur;
+    }
+
+    public function addCommandesLivreur(Commande $commandesLivreur): static
+    {
+        if (!$this->commandesLivreur->contains($commandesLivreur)) {
+            $this->commandesLivreur->add($commandesLivreur);
+            $commandesLivreur->setLivreur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCommandesLivreur(Commande $commandesLivreur): static
+    {
+        if ($this->commandesLivreur->removeElement($commandesLivreur)) {
+            // set the owning side to null (unless already changed)
+            if ($commandesLivreur->getLivreur() === $this) {
+                $commandesLivreur->setLivreur(null);
+            }
+        }
+
+        return $this;
+    }
+
 
 }

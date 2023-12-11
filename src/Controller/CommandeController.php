@@ -210,14 +210,10 @@ class CommandeController extends AbstractController
 
         $client = $collaborateurRepository->findOneBy(array('id' => $id));
         $livreur = $collaborateurRepository->findUsersByRole('ROLE_LIVREUR');
-
-        $allCommande = $commandeRepository->findAll();
         $etatLivraison = $etatRepository->findOneBy(array('id' => 4));
+
         $commandesClient = $commandeRepository->findBy([
             'collaborateur' => $client,
-            'etat' => $etatLivraison,
-        ]);
-        $commandesLivreur = $commandeRepository->findBy([
             'etat' => $etatLivraison,
         ]);
         $utilisateur = $this->getUser();
@@ -229,31 +225,19 @@ class CommandeController extends AbstractController
         $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
 
 
-        $commandeVide = null;
-        $premiereCommandeLivreur = null;
-        $premiereAdresseLivreur = null;
-        if( empty($commandesClient)){
-            $commandeVide = [];
-        }
-        if($commandesLivreur){
-            $premiereCommandeLivreur = $commandesLivreur[0];
-            $premiereAdresseLivreur = $premiereCommandeLivreur->getCollaborateur()->getAdresse();
-        }
+        $premiereCommandeLivreur = $commandesClient[0];
+        $premiereAdresseLivreur = $premiereCommandeLivreur->getCollaborateur()->getAdresse();
+
         $commandeDetailsClient = [];
-        $commandeDetailsLivreur = [];
-        $idClients = [];
 
         foreach ($commandesClient as $commandeClient) {
             $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commandeClient]);
             $commandeDetailsClient[$commandeClient->getId()] = $detailsCommande;
+            $numeroLivreur = $commandeClient->getLivreur()->getTelephone();
+            $numeroLivreurAvecEspaces = chunk_split($numeroLivreur, 2, ' ');
         }
-        foreach ($commandesLivreur as $commandeLivreur) {
-            $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commandeLivreur]);
-            $idClient = $commandeLivreur->getCollaborateur()->getId();
-            $idClients[]= $idClient;
-            $commandeDetailsLivreur[$commandeLivreur->getId()] = $detailsCommande;
-        }
-        return $this->render('commande/livraisonClient.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur', 'detailsCommandePanier', 'prixDuPanier'));
+
+        return $this->render('commande/livraisonClient.html.twig', compact( 'commandeDetailsClient','commandesClient', 'premiereAdresseLivreur',  'livreur', 'detailsCommandePanier', 'prixDuPanier', 'utilisateur','numeroLivreurAvecEspaces'));
     }
     #[Route('/commandeEnCours', name: '_commandeEnCours')]
     public function commandeEnCours(EntityManagerInterface $entityManager, TailleProduitRepository $tailleProduitRepository,ProduitRepository $produitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, CollaborateurRepository $collaborateurRepository, DetailCommandeRepository $detailCommandeRepository): Response
@@ -273,13 +257,38 @@ class CommandeController extends AbstractController
         $detailsCommandePanier = $derniereCommande->getDetailsCommande();
         $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
         $commandeDetailsClient = [];
-        $etatsCommandes=[];
+        $etatsCommandes = [];
         foreach ($commandesClient as $commandeClient) {
             $detailsCommande = $detailCommandeRepository->findBy(['commande' => $commandeClient]);
-            $etatCommande = $commandeClient->getEtat();
             $commandeDetailsClient[] = $detailsCommande;
-            $etatsCommandes[]=$etatCommande;
+
+            $etatCommande = $commandeClient->getEtat();
+            $etatString = '';
+
+            switch ($etatCommande->getId()) {
+                case 1:
+                    $etatString = "En attente de paiement";
+                    break;
+                case 2:
+                    $etatString = "En préparation";
+                    break;
+                case 3:
+                    $etatString = "En attente de livraison";
+                    break;
+                case 4:
+                    $etatString = "En livraison";
+                    break;
+                case 5:
+                    $etatString = "Pizza livrée";
+                    break;
+                default:
+                    $etatString = "État inconnu";
+                    break;
+            }
+
+            $etatsCommandes[] = $etatString;
         }
+
         return $this->render('commande/commandeEnCours.html.twig', compact('commandesClient','commandeDetailsClient','pizzas','etatsCommandes','detailsCommandePanier', 'prixDuPanier'));
     }
     public function prixDuPanier ($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier){

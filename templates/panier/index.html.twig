@@ -13,7 +13,7 @@
                     <div class="flex mt-2 mr-4">
                         {% for pizza in pizzas %}
                             {% if pizza.nom == detailCommande.produit.nom %}
-                                <img src="{{ detailCommande.produit.urlImage }}"
+                                <img src="images/{{ pizza.urlImage }}"
                                      style="width: 150px; height: 100px;" class="mb-2">
                             {% endif %}
                         {% endfor %}

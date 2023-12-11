@@ -34,6 +34,9 @@ class Commande
     #[ORM\JoinColumn(nullable: false)]
     private ?Etat $etat = null;
 
+    #[ORM\ManyToOne(inversedBy: 'commandesLivreur')]
+    private ?Collaborateur $livreur = null;
+
     public function __construct()
     {
         $this->detailsCommande = new ArrayCollection();
@@ -119,6 +122,18 @@ class Commande
     public function setEtat(?Etat $etat): static
     {
         $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function getLivreur(): ?Collaborateur
+    {
+        return $this->livreur;
+    }
+
+    public function setLivreur(?Collaborateur $livreur): static
+    {
+        $this->livreur = $livreur;
 
         return $this;
     }

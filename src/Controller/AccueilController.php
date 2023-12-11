@@ -39,9 +39,17 @@ class AccueilController extends AbstractController
             ['collaborateur' => $utilisateur],
             ['id' => 'DESC']
         );
-        $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+        if($derniereCommande){
 
-        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+        $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+        if($detailsCommandePanier){
+            $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+        } else {
+            $detailsCommandePanier =[];
+        }
+    } else {
+            $derniereCommande = [];
+        }
 
 //////////////////////////// FORMULAIRE //////////////////////////////////////////////////////////////////////////////////////////////////////////
         $detailCommandeForm->handleRequest($requete); //Récupération des données
