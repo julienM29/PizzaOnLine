@@ -17,44 +17,44 @@
 <header class="header sticky top-0 bg-white shadow-md flex items-center justify-between px-8 py-02 z-50">
     <a href="{{ path('_accueil') }}" class="inline-block transform transition-transform hover:scale-110 flex items-center space-x-2">
         <img src="{{ asset('images/pizza.png') }}" alt="Logo" class="h-6 w-auto hover:text-red-500 duration-200"
-             style="width:34px; height: 32px"><span class="text-2xl text-black hover:text-red-500 duration-200">PizzaOnLine</span>
+             style="width:34px; height: 32px"><span class="text-2xl text-black hover:text-red-500 duration-200 font-bold">PizzaOnLine</span>
     </a>
     <!-- navigation -->
-    <nav class="nav font-semibold text-lg">
+    <nav class="nav font-semibold text-lg ">
         <ul class="flex items-center">
-            <li class="inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer active">
+            <li class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer active">
                 <a href="{{ path('_accueil') }}">Accueil</a>
             </li>
-            <li id="testPanier" class="inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
+            <li id="testPanier" class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
                 <a href="{{ path('_panier') }}">Panier</a>
             </li>
             {% if app.user %}
-                <li class="inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
+                <li class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
                     <a href="{{ path('_commandeEnCours') }}">Commande en cours</a>
                 </li>
             {% endif %}
             {% if is_granted("ROLE_GERANT") %}
-                <li class="inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
+                <li class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
                     <a href="{{ path('_gerant') }}">Gestion</a>
                 </li>
             {% endif %}
             {% if is_granted("ROLE_PIZZAIOLO") or is_granted('ROLE_GERANT') or is_granted('ROLE_LIVREUR')%}
-                <li class="inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
+                <li class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
                     <a href="{{ path('_preparationCommande', {'id': app.user.id}) }}">Preparation</a>
                 </li>
             {% endif %}
                 {% if is_granted("ROLE_LIVREUR") and app.user %}
-                    <li class="inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
+                    <li class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
                         <a href="{{ path('_livraisonCommande', {'id': app.user.id}) }}">Livraison</a>
                     </li>
                 {% endif %}
             {% if not is_granted("ROLE_LIVREUR") and app.user %}
-                <li class="inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
+                <li class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
                     <a href="{{ path('_livraisonClient', {'id': app.user.id}) }}">Livraison</a>
                 </li>
             {% endif %}
             {% if not app.user %}
-                <li class="inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
+                <li class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">
                     <a href="{{ path('app_login') }}">Login</a>
                 </li>
             {% endif %}
@@ -64,53 +64,15 @@
     <div class="w-3/12 flex justify-end">
 <div>
         {% if app.user and app.user.panier == null %}
-            <a href="{{ path('_panier') }}" id="panierModalVide" class="inline-block transform transition-transform hover:scale-125">
-                <svg class="h-8 p-1 hover:text-red-500 duration-200" aria-hidden="true" focusable="false" data-prefix="far"
-                     data-icon="shopping-cart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
-                     class="svg-inline--fa fa-shopping-cart fa-w-18 fa-7x">
-                    <path fill="currentColor"
-                          d="M551.991 64H144.28l-8.726-44.608C133.35 8.128 123.478 0 112 0H12C5.373 0 0 5.373 0 12v24c0 6.627 5.373 12 12 12h80.24l69.594 355.701C150.796 415.201 144 430.802 144 448c0 35.346 28.654 64 64 64s64-28.654 64-64a63.681 63.681 0 0 0-8.583-32h145.167a63.681 63.681 0 0 0-8.583 32c0 35.346 28.654 64 64 64 35.346 0 64-28.654 64-64 0-18.136-7.556-34.496-19.676-46.142l1.035-4.757c3.254-14.96-8.142-29.101-23.452-29.101H203.76l-9.39-48h312.405c11.29 0 21.054-7.869 23.452-18.902l45.216-208C578.695 78.139 567.299 64 551.991 64zM208 472c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm256 0c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm23.438-200H184.98l-31.31-160h368.548l-34.78 160z"
-                          class=""></path>
-                </svg>
-            </a>
-        {%endif %}
-        {% if  app.user and app.user.panier != null %}
-{#            <a href="{{ path('_panier') }}" id="panierModalPlein" class="inline-block transform transition-transform hover:scale-150">#}
-{#                <svg class="h-8 p-1 hover:text-red-500 duration-200" aria-hidden="true" focusable="false" data-prefix="far"#}
-{#                     data-icon="shopping-cart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"#}
-{#                     class="svg-inline--fa fa-shopping-cart fa-w-18 fa-7x">#}
-{#                    <path fill="red"#}
-{#                          d="M551.991 64H144.28l-8.726-44.608C133.35 8.128 123.478 0 112 0H12C5.373 0 0 5.373 0 12v24c0 6.627 5.373 12 12 12h80.24l69.594 355.701C150.796 415.201 144 430.802 144 448c0 35.346 28.654 64 64 64s64-28.654 64-64a63.681 63.681 0 0 0-8.583-32h145.167a63.681 63.681 0 0 0-8.583 32c0 35.346 28.654 64 64 64 35.346 0 64-28.654 64-64 0-18.136-7.556-34.496-19.676-46.142l1.035-4.757c3.254-14.96-8.142-29.101-23.452-29.101H203.76l-9.39-48h312.405c11.29 0 21.054-7.869 23.452-18.902l45.216-208C578.695 78.139 567.299 64 551.991 64zM208 472c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm256 0c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm23.438-200H184.98l-31.31-160h368.548l-34.78 160z"#}
-{#                          class=""></path>#}
-{#                </svg>#}
-{#            </a>#}
-{#            <a href="{{ path('_panier') }}" data-tooltip-target="tooltip-bottom" data-tooltip-placement="bottom" class="inline-block ms-3 mb-2 md:mb-0 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center relative">#}
-{#                <svg class="h-8 p-1 hover:text-red-500 duration-200" aria-hidden="true" focusable="false" data-prefix="far"#}
-{#                     data-icon="shopping-cart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">#}
-{#                    <path fill="red"#}
-{#                          d="M551.991 64H144.28l-8.726-44.608C133.35 8.128 123.478 0 112 0H12C5.373 0 0 5.373 0 12v24c0 6.627 5.373 12 12 12h80.24l69.594 355.701C150.796 415.201 144 430.802 144 448c0 35.346 28.654 64 64 64s64-28.654 64-64a63.681 63.681 0 0 0-8.583-32h145.167a63.681 63.681 0 0 0-8.583 32c0 35.346 28.654 64 64 64 35.346 0 64-28.654 64-64 0-18.136-7.556-34.496-19.676-46.142l1.035-4.757c3.254-14.96-8.142-29.101-23.452-29.101H203.76l-9.39-48h312.405c11.29 0 21.054-7.869 23.452-18.902l45.216-208C578.695 78.139 567.299 64 551.991 64zM208 472c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm256 0c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm23.438-200H184.98l-31.31-160h368.548l-34.78 160z"#}
-{#                          class=""></path>#}
-{#                </svg>#}
-{#                <div id="tooltip-bottom" role="tooltip" class="absolute z-10 invisible w-40 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip bottom-full left-1/2 transform -translate-x-1/2 tooltip dark:bg-gray-700">#}
-{#                    {% for detailCommande in detailsCommandePanier %}#}
-{#                        <div>#}
-{#                            {{ detailCommande.produit.nom }}#}
-{#                            {{ detailCommande.quantite }}#}
-{#                            {{ detailCommande.taille.libelle }}#}
-{#                            {{ detailCommande.produit.prix }}#}
-{#                        </div>#}
-{#                    {% endfor %}#}
-{#                    <div class="tooltip-arrow" data-popper-arrow></div>#}
-{#                </div>#}
-{#            </a>#}
-<a href="{{ path('_panier') }}" data-tooltip-target="tooltip-bottom" data-tooltip-placement="bottom" >
-    <svg class="h-8 p-1 hover:text-red-500 duration-200" aria-hidden="true" focusable="false" data-prefix="far"#}
+                <a href="{{ path('_panier') }}" data-tooltip-target="tooltip-bottom" data-tooltip-placement="bottom" >
+                    <svg class="h-8 p-1 hover:text-red-500 duration-200" aria-hidden="true" focusable="false" data-prefix="far"#}
                          data-icon="shopping-cart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                        <path fill="red"
+                        <path fill="currentColor"
                               d="M551.991 64H144.28l-8.726-44.608C133.35 8.128 123.478 0 112 0H12C5.373 0 0 5.373 0 12v24c0 6.627 5.373 12 12 12h80.24l69.594 355.701C150.796 415.201 144 430.802 144 448c0 35.346 28.654 64 64 64s64-28.654 64-64a63.681 63.681 0 0 0-8.583-32h145.167a63.681 63.681 0 0 0-8.583 32c0 35.346 28.654 64 64 64 35.346 0 64-28.654 64-64 0-18.136-7.556-34.496-19.676-46.142l1.035-4.757c3.254-14.96-8.142-29.101-23.452-29.101H203.76l-9.39-48h312.405c11.29 0 21.054-7.869 23.452-18.902l45.216-208C578.695 78.139 567.299 64 551.991 64zM208 472c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm256 0c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm23.438-200H184.98l-31.31-160h368.548l-34.78 160z"
                               class=""></path>
                     </svg>
-                    <div id="tooltip-bottom" role="tooltip" class="absolute z-10 invisible w-80 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip bottom-full left-1/2 transform -translate-x-1/2 tooltip dark:bg-gray-700">
+                <div id="tooltip-bottom" role="tooltip" class="absolute z-10 invisible w-80 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip bottom-full left-1/2 transform -translate-x-1/2 tooltip dark:bg-gray-700">
+                    {% if detailsCommandePanier is not empty %}
                         {% for detailCommande in detailsCommandePanier %}
                             <div class="mt-2">
                                 {{ detailCommande.produit.nom }} X
@@ -125,6 +87,48 @@
                                 {% endif %}
                             </div>
                         {% endfor %}
+                    {% endif %}
+                    {% if detailsCommandePanier is empty %}
+                        <div>
+                            Votre panier est vide !
+                        </div>
+                    {% endif %}
+                    <div class="mt-5"> Prix total du panier : {{ prixDuPanier}} € </div>
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+            </a>
+        {%endif %}
+        {% if  app.user and app.user.panier != null %}
+
+<a href="{{ path('_panier') }}" data-tooltip-target="tooltip-bottom" data-tooltip-placement="bottom" >
+    <svg class="h-8 p-1 hover:text-red-500 duration-200" aria-hidden="true" focusable="false" data-prefix="far"#}
+                         data-icon="shopping-cart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                        <path fill="red"
+                              d="M551.991 64H144.28l-8.726-44.608C133.35 8.128 123.478 0 112 0H12C5.373 0 0 5.373 0 12v24c0 6.627 5.373 12 12 12h80.24l69.594 355.701C150.796 415.201 144 430.802 144 448c0 35.346 28.654 64 64 64s64-28.654 64-64a63.681 63.681 0 0 0-8.583-32h145.167a63.681 63.681 0 0 0-8.583 32c0 35.346 28.654 64 64 64 35.346 0 64-28.654 64-64 0-18.136-7.556-34.496-19.676-46.142l1.035-4.757c3.254-14.96-8.142-29.101-23.452-29.101H203.76l-9.39-48h312.405c11.29 0 21.054-7.869 23.452-18.902l45.216-208C578.695 78.139 567.299 64 551.991 64zM208 472c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm256 0c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm23.438-200H184.98l-31.31-160h368.548l-34.78 160z"
+                              class=""></path>
+                    </svg>
+                    <div id="tooltip-bottom" role="tooltip" class="absolute z-10 invisible w-80 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip bottom-full left-1/2 transform -translate-x-1/2 tooltip dark:bg-gray-700">
+                        {% if detailsCommandePanier is not empty %}
+                        {% for detailCommande in detailsCommandePanier %}
+                            <div class="mt-2">
+                                {{ detailCommande.produit.nom }} X
+                                {{ detailCommande.quantite }} en
+                                {{ detailCommande.taille.libelle }}
+                                {% if  detailCommande.taille.libelle == 'médium' %}
+                                    {{ detailCommande.produit.prix }} € / unité
+                                {% endif %}
+                                {% if  detailCommande.taille.libelle  == 'large' %}
+                                    {% set prixTotal = detailCommande.produit.prix + 5 %}
+                                    {{ prixTotal }} € / unité
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        {% endif %}
+                        {% if detailsCommandePanier is empty %}
+                            <div>
+                                Votre panier est vide !
+                            </div>
+                        {% endif %}
                         <div class="mt-5"> Prix total du panier : {{ prixDuPanier}} € </div>
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
@@ -135,12 +139,12 @@
 
         {% if app.user %}
             <a href="{{ path('_profil', {'id': app.user.id}) }}"
-               class="inline-block transform transition-transform hover:scale-110 font-semibold text-lg ml-6 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">Profil
+               class="text-xl inline-block transform transition-transform hover:scale-110 font-semibold text-lg ml-6 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">Profil
                 de {{ app.user.prenom }}</a>
         </div>
         <div>
             <a href="{{ path('app_logout') }}"
-               class=" inline-block transform transition-transform hover:scale-110 ml-6 font-semibold text-lg border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">Logout</a>
+               class="text-xl inline-block transform transition-transform hover:scale-110 ml-6 font-semibold text-lg border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer">Logout</a>
         {% endif %}
         </div>
     </div>

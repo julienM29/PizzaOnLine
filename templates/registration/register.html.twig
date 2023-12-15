@@ -4,7 +4,7 @@
     <h1 class="flex content-center justify-center text-5xl mt-12 mb-6">Création d'un compte</h1>
 
     <div class="flex justify-center items-center mt-12">
-        <div class="mt-12">
+        <div class="mt-12 border-2 border-white rounded px-4 py-4 ">
             <div class="block mr-12">
                 {{ form_errors(registrationForm) }}
                 {{ form_start(registrationForm) }}
@@ -41,6 +41,22 @@
                     {{ form_widget(registrationForm.plainPassword, {
                             label: 'Password'
                         }) }}                    </div>
+                </div>
+                <div class="text-2xl mb-6 flex">
+                    <div style="flex: 1; text-align: start;">
+                        {{ form_label(registrationForm.telephone) }}
+                    </div>
+                    <div style="text-align: end;">
+                        {{ form_widget(registrationForm.telephone) }}
+                    </div>
+                </div>
+                <div class="text-2xl mb-6 flex">
+                    <div style="flex: 1; text-align: start;">
+                        {{ form_label(registrationForm.sexe) }}
+                    </div>
+                    <div style="text-align: end;">
+                        {{ form_widget(registrationForm.sexe) }}
+                    </div>
                 </div>
                 <div class="invisible">
                     {{ form_label(registrationForm.adresse) }}

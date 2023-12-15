@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\CategorieIngredient;
 use App\Entity\Ingredient;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,6 +17,11 @@ class IngredientFormType extends AbstractType
         $builder
             ->add('nom')
             ->add('quantite')
+            ->add('categorie', EntityType::class, [
+                'class' => CategorieIngredient::class,
+                'choice_label' => 'libelle',
+                'placeholder' => 'Sélectionner une catégorie',
+            ])
             ->add('ajouter', SubmitType::class)
         ;
     }

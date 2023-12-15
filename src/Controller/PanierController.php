@@ -22,12 +22,30 @@ class PanierController extends AbstractController
     public function index(TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EtatRepository $etatRepository): Response
     {
         $utilisateur = $this->getUser();
+        $etatCreer = $etatRepository->findOneBy(['id' => 1]);
+
         $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
+            [
+                'collaborateur' => $utilisateur,
+                'etat' => $etatCreer
+            ],
             ['id' => 'DESC']
-        ); $pizzas = $produitRepository->findAll();
-        $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
-        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+        );
+
+        $pizzas = $produitRepository->findAll();
+        $detailsCommandePanier = [];
+        $prixDuPanier = 0;
+        if($derniereCommande){
+
+            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            if($detailsCommandePanier){
+                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+            } else {
+                $detailsCommandePanier =[];
+            }
+        } else {
+            $derniereCommande = [];
+        }
 
         return $this->render('panier/index.html.twig', compact('detailsCommandePanier', 'prixDuPanier','pizzas'));
     }

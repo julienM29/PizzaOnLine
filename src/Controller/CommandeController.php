@@ -221,12 +221,26 @@ class CommandeController extends AbstractController
             ['collaborateur' => $utilisateur],
             ['id' => 'DESC']
         );
-        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
-        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+        $detailsCommandePanier = [];
+        $prixDuPanier = 0;
+        if ($derniereCommande) {
 
+            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            if ($detailsCommandePanier) {
+                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+            } else {
+                $detailsCommandePanier = [];
+            }
+        } else {
+            $derniereCommande = [];
+        }
+        $premiereAdresseLivreur = '';
+        $numeroLivreurAvecEspaces ='';
+        $commandeDetailsClient = [];
+        if($commandesClient){
+            $premiereCommandeLivreur = $commandesClient[0];
+            $premiereAdresseLivreur = $premiereCommandeLivreur->getCollaborateur()->getAdresse();
 
-        $premiereCommandeLivreur = $commandesClient[0];
-        $premiereAdresseLivreur = $premiereCommandeLivreur->getCollaborateur()->getAdresse();
 
         $commandeDetailsClient = [];
 
@@ -236,7 +250,7 @@ class CommandeController extends AbstractController
             $numeroLivreur = $commandeClient->getLivreur()->getTelephone();
             $numeroLivreurAvecEspaces = chunk_split($numeroLivreur, 2, ' ');
         }
-
+    }
         return $this->render('commande/livraisonClient.html.twig', compact( 'commandeDetailsClient','commandesClient', 'premiereAdresseLivreur',  'livreur', 'detailsCommandePanier', 'prixDuPanier', 'utilisateur','numeroLivreurAvecEspaces'));
     }
     #[Route('/commandeEnCours', name: '_commandeEnCours')]
@@ -254,8 +268,20 @@ class CommandeController extends AbstractController
             ['collaborateur' => $utilisateur],
             ['id' => 'DESC']
         );
-        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
-        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+        $detailsCommandePanier = [];
+        $prixDuPanier = 0;
+        if ($derniereCommande) {
+
+            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            if ($detailsCommandePanier) {
+                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+            } else {
+                $detailsCommandePanier = [];
+            }
+        } else {
+            $derniereCommande = [];
+        }
+
         $commandeDetailsClient = [];
         $etatsCommandes = [];
         foreach ($commandesClient as $commandeClient) {

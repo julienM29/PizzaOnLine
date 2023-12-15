@@ -29,6 +29,14 @@ class ProfilFormType extends AbstractType
                 ],
                 'multiple' => true,
             ])
+            ->add('sexe', ChoiceType::class, [
+                'choices' => [
+                    'Masculin' => 'Masculin',
+                    'Féminin' => 'Féminin',
+                    'Autre' => 'Autre',
+                ],
+                'placeholder' => 'Sélectionnez votre sexe',
+            ])
             ->add('ajouter', SubmitType::class)
         ;
     }

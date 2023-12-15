@@ -22,6 +22,7 @@ class ProduitFormType extends AbstractType
             ->add('prix')
             ->add('urlImage', FileType::class, [
                 'label' => 'Choisir un fichier',
+                'data_class' => null
             ])
             ->add('ingredients', EntityType::class, [
                 'class' => Ingredient::class,
@@ -36,7 +37,6 @@ class ProduitFormType extends AbstractType
             ->add('ajouter', SubmitType::class)
         ;
     }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

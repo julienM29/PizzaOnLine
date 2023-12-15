@@ -48,6 +48,9 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'livreur', targetEntity: Commande::class)]
     private Collection $commandesLivreur;
 
+    #[ORM\Column(length: 255)]
+    private ?string $Sexe = null;
+
 
 
     public function __construct()
@@ -235,6 +238,18 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $commandesLivreur->setLivreur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSexe(): ?string
+    {
+        return $this->Sexe;
+    }
+
+    public function setSexe(string $Sexe): static
+    {
+        $this->Sexe = $Sexe;
 
         return $this;
     }

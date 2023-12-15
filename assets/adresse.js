@@ -17,11 +17,11 @@ function affichageMapAdrese(){
 function onMapClick(e) {
     let latitude = e.latlng.lat;
     let longitude = e.latlng.lng;
-    let str = "latitude : " + latitude + "longitude : " + longitude ;
+    // let str = "latitude : " + latitude + "longitude : " + longitude ;
 
     let balise  = document.createElement("a");
     balise.setAttribute("id", 'boutonCreaMap');
-    let createAText = document.createTextNode(str);
+    let createAText = document.createTextNode('Lieu sélectionné');
     balise.appendChild(createAText);
     let popup = L.popup();
 

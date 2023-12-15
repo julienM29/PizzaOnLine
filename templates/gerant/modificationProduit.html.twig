@@ -6,9 +6,9 @@
 
     <div class="flex justify-center items-center"> <!-- Utilisation de flexbox pour aligner deux colonnes -->
         <div class="w-1/2 flex flex-col "> <!-- Colonne de gauche -->
-            <div class="mb-4">
+            <div class="mb-4 text-2xl mt-8">
                 <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
-                    <div class="mr-4">
+                    <div class="mr-4 ">
                         {{ form_label(produitForm.nom) }}
                     </div>
                     <div >
@@ -16,7 +16,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-4">
+            <div class="mb-4 text-2xl">
                 <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
                     <div>
                         {{ form_label(produitForm.description) }}
@@ -26,7 +26,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-4">
+            <div class="mb-4 text-2xl">
                 <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
                     <div>
                         {{ form_label(produitForm.prix) }}
@@ -36,17 +36,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-4">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
-                    <div>
-                        {{ form_label(produitForm.urlImage) }}
-                    </div>
-                    <div class="ml-4">
-                        {{ form_widget(produitForm.urlImage, {'attr': {'style': 'width: 250px'}}) }}
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4">
+            <div class="mb-4 text-2xl">
                 <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
                     <div>
                         {{ form_label(produitForm.typeProduit) }}
@@ -56,12 +46,22 @@
                     </div>
                 </div>
             </div>
+            <div class="mb-4 text-2xl">
+                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
+                    <div>
+                        {{ form_label(produitForm.urlImage) }}
+                    </div>
+                    <div class="ml-4">
+                        {{ form_widget(produitForm.urlImage, {'attr': {'style': 'width: 250px'}}) }}
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="w-1/2 ml-6"> <!-- Colonne de droite pour les ingrédients -->
-            <div class="space-y-1"> <!-- Utilisez space-y pour ajouter de l'espace vertical entre les éléments enfants en colonne -->
-                {{ form_label(produitForm.ingredients, 'Ingrédients', {'label_attr': {'class': 'labelIngredient'}}) }}
-                <div class="grid grid-cols-3"> <!-- Retirez la classe "gap" pour supprimer l'espace entre les colonnes -->
+        <div class="w-1/2 ml-6">
+            <div class="space-y-1 text-xl">
+                {{ form_label(produitForm.ingredients, 'Ingrédients', {'label_attr': {'class': 'labelIngredient text-2xl ml-72'}}) }}
+                <div class="grid grid-cols-3 ">
                     {% for ingredient in produitForm.ingredients %}
                         <div class="custom-checkbox">
                             {{ form_widget(ingredient, {'attr': {'class': 'custom-checkbox'}}) }}
@@ -73,13 +73,12 @@
         </div>
 
     </div>
-
-    <div class="flex justify-center item-center text-xl hover:text-red-500 duration-200 font-bold mt-5">
+    <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-12">
         {{ form_label(produitForm.ajouter) }}
         {{ form_widget(produitForm.ajouter, {'attr': {'style': 'width: 250px'}}) }}
     </div>
 
     {{ form_end(produitForm) }}
 
-    <a href="{{ path('_gerant') }}" class="flex justify-center item-center text-2xl hover:text-red-500 duration-200 font-bold mt-12">Retour à la page de gestion</a>
+    <a href="{{ path('_gerant') }}" class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-12">Retour à la page de gestion</a>
 {% endblock %}

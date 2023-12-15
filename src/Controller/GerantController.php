@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\CategorieIngredient;
 use App\Entity\Ingredient;
 use App\Entity\Produit;
 use App\Form\IngredientFormType;
 use App\Form\ProduitFormType;
+use App\Repository\CategorieIngredientRepository;
 use App\Repository\CollaborateurRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\IngredientRepository;
@@ -24,50 +26,43 @@ class GerantController extends AbstractController
     #[Route('/gerant', name: '_gerant')]
     public function index(CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
-        $utilisateur = $this->getUser();
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
-        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
-        return $this->render('gerant/index.html.twig', [
-            'controller_name' => 'GerantController',
-            'prixDuPanier' => $prixDuPanier,
-            'detailsCommandePanier' => $detailsCommandePanier,
-        ]);
+        $result = $this->tooltip($commandeRepository,$tailleProduitRepository,$produitRepository);
+        $detailsCommandePanier= $result['detailsCommandePanier'];
+        $prixDuPanier = $result['prixDuPanier'];
 
+
+        return $this->render('gerant/index.html.twig',compact('prixDuPanier', 'detailsCommandePanier'));
     }
     ////////////////////////////////////////////////////// CREATION /////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/ingredient', name: '_ingredient')]
-    public function creationIngredient(Request $requete, EntityManagerInterface $entityManager, IngredientRepository $ingredientRepository): Response
+    public function creationIngredient(Request $requete, EntityManagerInterface $entityManager, IngredientRepository $ingredientRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
         $ingredient = new Ingredient();
         $allIngredient = $ingredientRepository->findAll();
         $count = count($allIngredient) - 1;
+        $result = $this->tooltip($commandeRepository,$tailleProduitRepository,$produitRepository);
+        $detailsCommandePanier= $result['detailsCommandePanier'];
+        $prixDuPanier = $result['prixDuPanier'];
+
         $ingredientForm = $this->createForm(IngredientFormType::class, $ingredient);
         $ingredientForm->handleRequest($requete);
 
         if ($ingredientForm->isSubmitted() && $ingredientForm->isValid()) {
             $entityManager->persist($ingredient);
             $entityManager->flush();
-            return $this->redirectToRoute('_gerant');
+            return $this->redirectToRoute('_ingredient');
         }
 
-        return $this->render('gerant/creationIngredient.html.twig',compact('ingredientForm', 'allIngredient', 'count'));
+        return $this->render('gerant/creationIngredient.html.twig',compact('ingredientForm', 'allIngredient', 'count','prixDuPanier', 'detailsCommandePanier'));
     }
     #[Route('/produit', name: '_produit')]
     public function creationProduit(Request $requete,CommandeRepository $commandeRepository, SluggerInterface $slugger, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
     {
         $produit = new Produit();
         $produitForm = $this->createForm(ProduitFormType::class, $produit);
-        $utilisateur = $this->getUser();
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
-        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+        $result = $this->tooltip($commandeRepository,$tailleProduitRepository,$produitRepository);
+        $detailsCommandePanier= $result['detailsCommandePanier'];
+        $prixDuPanier = $result['prixDuPanier'];
 
 
         $produitForm->handleRequest($requete);
@@ -77,7 +72,7 @@ class GerantController extends AbstractController
             if($file){
               $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
               $safeFilename = $slugger->slug($originalFileName);
-              $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+              $newFilename = $safeFilename.'.'.$file->guessExtension();
 
                   $file->move(
                       $this->getParameter('uploaded_images_directory'),
@@ -96,25 +91,46 @@ class GerantController extends AbstractController
 
     ////////////////////////////////////////////////////// MODIFICATION /////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/listeProduit', name: '_listeProduit')]
-    public function listeProduit(Request $requete, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
+    public function listeProduit(Request $requete, EntityManagerInterface $entityManager, ProduitRepository $produitRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository): Response
     {
        $allPizzas = $produitRepository->findAll();
-
-        return $this->render('gerant/listeProduit.html.twig',compact('allPizzas'));
+        $result = $this->tooltip($commandeRepository,$tailleProduitRepository,$produitRepository);
+        $detailsCommandePanier= $result['detailsCommandePanier'];
+        $prixDuPanier = $result['prixDuPanier'];
+        return $this->render('gerant/listeProduit.html.twig',compact('allPizzas', 'detailsCommandePanier','prixDuPanier'));
     }
     #[Route('/modificationProduit/{id}', name: '_modificationProduit')]
-    public function modificationProduit( $id, Request $requete, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
+    public function modificationProduit( $id, Request $requete,CategorieIngredientRepository $categorieIngredientRepository,CommandeRepository $commandeRepository,SluggerInterface $slugger, TailleProduitRepository $tailleProduitRepository, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
     {
+        $result = $this->tooltip($commandeRepository,$tailleProduitRepository,$produitRepository);
+        $detailsCommandePanier= $result['detailsCommandePanier'];
+        $prixDuPanier = $result['prixDuPanier'];
         $pizza = $produitRepository->findOneBy(array('id' => $id));
         $produitForm = $this->createForm(ProduitFormType::class, $pizza );
+        $categories = $categorieIngredientRepository->findAll();
         $produitForm->handleRequest($requete);
 
         if ($produitForm->isSubmitted() && $produitForm->isValid()) {
+            $file = $produitForm->get('urlImage')->getData();
+            if($file){
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFileName);
+                $newFilename = $safeFilename.'.'.$file->guessExtension();
+
+                $file->move(
+                    $this->getParameter('uploaded_images_directory'),
+                    $newFilename
+                );
+
+            }
+            $pizza->setUrlImage($newFilename);
+
             $entityManager->persist($pizza);
             $entityManager->flush();
             return $this->redirectToRoute('_listeProduit');
         }
-        return $this->render('gerant/modificationProduit.html.twig',compact('produitForm', 'pizza'));
+
+        return $this->render('gerant/modificationProduit.html.twig',compact('produitForm', 'pizza','detailsCommandePanier','prixDuPanier'));
     }
     #[Route('/supprimerProduit/{id}', name: '_supprimerProduit')]
     public function suppressionProduit($id, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
@@ -129,11 +145,13 @@ class GerantController extends AbstractController
     }
     ////////////////////////////////////////////////////// Gestion /////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/gestionDesRoles', name: '_gestionDesRoles')]
-    public function gestionDesRoles(CollaborateurRepository $collaborateurRepository, EntityManagerInterface $entityManager): Response
+    public function gestionDesRoles(CollaborateurRepository $collaborateurRepository,CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
     {
         $collaborateurs = $collaborateurRepository->findAll();
-
-        return $this->render('gerant/gestionDesRoles.html.twig', compact('collaborateurs'));
+        $result = $this->tooltip($commandeRepository,$tailleProduitRepository,$produitRepository);
+        $detailsCommandePanier= $result['detailsCommandePanier'];
+        $prixDuPanier = $result['prixDuPanier'];
+        return $this->render('gerant/gestionDesRoles.html.twig', compact('collaborateurs','prixDuPanier','detailsCommandePanier'));
     }
     public function prixDuPanier ($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier){
         $prixDuPanier = 0; // Instancie une variable de prix de panier à 0 qui sera envoyé au twig
@@ -154,5 +172,20 @@ class GerantController extends AbstractController
                 }
             } }
         return $prixDuPanier;
+    }
+    public function tooltip($commandeRepository,$tailleProduitRepository,$produitRepository){
+        $utilisateur = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur],
+            ['id' => 'DESC']
+        );
+        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
+        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+        $result =[];
+        $result =[
+            'detailsCommandePanier'=> $detailsCommandePanier,
+            'prixDuPanier'=>$prixDuPanier,
+        ];
+        return $result;
     }
 }

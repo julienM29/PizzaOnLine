@@ -6,7 +6,7 @@
     <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
         {% for pizza in allPizzas %}
             <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between">
-                <img src="{{ pizza.urlImage }}" style="width: 300px; height: 250px;" class="mb-2">
+                <img src="images/{{ pizza.urlImage }}" style="width: 300px; height: 250px;" class="mb-2">
                 <div class="mb-2 text-2xl text-black font-bold">{{ pizza.nom }}</div>
                 <div class="mb-2 text-xl text-black">{{ pizza.description }}</div>
                 <div class="mb-2 text-xl text-black">

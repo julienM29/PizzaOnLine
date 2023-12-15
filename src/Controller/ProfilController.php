@@ -25,18 +25,45 @@ class ProfilController extends AbstractController
             ['collaborateur' => $utilisateur],
             ['id' => 'DESC']
         );
-        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
-        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
+        $detailsCommandePanier = [];
+        $prixDuPanier = 0;
+        if ($derniereCommande) {
 
+            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            if ($detailsCommandePanier) {
+                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+            } else {
+                $detailsCommandePanier = [];
+            }
+        } else {
+            $derniereCommande = [];
+        }
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
         $numero = $user->getTelephone();
         $numeroAvecEspaces = chunk_split($numero, 2, ' ');
         return $this->render('profil/index.html.twig',compact('user','detailsCommandePanier', 'prixDuPanier','numeroAvecEspaces'));
     }
     #[Route('/modificationProfil/{id}', name: '_modificationProfil')]
-    public function modificationProfil($id, UserPasswordHasherInterface $userPasswordHasher, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
+    public function modificationProfil($id, UserPasswordHasherInterface $userPasswordHasher,CommandeRepository $commandeRepository,TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
     {
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $user],
+            ['id' => 'DESC']
+        );
+        $detailsCommandePanier = [];
+        $prixDuPanier = 0;
+        if ($derniereCommande) {
+
+            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            if ($detailsCommandePanier) {
+                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+            } else {
+                $detailsCommandePanier = [];
+            }
+        } else {
+            $derniereCommande = [];
+        }
         $profilForm = $this->createForm(ProfilFormType::class, $user);
         $profilForm->handleRequest($requete);
 
@@ -51,7 +78,7 @@ class ProfilController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('_profil', ['id' => $id]);
         }
-        return $this->render('profil/modificationProfil.html.twig',compact('user', 'profilForm'));
+        return $this->render('profil/modificationProfil.html.twig',compact('user', 'profilForm', 'detailsCommandePanier', 'prixDuPanier'));
     }
     public function prixDuPanier ($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier){
         $prixDuPanier = 0; // Instancie une variable de prix de panier à 0 qui sera envoyé au twig
