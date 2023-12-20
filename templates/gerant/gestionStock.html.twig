@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h2 class="flex item-center justify-center text-5xl mt-8 underline underline-offset-8"> Gestion du stock des ingrédients </h2>
+
+    <div class="w-full mt-12">
+        <div class="flex justify-center items-center flex-col">
+            <div>
+                <select name="categories" id="ingredient_form_categorie">
+                    <option class="0" value="0">Choisissez une catégorie</option>
+                    {% set i = 1 %}
+                    {% for category in categories %}
+                        <option value="{{ i }}">{{ category.libelle }}</option>
+                        {% set i = i + 1 %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mt-12 px-2 border-2 border-white w-1/3 flex justify-between">
+                <div class="w-3/4 mb-4">
+                    <div class="text-3xl mb-4">Ingrédients</div>
+                    {% for ingredient in ingredients %}
+                        <div class="flex justify-between mb-4 hidden {{ ingredient.categorie.libelle }}">
+                            <div class="text-3xl">{{ ingredient.nom }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="w-1/4 mb-4">
+                    <div class="text-3xl mb-4">Quantité</div>
+                    {% for ingredient in ingredients %}
+                        <div class="flex justify-center mb-4 hidden {{ ingredient.categorie.libelle }}">
+                            <div class="text-3xl">{{ ingredient.quantite }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('build/app.js') }}"></script>
+    <script>
+        window.onload = function () {
+            initStock();
+        };
+    </script>
+{% endblock %}
+

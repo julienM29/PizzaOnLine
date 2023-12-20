@@ -37,6 +37,9 @@ class Produit
     #[ORM\OneToMany(mappedBy: 'produit', targetEntity: DetailCommande::class, orphanRemoval: true)]
     private Collection $detailCommandes;
 
+    #[ORM\Column]
+    private ?bool $Disponible = null;
+
     public function __construct()
     {
         $this->ingredients = new ArrayCollection();
@@ -158,6 +161,18 @@ class Produit
                 $detailCommande->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isDisponible(): ?bool
+    {
+        return $this->Disponible;
+    }
+
+    public function setDisponible(bool $Disponible): static
+    {
+        $this->Disponible = $Disponible;
 
         return $this;
     }

@@ -8,14 +8,15 @@
         <h4 class="h-6 mb-6 text-2xl mt-4 mb-3 font-bold"> Commandes en attente de livraison :</h4>
         <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
             {% for commandeId, commande in commandeDetailsLivraison %}
-                <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between">
-                    <div class=" flex justify-center item-center mb-2 text-xl text-black mb-4 font-bold">Commande n°
+                <div class="bg-gray-200 p-2 w-80 mb-6 flex flex-col justify-between rounded ">
+                    <div class=" flex justify-center item-center text-xl text-black mb-4 font-bold">Commande n°
                         : {{ commandeId }}</div>
                     {% for detailCommandePrepare in commande %}
                         {% for pizza in pizzas %}
                             {% if detailCommandePrepare.produit.id == pizza.id %}
+                                <div class="mb-2 text-xl text-black font-semibold">{{ pizza.nom }}</div>
                                 <div class="flex justify-between">
-                                    <div class="mb-2 text-xl text-black">{{ pizza.nom }}</div>
+                                    <div class="mb-2 text-xl text-black ">Taille :  {{ detailCommandePrepare.taille.libelle }}</div>
                                     <div class="mb-2 text-xl text-black">Quantité
                                         : {{ detailCommandePrepare.quantite }}</div>
                                 </div>
@@ -37,18 +38,20 @@
                 pour {{ premierePizza.dateHeurePreparation|date(' H:i') }} : </h4>
         {% endif %}
     {% endif %}
-    <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
+    <div class="grid grid-cols-4 gap-4 mx-32 mb-24">
 
         {% for commandeId, commandeDetail in commandeDetails %}
-            <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between">
+            <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between rounded ">
                 <div class=" flex justify-center item-center mb-2 text-xl text-black mb-4 font-bold">Commande n°
                     : {{ commandeId }}</div>
                 {% for detailCommande in commandeDetail %}
                     {% for pizza in pizzas %}
                         {% if detailCommande.produit.id == pizza.id %}
+                            <div class="mb-2 text-xl text-black font-semibold">{{ pizza.nom }}</div>
                             <div class="flex justify-between">
-                                <div class="mb-2 text-xl text-black">{{ pizza.nom }}</div>
-                                <div class="mb-2 text-xl text-black">Quantité : {{ detailCommande.quantite }}</div>
+                                <div class="mb-2 text-xl text-black ">Taille :  {{ detailCommande.taille.libelle }}</div>
+                                <div class="mb-2 text-xl text-black">Quantité
+                                    : {{ detailCommande.quantite }}</div>
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -60,6 +63,7 @@
                 {% endif %}
             </div>
         {% endfor %}
+
     </div>
 {% endblock %}
 

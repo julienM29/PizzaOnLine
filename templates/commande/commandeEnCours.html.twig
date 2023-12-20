@@ -5,38 +5,45 @@
     <h2 class="flex item-center justify-center text-5xl mt-8 mb-20"> Commande en cours </h2>
 
     {% if commandeDetailsClient is empty %}
-        <div class="flex justify-center items-center text-2xl hover:text-red-500 duration-200 font-bold ">Vous n'avez pas encore effectué de commande.</div>
+        <div class="flex justify-center items-center text-2xl hover:text-red-500 duration-200 font-bold ">Vous n'avez
+            pas encore effectué de commande.
+        </div>
     {% endif %}
-    <div class="grid grid-cols-4 gap-4 mx-32 mb-12">
-        {% set i = 0 %}
-        {% for commandeId, commandeDetail in commandeDetailsClient %}
-            <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col justify-between">
-                <div class=" flex justify-center item-center mb-2 text-xl text-black mb-4 font-bold">Commande n°
-                    : {{ commandeId }}</div>
-                {% for detailCommande in commandeDetail %}
-                    {% for pizza in pizzas %}
-                        {% if detailCommande.produit.id == pizza.id %}
-                            <div class="mb-2 text-xl text-black font-bold">{{ pizza.nom }}</div>
-                            <div class="flex justify-between">
-                                <div class="mb-2 text-xl text-black">Quantité : {{ detailCommande.quantite }}</div>
-                                <div class="mb-2 text-xl text-black text-right mb-4">taille
-                                    : {{ detailCommande.taille.libelle }}</div>
-                            </div>
 
-
-                        {% endif %}
-                    {% endfor %}
-
-                {% endfor %}
-                <div class="flex justify-between mt-4">
-                    <div class="mb-2 text-xl text-black font-bold">Etat :</div>
-                    <div class="mb-2 text-xl text-black">{{ etatsCommandes[i] }}</div>
+    <div class="flex justify-center item-center mb-24">
+        <div class="grid ">
+            {% set i = 0 %}
+            {% for commandeId, commandeDetail in commandeDetailsClient %}
+                <div class="bg-gray-200 p-4 mb-6 rounded mb-4" >
+                    <div class=" flex justify-center item-center text-2xl text-black mb-4 font-bold">Commande n°
+                        : {{ commandeId }}</div>
+                    <div  class="grid-cols-3 grid">
+                        {% for detailCommande in commandeDetail %}
+                            {% for pizza in pizzas %}
+                                {% if detailCommande.produit.id == pizza.id %}
+                                    <div class="mx-6 ">
+                                        <div class="mb-2 text-xl text-black font-semibold underline">{{ pizza.nom }} :</div>
+                                        <div class="flex ">
+                                            <div class="mb-2 text-xl text-black mr-4">Quantité
+                                                : {{ detailCommande.quantite }}</div>
+                                            <div class="mb-2 text-xl text-black text-right ">taille
+                                                : {{ detailCommande.taille.libelle }}</div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    <div class="flex justify-center items-center mt-4">
+                        <div class="mb-2 text-xl text-black font-bold mr-4">État : </div>
+                        <div class="mb-2 text-xl text-black">{{ etatsCommandes[i] }}</div>
+                    </div>
                 </div>
-            </div>
-            {% set i = i + 1 %}
-        {% endfor %}
-    </div>
+                {% set i = i + 1 %}
+            {% endfor %}
 
+        </div>
+    </div>
 {% endblock %}
 
 

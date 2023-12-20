@@ -173,6 +173,20 @@ class GerantController extends AbstractController
             } }
         return $prixDuPanier;
     }
+
+    #[Route('/gestionStock', name: '_gestionStock')]
+    public function gestionStock (CommandeRepository $commandeRepository,CategorieIngredientRepository $categorieIngredientRepository,IngredientRepository $ingredientRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository){
+        $ingredients = $ingredientRepository->findAll();
+        $categories = $categorieIngredientRepository->findAll();
+
+
+
+        $result = $this->tooltip($commandeRepository,$tailleProduitRepository,$produitRepository);
+        $detailsCommandePanier= $result['detailsCommandePanier'];
+        $prixDuPanier = $result['prixDuPanier'];
+
+        return $this->render('gerant/gestionStock.html.twig', compact('prixDuPanier','detailsCommandePanier', 'categories','ingredients'));
+    }
     public function tooltip($commandeRepository,$tailleProduitRepository,$produitRepository){
         $utilisateur = $this->getUser();
         $derniereCommande = $commandeRepository->findOneBy(

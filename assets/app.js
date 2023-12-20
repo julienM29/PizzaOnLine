@@ -16,5 +16,7 @@ import 'flowbite/dist/flowbite.min.js'
 import './map.js';
 import './adresse.js';
 import './modal.js';
+import './profil.js';
+import './stock.js';
 import './ingredient.js';
 import './styles/app.css';

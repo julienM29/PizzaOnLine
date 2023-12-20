@@ -21,37 +21,40 @@
     {% endif %}
     {% if not is_granted('ROLE_LIVREUR') and (commandeDetailsClient is not empty) %}
         <div class="w-full flex flex-wrap mt-12">
-            <div class="w-1/2 px-2 grid grid-cols-3	">
+            <div class="w-1/2 grid mb-24">
                 {% if not is_granted('ROLE_LIVREUR') and (commandeDetailsClient is not empty) %}
+
+                    {% set i = 0 %}
                     {% for commandeId, commandeDetail in commandeDetailsClient %}
-                        <div class=" px-2 py-2 mx-3 mb-2 bg-gray-200 rounded  relative">
-                            <div class="flex text-2xl justify-center items-center text-black font-bold mb-4">Commande n°
+                        <div class="bg-gray-200 mb-6 rounded mx-14">
+                            <div class=" flex justify-center item-center text-2xl text-black mb-4 font-bold">Commande n°
                                 : {{ commandeId }}</div>
-                            {% for detailCommande in commandeDetail %}
-                                <div class="flex px-6 text-xl text-black {{ loop.last ? 'mb-12' : '' }}">
-                                    {{ detailCommande.produit.nom }}
-                                    X {{ detailCommande.quantite }} {{ detailCommande.taille.libelle }}</div>
-                            {% endfor %}
-                            <div class="absolute bottom-0 mt-24">
+                            <div class="grid-cols-3 grid ">
+                                {% for detailCommande in commandeDetail %}
+                                    <div class="flex justify-center text-xl text-black mb-2">
+                                        {{ detailCommande.produit.nom }}
+                                        X {{ detailCommande.quantite }}     {{ detailCommande.taille.libelle }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="flex justify-center items-center mt-4 mb-3">
                                 <div class=" font-bold hover:text-red-500 duration-200 text-black text-xl reverseTexte">
                                     Heure de Livraison
                                     : {{ commandeDetail[0].commande.dateHeureLivraison|date(' H:i:s') }}</div>
                             </div>
                         </div>
+                        {% set i = i + 1 %}
                     {% endfor %}
                 {% endif %}
-
             </div>
 
             <div class="w-1/2 flex">
                 <div id="map" class="ml-8 z-0 "></div>
                 <div>
                     {% if not is_granted('ROLE_LIVREUR') and (commandesClient is not empty) %}
-                        <div class="flex justify-center items-center text-2xl ml-4 mt-6 mb-6 font-bold">
+                        <div class="flex justify-center items-center text-2xl ml-4 mt-6 mb-6 font-bold underline">
                             Informations sur le livreur :
                         </div>
                         <div class="flex flex-wrap ">
-
                             <div class="text-2xl mx-2 ">
                                 {% if livreur[1].sexe == 'Masculin' %}
                                     <img class="w-48 h-48 " src="{{ asset('images/livreur.png') }}">

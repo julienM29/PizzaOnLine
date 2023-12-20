@@ -6,28 +6,43 @@
     <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
         {% for pizza in pizzas %}
             <div class="bg-gray-200 p-4 w-80 mb-6 flex flex-col rounded justify-between">
-                <img src="images/{{ pizza.urlImage }}" style="width: 300px; height: 250px;" class="mb-2">
-                <div class="mb-2 text-2xl text-black font-bold">{{ pizza.nom }}</div>
-                <div class="mb-2 text-xl text-black">{{ pizza.description }}</div>
-                <div class="mb-2 text-xl text-black">
-                    {% for ingredient in pizza.Ingredients %}
-                        {{ ingredient.nom }}{% if not loop.last %}, {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="flex ">
-                    <div class="mb-4 text-xl text-black mr-5">médium : {{ (pizza.prix) | number_format(2, '.', ',') }}€
+                <img src="images/{{ pizza.urlImage }}" style="width: 300px; height: 250px; {% if not pizza.disponible %} filter: grayscale(100%);{% endif %}"
+                     class="mb-2 border-[1px] border-gray-400 {% if not pizza.disponible %} border-red-500{% endif %}">
+                <div class="mb-2 text-3xl text-black font-semibold flex justify-center items-center">{{ pizza.nom }}</div>
+                <div id="disponible">
+
+                    <div class="mb-2 text-xl text-black font-semibold mt-2">Ingrédients :</div>
+                    <div class="mb-2 text-xl text-black">
+                        {% for ingredient in pizza.Ingredients %}
+                            {{ ingredient.nom }}{% if not loop.last %}, {% endif %}
+
+                        {% endfor %}
                     </div>
-                    <div class="mb-4 text-xl text-black justify-end">large : {{ (pizza.prix + 5) | number_format(2, '.', ',') }}€
+
+                    <div class="flex ">
+                        <div class="mb-4 text-xl text-black mr-5">médium
+                            : {{ (pizza.prix) | number_format(2, '.', ',') }}€
+                        </div>
+                        <div class="mb-4 text-xl text-black justify-end">large
+                            : {{ (pizza.prix + 5) | number_format(2, '.', ',') }}€
+                        </div>
                     </div>
-                </div>
-                <div class="flex item-center justify-center">
                     <a href="{{ path('_detailPizza', {'id': pizza.id}) }}"
-                       class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold mr-5">Detail</a>
-                    <button class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold mr-5 afficherModal"
-                            data-pizza-id="{{ pizza.id }}"
-                            data-pizza-nom="{{ pizza.nom }}"
-                            data-pizza-prix="{{ pizza.prix }}"
-                    > Ajouter </button>
+                       class="flex text-xl hover:text-red-500 duration-200 text-black font-semibold mb-5 underline underline-offset-2">En
+                        savoir plus</a>
+                    <div class="flex item-center justify-center">
+
+                        {% if pizza.disponible == true %}
+                            <button class="flex text-2xl hover:text-red-500 duration-200 text-black font-bold afficherModal"
+                                    data-pizza-id="{{ pizza.id }}"
+                                    data-pizza-nom="{{ pizza.nom }}"
+                                    data-pizza-prix="{{ pizza.prix }}"
+                            >Ajouter
+                            </button>
+                        {% else %}
+                            <div class=" text-2xl text-red-700 font-bold ">Indisponible</div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         {% endfor %}
@@ -37,10 +52,10 @@
             <button class="hiddenModal absolute top-0 right-0 p-2">
                 <img id="plus" style="height: 30px; width: 30px;" src="{{ asset('images/fermer-la-croix.png') }}">
             </button>
-            <h2 class=" flex mt-2 mb-20 items-center justify-center font-bold text-5xl text-black" id="nom">  </h2>
+            <h2 class=" flex mt-2 mb-4 items-center justify-center font-bold text-4xl text-black" id="nom"></h2>
 
             {{ form_start(detailCommandeForm) }}
-            <div class="hidden" >
+            <div class="hidden">
                 <input id="idPizzaModal" name="idPizzaModal">
             </div>
             <div class="mb-7 mt-7 flex justify-center items-center text-black">
@@ -53,9 +68,9 @@
             </div>
 
             <div class="mb-7 text-4xl flex justify-center items-center text-black">
-                    {{ form_widget(detailCommandeForm.taille, {'id': 'tailleModal','attr': {'class': 'custom-checkbox'}}) }}
+                {{ form_widget(detailCommandeForm.taille, {'id': 'tailleModal','attr': {'class': 'custom-checkbox'}}) }}
             </div>
-            <div class="mb-7 mt-9 flex justify-center items-center text-black " >
+            <div class="mb-7 mt-9 flex justify-center items-center text-black ">
                 <div class="mr-5 text-4xl mb-2 text-black">
                     Prix :
                 </div>
@@ -64,21 +79,21 @@
                     <div class="ml-1">euros</div>
                 </div>
             </div>
-            <div class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-12 text-black">
-            <div>
-                {{ form_label(detailCommandeForm.ajouter) }}
-                {{ form_widget(detailCommandeForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
+            <div class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-8 text-black">
+                <div>
+                    {{ form_label(detailCommandeForm.ajouter) }}
+                    {{ form_widget(detailCommandeForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
+                </div>
             </div>
-        </div>
-        {{ form_end (detailCommandeForm) }}
+            {{ form_end (detailCommandeForm) }}
         </div>
     </div>
-</div>
+    </div>
 
     <script src="{{ asset('build/app.js') }}"></script>
-<script>
-    window.onload = function () {
-       initModal();
-    };
-</script>
+    <script>
+        window.onload = function () {
+            initModal();
+        };
+    </script>
 {% endblock %}

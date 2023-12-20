@@ -2,11 +2,12 @@
 
 namespace App\Controller;
 
+use App\Form\ModificationMotDePasseFormType;
+use App\Form\ModificationProfilFormType;
 use App\Form\ProfilFormType;
 use App\Repository\CollaborateurRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\ProduitRepository;
-use App\Repository\RoleRepository;
 use App\Repository\TailleProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,14 +42,16 @@ class ProfilController extends AbstractController
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
         $numero = $user->getTelephone();
         $numeroAvecEspaces = chunk_split($numero, 2, ' ');
-        return $this->render('profil/index.html.twig',compact('user','detailsCommandePanier', 'prixDuPanier','numeroAvecEspaces'));
+        return $this->render('profil/index.html.twig', compact('user', 'detailsCommandePanier', 'prixDuPanier', 'numeroAvecEspaces'));
     }
+
     #[Route('/modificationProfil/{id}', name: '_modificationProfil')]
-    public function modificationProfil($id, UserPasswordHasherInterface $userPasswordHasher,CommandeRepository $commandeRepository,TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
+    public function modificationProfil($id, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
     {
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
+        $utilisateurConnecter = $this->getUser();
         $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $user],
+            ['collaborateur' => $utilisateurConnecter],
             ['id' => 'DESC']
         );
         $detailsCommandePanier = [];
@@ -64,23 +67,69 @@ class ProfilController extends AbstractController
         } else {
             $derniereCommande = [];
         }
-        $profilForm = $this->createForm(ProfilFormType::class, $user);
+        $profilForm = $this->createForm(ModificationProfilFormType::class, $user);
         $profilForm->handleRequest($requete);
 
-        if($profilForm->isSubmitted() && $profilForm->isValid()){
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $profilForm->get('password')->getData()
-                )
-            );
+        if ($profilForm->isSubmitted() && $profilForm->isValid()) {
+
             $entityManager->persist($user);
             $entityManager->flush();
             return $this->redirectToRoute('_profil', ['id' => $id]);
         }
-        return $this->render('profil/modificationProfil.html.twig',compact('user', 'profilForm', 'detailsCommandePanier', 'prixDuPanier'));
+
+        return $this->render('profil/modificationProfil.html.twig', compact('user', 'profilForm', 'detailsCommandePanier', 'prixDuPanier'));
     }
-    public function prixDuPanier ($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier){
+
+    #[Route('/modificationMotDePasse/{id}', name: '_modificationMotDePasse')]
+    public function modificationMotDePasse($id, UserPasswordHasherInterface $userPasswordHasher, CollaborateurRepository $collaborateurRepository, UserPasswordHasherInterface $passwordHasher, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, Request $requete, EntityManagerInterface $entityManager): Response
+    {
+        $user = $collaborateurRepository->findOneBy(array('id' => $id));
+        $utilisateurConnecter = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateurConnecter],
+            ['id' => 'DESC']
+        );
+        $detailsCommandePanier = [];
+        $prixDuPanier = 0;
+        if ($derniereCommande) {
+
+            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            if ($detailsCommandePanier) {
+                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+            } else {
+                $detailsCommandePanier = [];
+            }
+        } else {
+            $derniereCommande = [];
+        }
+
+        $mdpForm = $this->createForm(ModificationMotDePasseFormType::class);
+        $mdpForm->handleRequest($requete);
+
+        if ($mdpForm->isSubmitted() && $mdpForm->isValid()) {
+            $newPassword = $mdpForm->get('newPassword')->getData();
+            $ancienPassword = $mdpForm->getData()['password'];
+            if ($userPasswordHasher->isPasswordValid($user, $ancienPassword)) {
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $newPassword
+                    )
+                );
+                $entityManager->persist($user);
+                $entityManager->flush();
+                $this->addFlash('success', 'Le mot de passe a bien été modifié.');
+                return $this->redirectToRoute('_profil', ['id' => $id]);
+            } else {
+                $this->addFlash('warning', 'Le mot de passe renseigné est incorrect');
+                $this->addFlash('error', 'Mot de passe incorrect');
+            }
+        }
+        return $this->render('profil/modificationPassword.html.twig', compact('mdpForm', 'prixDuPanier', 'detailsCommandePanier'));
+    }
+
+    public function prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier)
+    {
         $prixDuPanier = 0; // Instancie une variable de prix de panier à 0 qui sera envoyé au twig
         $tailleLarge = $tailleProduitRepository->findOneBy(array('id' => 2)); // récupère la taille large pour une condition (prix)
         if ($derniereCommande != null) { // Si il y a une dernière commande
@@ -97,7 +146,8 @@ class ProfilController extends AbstractController
 
                     $prixDuPanier = ($prixDuPanier + $prixDuDetail); // Total du panier
                 }
-            } }
+            }
+        }
         return $prixDuPanier;
     }
 }

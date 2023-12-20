@@ -1,70 +1,66 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h2 class="flex item-center justify-center text-5xl mt-8 mb-20"> Modification du profil de : {{ user.prenom }}</h2>
-    <div class="flex justify-center items-center ">
+<h2 class="flex item-center justify-center text-5xl mt-8 mb-16 font-semibold"> Modification du profil
+    de {{ user.prenom }} {{ user.nom }}</h2>
+<div class="grid w-1/3 mx-auto ">
+    <div class=" flex flex-col items-center justify-center  rounded border-2 border-white mb-24">
+
         {{ form_start(profilForm) }}
-        <div class="w-full flex space-x-4  w-64">
-            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">
-                {{ form_label(profilForm.nom) }} :
-            </div>
-            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">
-                {{ form_widget(profilForm.nom, {'attr': {'style': 'width: 250px'}}) }}
-            </div>
+        <div class="w-full flex mt-8">
+            <div class="w-1/2 flex justify-end text-3xl  mr-5 mb-6"> {{ form_label(profilForm.nom) }}&nbsp;:</div>
+            <div class="w-1/2 text-3xl ml-5 mb-6 text-black font-semibold"> {{ form_widget(profilForm.nom, {'attr': {'style': 'width: 250px'}}) }}</div>
         </div>
-        <div class="w-full flex space-x-4  w-64">
-            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">
-                {{ form_label(profilForm.prenom) }} :
-            </div>
-            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">
-                {{ form_widget(profilForm.prenom, {'attr': {'style': 'width: 250px'}}) }}
-            </div>
+        <div class="w-full flex">
+            <div class="w-1/2 flex justify-end text-3xl mr-5 mb-6"> {{ form_label(profilForm.prenom) }}&nbsp;:</div>
+            <div class="w-1/2 text-3xl ml-5 mb-6 text-black font-semibold"> {{ form_widget(profilForm.prenom, {'attr': {'style': 'width: 250px'}}) }}</div>
         </div>
-        <div class="w-full flex space-x-4  w-64">
-            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">
-                {{ form_label(profilForm.email) }} :
-            </div>
-            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">
-                {{ form_widget(profilForm.email, {'attr': {'style': 'width: 250px'}}) }}
-            </div>
+        <div class="w-full flex">
+            <div class="w-1/2 flex justify-end text-3xl mr-5 mb-6"> {{ form_label(profilForm.email) }}&nbsp;:</div>
+            <div class="w-1/2 text-3xl ml-5 mb-6 text-black font-semibold"> {{ form_widget(profilForm.email, {'attr': {'style': 'width: 250px'}}) }}</div>
         </div>
-        <div class="w-full flex space-x-4  w-64">
-            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">
-                {{ form_label(profilForm.password) }} :
-            </div>
-            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">
-                {{ form_widget(profilForm.password, {'attr': {'style': 'width: 250px'}}) }}
-            </div>
-        </div>
-{#        <div class="w-full flex space-x-4  w-64">#}
-{#            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">#}
-{#                {{ form_label(profilForm.roles) }} :#}
-{#            </div>#}
-{#            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">#}
-{#                {% for role in profilForm.roles %}#}
-{#                    {{ form_widget(role, {'attr': {'class': 'custom-checkbox'}}) }}#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#        </div>#}
-        <div class="w-full flex space-x-4  w-64">
-            <div class="flex justify-end w-1/2 text-3xl mr-5 mb-6">
-                <label for="countries_multiple" class="">Rôles :</label>
-            </div>
-            <div class="flex justify-start w-1/2 text-3xl ml-5 mb-6">
-                {{ form_widget(profilForm.roles, {'id': 'countries_multiple', 'attr': {'style': 'width: 250px','class': 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'}}) }}
-            </div>
+        <div class="w-full flex">
+            <div class="w-1/2 flex justify-end text-3xl mr-5 mb-6"> {{ form_label(profilForm.sexe) }}&nbsp;:</div>
+            <div class="w-1/2 text-3xl ml-5 mb-6 text-black font-semibold"> {{ form_widget(profilForm.sexe, {'attr': {'style': 'width: 250px'}}) }}</div>
         </div>
 
+        {% if is_granted('ROLE_GERANT') %}
+        <div class="w-full flex">
+            {% else %}
+            <div class="w-full flex hidden">
+                {% endif %}
+                <div class="w-1/2 flex justify-end text-3xl mr-5 mb-6">
+                    <label for="countries_multiple" class="">Rôles :</label>
+                </div>
+                <div class="w-1/2 text-3xl ml-5 mb-6">
+                    {% for role in profilForm.roles %}
+                        <div>
+                            {{ form_widget(role, {'attr': {'class': 'mr-2'}}) }}
+                            {{ form_label(role) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="flex justify-center items-center text-3xl mr-5 mb-6 hover:text-red-500 underline underline-offset-4
+"><a
+                        href="{{ path('_modificationMotDePasse', {'id': user.id}) }}">Modifier son mot de passe</a>
+            </div>
 
-        <div class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-16">
-            {{ form_label(profilForm.ajouter) }}
-            {{ form_widget(profilForm.ajouter, {'attr': {'style': 'width: 250px'}}) }}
+
+            <div class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-4 mb-8 ">
+                {{ form_label(profilForm.ajouter) }}
+                {{ form_widget(profilForm.ajouter, {'attr': {'style': 'width: 250px'}}) }}
+            </div>
+
+            {{ form_end(profilForm) }}
+
         </div>
-        {{ form_end(profilForm) }}
-
     </div>
-    <a href="{{ path ('_profil', { 'id': user.id }) }}"
-       class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-16">Retour au
-        profil</a>
-{% endblock %}
+    <script src="{{ asset('build/app.js') }}"></script>
+    <script>
+        window.onload = function () {
+            initProfil();
+        };
+    </script>
+    {% endblock %}
 
