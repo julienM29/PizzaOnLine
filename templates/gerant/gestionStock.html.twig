@@ -2,34 +2,40 @@
 
 {% block body %}
 
-    <h2 class="flex item-center justify-center text-5xl mt-8 underline underline-offset-8"> Gestion du stock des ingrédients </h2>
+    <h2 class="flex item-center justify-center text-5xl mt-8 underline underline-offset-8"> Gestion du stock des
+        ingrédients </h2>
 
-    <div class="w-full mt-12">
-        <div class="flex justify-center items-center flex-col">
+    <div class="w-full mt-8 ">
+        <div class="flex justify-center items-center flex-col ">
             <div>
-                <select name="categories" id="ingredient_form_categorie">
-                    <option class="0" value="0">Choisissez une catégorie</option>
+                <select name="categories" id="ingredient_form_categorie" class="text-xl">
+                    <option class="0 text-xl" value="0">Choisissez une catégorie</option>
                     {% set i = 1 %}
                     {% for category in categories %}
-                        <option value="{{ i }}">{{ category.libelle }}</option>
+                        <option class="text-xl" value="{{ i }}">{{ category.libelle }}</option>
                         {% set i = i + 1 %}
                     {% endfor %}
                 </select>
+
+                <button class="bg-transparent hover:bg-blue-500 text-blue-700 text-xl font-bold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded mt-4 hidden" id="changement">
+                    Valider les changements
+                </button>
             </div>
-            <div class="mt-12 px-2 border-2 border-white w-1/3 flex justify-between">
-                <div class="w-3/4 mb-4">
-                    <div class="text-3xl mb-4">Ingrédients</div>
+{#            <div>#}
+{#               #}
+{#            </div>#}
+            <div class="mt-8 px-8 py-4 border-2 border-white w-1/3 flex justify-between mb-24">
+                <div class="w-full mb-4">
+                    <div class="flex justify-between mb-4  ">
+                        <div class="text-3xl mb-4 ml-2">Ingrédients</div>
+                        <div class="text-3xl mb-4 mr-2">Quantité</div>
+                    </div>
                     {% for ingredient in ingredients %}
-                        <div class="flex justify-between mb-4 hidden {{ ingredient.categorie.libelle }}">
+                        <div class="flex justify-between {% if not loop.last %}mb-4{% endif %} hidden {{ ingredient.categorie.libelle }}">
                             <div class="text-3xl">{{ ingredient.nom }}</div>
-                        </div>
-                    {% endfor %}
-                </div>
-                <div class="w-1/4 mb-4">
-                    <div class="text-3xl mb-4">Quantité</div>
-                    {% for ingredient in ingredients %}
-                        <div class="flex justify-center mb-4 hidden {{ ingredient.categorie.libelle }}">
-                            <div class="text-3xl">{{ ingredient.quantite }}</div>
+                            <input type="number"
+                                   class="text-2xl w-1/4 text-center border rounded px-2 py-1 {{ ingredient.categorie.libelle }}"
+                                   value="{{ ingredient.quantite }}" id="{{ ingredient.id }}">
                         </div>
                     {% endfor %}
                 </div>

@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h2 class="flex content-center justify-center text-5xl mt-12 "> Ajout d'un ingrédient</h2>
-    <div class="w-full flex flex-wrap mt-12">
+    <h2 class="flex content-center justify-center text-5xl mt-12 "> Ajouter un ingrédient au stock</h2>
+    <div class="w-full flex flex-wrap mt-8">
         <div class="w-1/2 flex justify-end">
             <div class="mt-12 flex border-2 border-white px-4 py-4 rounded mr-6">
                 {{ form_start(ingredientForm) }}
@@ -43,13 +43,14 @@
                 {% endfor %}
             </div>
         </div>
-
     </div>
-
-
-    <div class="flex justify-center item-center text-2xl hover:text-red-500 duration-200 font-bold mt-6">
+    <div class="flex justify-center item-center text-2xl hover:text-red-500 duration-200 font-bold ">
         <a href="{{ path('_gerant') }}" class="mt-12">Retour à la page de gestion</a>
     </div>
+
+
+
+
 
     <script src="{{ asset('build/app.js') }}"></script>
     <script>

@@ -15,6 +15,7 @@ use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -201,5 +202,18 @@ class GerantController extends AbstractController
             'prixDuPanier'=>$prixDuPanier,
         ];
         return $result;
+    }
+    #[Route('/changementQuantite', name: '_changementQuantite')]
+    public function changementQuantite (Request $request, IngredientRepository $ingredientRepository, EntityManagerInterface $entityManager){
+        $data = json_decode($request->getContent(), true); // Convertir les données JSON en tableau associatif
+
+        if($data){
+            foreach($data as $key => $value){
+                $ingredient = $ingredientRepository->findOneBy(['id' => $key]);
+                $ingredient->setQuantite($value);
+                $entityManager->flush();
+            }
+            return new JsonResponse(['success' => true]);
+        }
     }
 }
