@@ -7,8 +7,19 @@ body {
     min-height: 100vh;
 }
 
-
-
+.w-81 {
+    width: 21rem;
+}
+.w-28 {
+    width : 28%;
+}
+.w-80 {
+    width : 80%;
+}
+.text-1xl {
+    font-size: 1.35rem; /* 20px */
+	line-height: 1.85rem; /* 28px */
+}
 #detail_commande_form_taille_1{
     margin-left: 20px;
     margin-right: 10px;

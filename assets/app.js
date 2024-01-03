@@ -18,5 +18,6 @@ import './adresse.js';
 import './modal.js';
 import './profil.js';
 import './stock.js';
+import './test.js';
 import './ingredient.js';
 import './styles/app.css';

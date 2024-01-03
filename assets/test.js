@@ -1,22 +1,22 @@
-function initModal() {
-    console.log('Je suis dans modal.js');
-
-    ajouterPanier();
-    document.getElementById('quantiteModal').addEventListener('change', modificationPrixModal);
-    document.getElementById('inputQuantite').addEventListener('change', verificationInput);
+function initTest() {
+    // console.log('Je suis dans modal.js');
+    //
+    // ajouterPanier();
+    // document.getElementById('quantiteModal').addEventListener('change', modificationPrixModal);
+    // document.getElementById('inputQuantite').addEventListener('change', verificationInput);
 
     let decrement = document.getElementById('decrement');
     let increment = document.getElementById('increment');
     increment.addEventListener('click', augmentationQuantite);
     decrement.addEventListener('click', diminutionQuantite);
-    let detail_commande_form_taille_1 = document.getElementById('detail_commande_form_taille_1');
-    let detail_commande_form_taille_2 = document.getElementById('detail_commande_form_taille_2');
-    detail_commande_form_taille_1.addEventListener('click', modificationPrixModal);
-    detail_commande_form_taille_2.addEventListener('click', modificationPrixModal);
+    // let detail_commande_form_taille_1 = document.getElementById('detail_commande_form_taille_1');
+    // let detail_commande_form_taille_2 = document.getElementById('detail_commande_form_taille_2');
+    // detail_commande_form_taille_1.addEventListener('click', modificationPrixModal);
+    // detail_commande_form_taille_2.addEventListener('click', modificationPrixModal);
 
 }
 
-window.initModal = initModal;
+window.initTest = initTest;
 let prixPizza = 0;
 
 ///////////////////////////// AFFICHAGE MODAL AJOUT ///////////////////////////////////////
@@ -179,44 +179,3 @@ function inputForm() {
     let input = document.getElementById('inputQuantite');
     inputForm.value = parseInt(input.value);
 }
-
-
-////////////////////////////// FONCTION PAS UTILISER SERVANT A CONNAITRE LA POSITION DU CURSEUR ET D UN BOUTON ///////////////////////////////////////////
-
-// document.addEventListener('mousemove', PositionCurseur); A METTRE DANS INIT
-
-// function PositionCurseur(e) {
-//     const fenetrePanierModal = document.getElementById('fenetreModale');
-//
-//     // Position curseur
-//     // let positionLargeurCurseur = e.screenX;
-//     // let positionHauteurCurseur = e.screenY;
-//
-//     // Position bouton
-//     // const bouton = document.getElementById('panierModalPlein');
-//     // const rect = bouton.getBoundingClientRect();
-//     // const positionX = rect.left + window.scrollX;
-//     // const positionY = rect.top + window.scrollY;
-//
-//     // Marges par rapport au bouton
-//     const topMargin = 92;
-//     const bottomMargin = 122;
-//     const leftMargin = 1654;
-//     const rightMargin = 1689;
-//
-//     if ( // Condition vérifiant si on dépasse de chaque côté des bornes
-//         positionLargeurCurseur < leftMargin ||
-//         positionLargeurCurseur > rightMargin ||
-//         positionHauteurCurseur < topMargin ||
-//         positionHauteurCurseur > bottomMargin
-//     ) {
-//         if(!fenetrePanierModal.classList.contains('hidden')){
-//             cacherModalPanier();
-//         }
-//     } else {
-//         if(fenetrePanierModal.classList.contains('hidden')){
-//             afficherModalPanier();
-//         }
-//     }
-//
-// }

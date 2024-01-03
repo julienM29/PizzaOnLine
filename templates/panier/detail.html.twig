@@ -2,92 +2,119 @@
 
 {% block body %}
 
-    <h2 class="flex item-center justify-center text-5xl mt-8 underline underline-offset-8"> {{ pizza.nom }} </h2>
+<h2 class="flex item-center justify-center text-5xl mt-8 underline underline-offset-8"> {{ pizza.nom }} </h2>
 
-    <div class="flex items-center justify-center mt-10">
-        <div class="w-1/2 flex flex-col ">
-            <div class="mb-4 text-xl">
-                <div class="flex justify-end mt-2">
-                    <img src="./../images/{{ pizza.urlImage }}" style="width: 400px; height: 300px;"
-                         class="border-[1px] border-gray-400">
-                </div>
+<div class="flex items-center justify-center mt-10">
+    <div class="w-1/2 flex flex-col ">
+        <div class="mb-4 text-xl">
+            <div class="flex justify-end mt-2">
+                <img src="./../images/{{ pizza.urlImage }}" style="width: 400px; height: 300px;"
+                     class="border-[1px] border-gray-400">
             </div>
         </div>
-        <div class="w-1/2 ml-6">
-            <div class="text-2xl mb-6">
-                {{ pizza.description }}
-            </div>
-            <div class="text-2xl mb-6 flex items-center">
-                <span class="font-bold">Ingrédients :</span>
-                {% set viandePresente = false %}
-                {% for viande in viandes %}
-                    {% for ingredient in pizza.Ingredients %}
-                        {% if viande == ingredient.nom %}
-                            {% set viandePresente = true %}
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
-
-                {% if viandePresente %}
-                    <img src="{{ asset('images/bifteck.png') }}" style="width: 35px; height: 35px;" class="ml-4">
-                {% else %}
-                    <img src="{{ asset('images/legume.png') }}" style="width: 35px; height: 35px;" class="ml-4">
-                {% endif %}
-            </div>
-            <div class="text-2xl">
+    </div>
+    <div class="w-1/2 ml-6">
+        <div class="text-2xl mb-6">
+            {{ pizza.description }}
+        </div>
+        <div class="text-2xl mb-6 flex items-center">
+            <span class="font-bold">Ingrédients :</span>
+            {% set viandePresente = false %}
+            {% for viande in viandes %}
                 {% for ingredient in pizza.Ingredients %}
-                    {{ ingredient.nom }}{{ not loop.last ? ', ' }}
+                    {% if viande == ingredient.nom %}
+                        {% set viandePresente = true %}
+                    {% endif %}
                 {% endfor %}
-            </div>
-            <div class="flex text-2xl mt-5">
-                <div class="font-bold ">Prix :</div>
-                <div>
-                    <div class="ml-8">médium : {{ (pizza.prix) | number_format(2, '.', ',') }} €</div>
-                    <div class="ml-8 flex justify-end">large : {{ (pizza.prix + 5) | number_format(2, '.', ',') }} €
-                    </div>
+            {% endfor %}
+
+            {% if viandePresente %}
+                <img src="{{ asset('images/bifteck.png') }}" style="width: 35px; height: 35px;" class="ml-4">
+            {% else %}
+                <img src="{{ asset('images/legume.png') }}" style="width: 35px; height: 35px;" class="ml-4">
+            {% endif %}
+        </div>
+        <div class="text-2xl">
+            {% for ingredient in pizza.Ingredients %}
+                {{ ingredient.nom }}{{ not loop.last ? ', ' }}
+            {% endfor %}
+        </div>
+        <div class="flex text-2xl mt-5">
+            <div class="font-bold ">Prix :</div>
+            <div>
+                <div class="ml-8">médium : {{ (pizza.prix) | number_format(2, '.', ',') }} €</div>
+                <div class="ml-8 flex justify-end">large : {{ (pizza.prix + 5) | number_format(2, '.', ',') }} €
                 </div>
             </div>
         </div>
     </div>
-    {% if app.user and pizza.disponible == true %}
-        <div class="w-full flex justify-center items-center mt-2">
-            <div class="w-1/3 text-2xl font-semibold justify-center items-center">Pour ajouter la pizza à votre panier
-                :
+</div>
+{% if app.user and pizza.disponible == true %}
+<div class="w-full flex justify-center items-center mt-2">
+    <div class="w-1/3 text-2xl font-semibold flex justify-center items-center">Pour ajouter la pizza à votre panier
+        :
+    </div>
+</div>
+<div class="w-full flex justify-center items-center mt-4">
+    <div class="w-1/3 justify-center items-center border-2 border-white px-2 py-4 rounded">
+        {{ form_start(detailCommandeForm) }}
+
+        <div class="text-2xl text-black font-bold hidden">
+            {{ form_widget(detailCommandeForm.quantite, {'id': 'quantiteModal','attr': {'style': 'width : 200px;  text-align: center; font-size: 1.25rem;'}}) }}
+        </div>
+        <div class="mb-7 flex justify-center items-center">
+            <div class="mr-5 text-2xl mb-2 ">
+                {{ form_label(detailCommandeForm.quantite) }} :
+            </div>
+            <div class="text-2xl text-black font-bold flex flex-crap">
+                <button type="button"
+                        data-input-counter-decrement="quantity-input" id="decrement"
+                        class="  bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                    <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true"
+                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="2" d="M1 1h16"/>
+                    </svg>
+                </button>
+                <input type="text" data-input-counter data-input-counter-min="1"
+                       data-input-counter-max="50" aria-describedby="helper-text-explanation" style="width:65px"
+                       class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                       placeholder="999" value="0" id="inputQuantite"
+                       required>
+                <button type="button" id="increment"
+                        data-input-counter-increment="quantity-input"
+                        class=" bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                    <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true"
+                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                </button>
             </div>
         </div>
-        <div class="w-full flex justify-center items-center mt-4">
-            <div class="w-1/3 justify-center items-center border-2 border-white px-2 py-4 rounded">
-                {{ form_start(detailCommandeForm) }}
-                <div class="mb-7 flex justify-center items-center">
-                    <div class="mr-5 text-2xl mb-2 ">
-                        {{ form_label(detailCommandeForm.quantite) }} :
-                    </div>
-                    <div class="text-2xl text-black font-bold "> <!-- Ajout de la classe flex -->
-                        {{ form_widget(detailCommandeForm.quantite, {'id': 'quantiteModal','attr': {'style': 'width : 200px;  text-align: center; font-size: 1.25rem;'}}) }}
-                    </div>
-                </div>
-                <div class="mb-4 text-2xl flex justify-center items-center">
-                    <div class="mr-4">
-                        {{ form_label(detailCommandeForm.taille) }} :
-                    </div>
-                    <div class="mr-6">
-                        {{ form_widget(detailCommandeForm.taille, {'attr': {'class': 'custom-checkbox'}}) }}
-                    </div>
-                </div>
-                <div class="text-3xl hover:text-red-500 duration-200 font-bold mt-6 flex justify-center items-center">
-                    <div>
-                        {{ form_widget(detailCommandeForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
-                    </div>
-                </div>
-                {{ form_end (detailCommandeForm) }}
+        <div class="mb-4 text-2xl flex justify-center items-center">
+            <div class="mr-4">
+                {{ form_label(detailCommandeForm.taille) }} :
+            </div>
+            <div class="mr-6">
+                {{ form_widget(detailCommandeForm.taille, {'attr': {'class': 'custom-checkbox'}}) }}
             </div>
         </div>
-    {% else %}
-        <div class="w-full flex justify-center items-center mt-2">
-            <div class="w-1/2 flex  text-3xl font-semibold justify-center items-center text-red-600 ">
-                    <img src="{{ asset('images/rupture-de-stock.png') }}" alt="Rupture de stock" style="width: 150px; height: 125px;">
-                    <div class="ml-5">Pizza actuellement non disponible à la vente</div>
+        <div class="text-3xl hover:text-red-500 duration-200 font-bold mt-6 flex justify-center items-center">
+            <div>
+                {{ form_widget(detailCommandeForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
             </div>
+        </div>
+        {{ form_end (detailCommandeForm) }}
+    </div>
+</div>
+{% else %}
+<div class="w-full flex justify-center items-center mt-2">
+    <div class="w-1/2 flex  text-3xl font-semibold justify-center items-center text-red-600 ">
+        <img src="{{ asset('images/rupture-de-stock.png') }}" alt="Rupture de stock"
+             style="width: 150px; height: 125px;">
+        <div class="ml-5">Pizza actuellement non disponible à la vente</div>
+    </div>
     {% endif %}
     {% if not app.user %}
         <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-10">
@@ -97,5 +124,11 @@
         </div>
     {% endif %}
 
-{% endblock %}
+    <script src="{{ asset('build/app.js') }}"></script>
+    <script>
+        window.onload = function () {
+            initTest();
+        };
+    </script>
+    {% endblock %}
 

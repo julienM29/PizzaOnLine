@@ -2,73 +2,98 @@
 
 {% block body %}
 
-    <h2 class="flex item-center justify-center text-5xl mt-8 mb-20"> Création d'une pizza</h2>
+    <h2 class="flex item-center justify-center text-5xl mt-8 mb-12"> Création d'une pizza</h2>
     {{ form_start(produitForm) }}
 
-    <div class="flex justify-center items-center"> <!-- Utilisation de flexbox pour aligner deux colonnes -->
-        <div class="w-1/2 flex flex-col "> <!-- Colonne de gauche -->
+    <div class="flex ">
+        <div class="w-1/2 flex flex-col ">
             <div class="mb-4 text-2xl mt-8">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
+                <div class="flex justify-end">
                     <div class="mr-4 ">
-                        {{ form_label(produitForm.nom) }}
+                        {{ form_label(produitForm.nom) }} :
                     </div>
-                    <div >
+                    <div class="text-black">
                         {{ form_widget(produitForm.nom, {'attr': {'style': 'width: 250px'}}) }}
                     </div>
                 </div>
             </div>
             <div class="mb-4 text-2xl">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
+                <div class="flex justify-end">
                     <div>
-                        {{ form_label(produitForm.description) }}
+                        {{ form_label(produitForm.description) }} :
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-4 text-black">
                         {{ form_widget(produitForm.description, {'attr': {'style': 'width: 250px'}}) }}
                     </div>
                 </div>
             </div>
             <div class="mb-4 text-2xl">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
+                <div class="flex justify-end">
                     <div>
-                        {{ form_label(produitForm.prix) }}
+                        {{ form_label(produitForm.prix) }} :
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-4 text-black">
                         {{ form_widget(produitForm.prix, {'attr': {'style': 'width: 250px'}}) }}
                     </div>
                 </div>
             </div>
             <div class="mb-4 text-2xl">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
+                <div class="flex justify-end">
                     <div>
-                        {{ form_label(produitForm.typeProduit) }}
+                        {{ form_label(produitForm.typeProduit) }} :
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-4 text-black">
                         {{ form_widget(produitForm.typeProduit, {'attr': {'style': 'width: 250px'}}) }}
                     </div>
                 </div>
             </div>
             <div class="mb-4 text-2xl">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
+                <div class="flex justify-end">
                     <div>
-                        {{ form_label(produitForm.urlImage) }}
+                        Image de la pizza :
                     </div>
-                    <div class="ml-4">
+                    <div class="ml-4 bg-gray-300 text-black">
                         {{ form_widget(produitForm.urlImage, {'attr': {'style': 'width: 250px'}}) }}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-4 text-2xl">
+                <div class="flex justify-end">
+                    <div>
+                        Ingrédients choisis :
+                    </div>
+                    <div class="ml-4" style="width:250px;" id="ingredients">
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="w-1/2 ml-6">
-            <div class="space-y-1 text-xl">
-                {{ form_label(produitForm.ingredients, 'Ingrédients', {'label_attr': {'class': 'labelIngredient text-2xl ml-72'}}) }}
-                <div class="grid grid-cols-3 ">
+            <div class="flex mt-8">
+                <div class="text-2xl underline-offset-4 underline">
+                    Sélectionner  une catégorie d'ingrédient :
+                </div>
+                <div class="ml-2 mb-8">
+                    <select name="categories" id="ingredient_form_categorie"
+                            class="text-xl text-black">
+                        <option class="0 text-xl" value="0">Choisissez une catégorie</option>
+                        {% set i = 1 %}
+                        {% for category in categories %}
+                            <option class="text-xl" value="{{ i }}">{{ category.libelle }}</option>
+                            {% set i = i + 1 %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="w-full space-y-1 text-2xl">
+                <div class="grid grid-cols-2 ml-6 ">
                     {% for ingredient in produitForm.ingredients %}
-                        <div class="custom-checkbox">
+                        <div class="{{ categoriesByIngredient[ingredient.vars.value] }} hidden">
                             {{ form_widget(ingredient, {'attr': {'class': 'custom-checkbox'}}) }}
                             {{ form_label(ingredient) }}
                         </div>
                     {% endfor %}
+
                 </div>
             </div>
         </div>
@@ -82,5 +107,14 @@
 
     {{ form_end(produitForm) }}
 
-    <a href="{{ path('_gerant') }}" class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-12">Retour à la page de gestion</a>
+    <a href="{{ path('_gerant') }}"
+       class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-12">Retour à la page
+        de gestion</a>
+
+    <script src="{{ asset('build/app.js') }}"></script>
+    <script>
+        window.onload = function () {
+            initIngredient();
+        };
+    </script>
 {% endblock %}

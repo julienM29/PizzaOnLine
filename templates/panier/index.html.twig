@@ -7,55 +7,71 @@
     <h2 class="flex item-center justify-center text-5xl mt-8"> Votre panier </h2>
 
     {% if detailsCommandePanier is not empty %}
-        {% for detailCommande in detailsCommandePanier %}
-            <div class="flex items-center justify-center mt-8">
-                <div class="mb-4 text-xl" id="photo">
-                    <div class="flex mt-2 mr-4">
-                        {% for pizza in pizzas %}
-                            {% if pizza.nom == detailCommande.produit.nom %}
-                                <img src="images/{{ pizza.urlImage }}"
-                                     style="width: 150px; height: 100px;" class="mb-2">
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="mb-4 text-xl">
-                    <div class="mb-2 text-3xl w-[540px] " id="contenu">
-                        <div class="flex items-center mb-5">
-                            {{ detailCommande.produit.nom }}
-                        </div>
-                        <div class="flex items-center">
-                            <div class="text-2xl ">Quantité : {{ detailCommande.quantite }}</div>
-                            <div class="text-2xl ml-2">Taille : {{ detailCommande.taille.libelle }}</div>
-                            <div class="text-2xl ml-2">Prix :
-                                {% if detailCommande.taille.id == 2 %}
-                                    {{ ((1.20*detailCommande.produit.prix) * detailCommande.quantite) | number_format(2, '.', ',') }}
-                                {% else %}
-                                    {{ (detailCommande.produit.prix * detailCommande.quantite) | number_format(2, '.', ',') }}
-                                {% endif %}
-                                €
+        <div class="w-full justify-center items-center flex mt-8 ">
+            <div class="w-1/2 border-white border-2 py-6">
+                {% for detailCommande in detailsCommandePanier %}
+                    <div class="mx-6 rounded flex items-center justify-center mb-6 bg-gray-300 mt-2">
+                        <div class="mt-1 text-xl w-1/3 " id="photo">
+                            <div class="flex justify-center">
+                                {% for pizza in pizzas %}
+                                    {% if pizza.nom == detailCommande.produit.nom %}
+                                        <img src="images/{{ pizza.urlImage }}"
+                                             style="width: 175px; height: 125px;" class="mb-2 rounded">
+                                    {% endif %}
+                                {% endfor %}
                             </div>
-                            <a href="{{ path('_suppressionDuPanier', {'id': detailCommande.id}) }}"
-                               class="ml-auto hover:text-red-500 duration-200 justify-end">
-                                <img src="{{ asset('images/croixRouge.png') }}" style="width: 40px; height: 40px;">
-                            </a>
+                        </div>
+                        <div class=" text-3xl mt-2 w-2/3" id="contenu">
+                            <div class="flex items-center text-black mb-3">
+                                {{ detailCommande.produit.nom }}
+                            </div>
+                            <div class="flex text-black justify-between">
+                                <div class="text-2xl">Quantité : {{ detailCommande.quantite }}</div>
+                                <div class="text-2xl ml-4">Taille : {{ detailCommande.taille.libelle }}</div>
+                                <div class="text-2xl ml-4">Prix :
+                                    {% if detailCommande.taille.id == 2 %}
+                                        {{ ((1.20*detailCommande.produit.prix) * detailCommande.quantite) | number_format(2, '.', ',') }}
+                                    {% else %}
+                                        {{ (detailCommande.produit.prix * detailCommande.quantite) | number_format(2, '.', ',') }}
+                                    {% endif %}
+                                    €
+                                </div>
+                            </div>
+                            <div class="flex items-center text-black mb-5 underline underline-offset-4">
+                                <a href="{{ path('_suppressionDuPanier', {'id': detailCommande.id}) }}"
+                                   class="text-xl mt-2 hover:text-red-500 text-blue-800 duration-200 font-semibold justify-end">
+                                    Supprimer l'article
+                                </a>
+                                <a href="{{ path('_suppressionDuPanier', {'id': detailCommande.id}) }}"
+                                   class="text-xl ml-4 mt-2 hover:text-red-500 text-blue-800 duration-200 font-semibold justify-end">
+                                    Modifier l'article
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
+
         <div class="flex justify-center items-center w-full mt-10 mb-24">
-            <div class="text-3xl hover:text-red-500 duration-200 font-bold">
+            <div class="text-3xl  font-bold">
                 Prix total : {{ prixDuPanier | number_format(2, '.', ',') }} €
             </div>
             <div class="ml-12">
-                <a href="{{ path('_payementPanier') }}"
-                   class="ml-10 text-3xl hover:text-red-500 duration-200 font-bold ">Commander</a>
+                <button type="button" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <a href="{{ path('_payementPanier') }}"
+                       class="mr-1 text-3xl  font-bold ">Commander</a>
+                    <svg class="rtl:rotate-180 w-8 h-8 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+               </button>
             </div>
         </div>
     {% endif %}
     {% if detailsCommandePanier is empty %}
-        <h3><a href="{{ path('_accueil') }}" class="ml-7 flex item-center justify-center hover:text-red-500 duration-200 mt-20 text-4xl">Votre
+        <h3><a href="{{ path('_accueil') }}"
+               class="ml-7 flex item-center justify-center hover:text-red-500 duration-200 mt-20 text-4xl">Votre
                 panier est vide, cliquer ici pour commander une pizza ! </a></h3>
     {% endif %}
 

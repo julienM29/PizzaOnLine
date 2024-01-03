@@ -33,7 +33,24 @@ class AccueilController extends AbstractController
         $heurePreparation = $now->add(new DateInterval('PT30M'));
         $heureLivraison = $heurePreparation->add(new DateInterval('PT30M'));
         $detailCommandeForm = $this->createForm(DetailCommandeFormType::class, $detailCommande);
+        //////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur],
+            ['id' => 'DESC']
+        );
+        $detailsCommandePanier = [];
+        $prixDuPanier = 0;
+        if ($derniereCommande) {
 
+            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            if ($detailsCommandePanier) {
+                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+            } else {
+                $detailsCommandePanier = [];
+            }
+        } else {
+            $derniereCommande = [];
+        }
         //////////////////////////////////// MODAL PANIER ///////////////////////////////////////////////////////////////////////////////////
         $ingredientIndisponible = $ingredientRepository->findBy(['quantite' => 0]);
         foreach ($pizzas as $pizza){
@@ -80,23 +97,7 @@ class AccueilController extends AbstractController
             }
 
         }
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = [];
-        $prixDuPanier = 0;
-        if ($derniereCommande) {
 
-            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
-            if ($detailsCommandePanier) {
-                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
-            } else {
-                $detailsCommandePanier = [];
-            }
-        } else {
-            $derniereCommande = [];
-        }
         return $this->render('accueil/index.html.twig', compact('pizzas', 'detailCommandeForm', 'detailsCommandePanier', 'prixDuPanier'));
     }
 
