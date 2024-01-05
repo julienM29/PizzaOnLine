@@ -121,7 +121,7 @@ function saveModifQuantite(id, value) {
 function envoiDonnee() {
     let url = 'https://127.0.0.1:8000/changementQuantite';
     let options = {
-        method: 'POST', // Correction de la faute de frappe ici
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'

@@ -7,10 +7,13 @@ use App\Form\ModificationProfilFormType;
 use App\Form\ProfilFormType;
 use App\Repository\CollaborateurRepository;
 use App\Repository\CommandeRepository;
+use App\Repository\EtatRepository;
+use App\Repository\IngredientRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -150,4 +153,19 @@ class ProfilController extends AbstractController
         }
         return $prixDuPanier;
     }
+    #[Route('/profilsClient', name: '_profilsClient')]
+    public function profilsClient(Request $request, IngredientRepository $ingredientRepository,EtatRepository $etatRepository,CommandeRepository $commandeRepository, EntityManagerInterface $entityManager)
+    {
+        $etatLivraison = $etatRepository->findOneBy(array('id' => 4)); // État livré
+        $commandesALivrer = $commandeRepository->findBy(['etat' => $etatLivraison,]); // Récupération des commandes prêtes à être livrées
+        $adresseLivraison = [];
+
+        foreach( $commandesALivrer as $index => $commande){
+            $adresse = $commande->getCollaborateur()->getAdresse(); // Récupération de l'adresse de la commande
+            $adresseLivraison[$index]= $adresse; // Tableau associatif
+
+        }
+        return new JsonResponse(['adresses' => $adresseLivraison]);
+    }
+
 }

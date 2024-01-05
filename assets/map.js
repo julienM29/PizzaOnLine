@@ -1,11 +1,14 @@
-
 function init() {
-affichageMapVille();
-console.log('je suis dans init')
+    affichageMapVille();
+    adresseTest();
 }
 window.init = init;
 
-function affichageMapVille(){
+let arretsLivreur = [];
+const geolib = require('geolib'); // Permet de calculer la distance entre 2 points
+let arretsLivreurTri = [];
+
+function affichageMapVille() {
 
     map = L.map('map').setView([47.2264, -1.62076], 15);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -13,11 +16,10 @@ function affichageMapVille(){
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright"></a>'
     }).addTo(map);
     affichagePointeurs();
-    affichageMarkerPointB();
     cacherLesMarkerAuto();
 }
 
-function affichagePointeurs(){
+function affichagePointeurs() {
     var startPoint = [47.2264, -1.62076];
 
     var defaultIcon = L.icon({
@@ -36,27 +38,10 @@ function affichagePointeurs(){
         shadowAnchor: [4, 62],
         popupAnchor: [-3, -76]
     });
-    L.marker(startPoint, { icon: pizzeriaIcon }).addTo(map);
+    L.marker(startPoint, {icon: pizzeriaIcon}).addTo(map);
 }
 
-
-
-function affichageRoute(startPoint, endPoint) {
-console.log('je passe dans affichageRoute')
-    var routeLayer = L.Routing.control({
-        waypoints: [startPoint, endPoint],
-        routeWhileDragging: true,
-        show: false,
-        lineOptions: {
-            styles: [
-                {color: 'blue', opacity: 0.6, weight: 4, dashArray: '10, 10'},
-            ]
-        }
-    }).addTo(map);
-    // affichageLivreur(routeLayer);
-
-}
-function cacherLesMarkerAuto(){
+function cacherLesMarkerAuto() {
     var markersGroup = L.layerGroup();
 
     var marker1 = L.marker([47.2264, -1.62076]);
@@ -68,6 +53,7 @@ function cacherLesMarkerAuto(){
         map.removeLayer(marker);
     });
 }
+
 // function affichageLivreur(routeLayer) {
 //     var voitureIcone = L.icon({
 //         iconUrl: '/images/voiturePizza.png',
@@ -112,31 +98,149 @@ function cacherLesMarkerAuto(){
 //         animateCar(waypoints[i], waypoints[i + 1]);
 //     }
 // }
-function affichageMarkerPointB() {
-    let startPoint = [47.2264, -1.62076];
-    let endPoint;
-    var adresse = document.getElementById("premiereAdresse").textContent;
-    console.log(adresse);
-    let adresseFinal = adresse.replaceAll(" ", "+");
-    fetch(`https://nominatim.openstreetmap.org/search?q=${adresseFinal}&format=geojson`)
-        .then(res => res.json())
-        .then(json => {
-            let coordonnees = json['features'][0]['geometry']['coordinates'];
-            let rue = json['features'][0]['properties']['name'];
-            let longitude = coordonnees[0];
-            let latitude = coordonnees[1];
-console.log(latitude);
-console.log(longitude);
-             endPoint = [latitude, longitude];
-            var clientIcone = L.icon({
-                iconUrl: '/images/client.png',
-                iconSize: [50, 50],
-                iconAnchor: [20, 40],
-                shadowAnchor: [4, 62],
-                popupAnchor: [-3, -76]
-            });
-            L.marker(endPoint, { icon: clientIcone }).addTo(map);
 
-    affichageRoute(startPoint,endPoint);  });
+function adresseTest() {
+    fetch('https://127.0.0.1:8000/profilsClient') // Appel au controller Symfony
+        .then(res => res.json())// Récupération de la réponse
+        .then(json => {
+            let tabAdresse = json['adresses'];
+            affichageArret(tabAdresse);
+        })
+        .catch(error => {
+            console.error('Erreur de requête Fetch :', error);
+        });
 }
-window.affichageMarkerPointB = affichageMarkerPointB;
+
+async function affichageArret(tabAdresse) {
+    // const clientIcone = L.icon({
+    //     iconUrl: '/images/client.png',
+    //     iconSize: [50, 50],
+    //     iconAnchor: [20, 40],
+    //     shadowAnchor: [4, 62],
+    //     popupAnchor: [-3, -76]
+    // });
+
+    const fetchPromises = tabAdresse.map(async (adresse, index) => { // Fonction asynchrone donnant une réponse à chaque action
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${adresse}&format=geojson`);
+        const json = await response.json(); // Attends une réponse de la fonction asynchrone avant d'effectuer le reste du code
+        const coordonnees = json.features[0]?.geometry?.coordinates; // Récupération des coordonnées
+        if (coordonnees) {
+            const [longitude, latitude] = coordonnees;
+            const endPoint = [latitude, longitude];
+            // L.marker(endPoint, {icon: clientIcone})
+            //     .addTo(map)
+            //     .on('click', function() {
+            //         fonctionAvecNumeroMarker(index);
+            //     });
+
+            return endPoint;
+        }
+        return null;
+    });
+
+    try {
+        const stopPoints = await Promise.all(fetchPromises); // Quand toutes les promesses ( réponses ) sont faites on éxecute le code
+        const filteredStopPoints = stopPoints.filter(point => point !== null); // Si l'API renvoie des valeurs nulles elles seront pas mises dans le tableau
+        affichageRoute(filteredStopPoints);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des coordonnées :', error);
+    }
+}
+
+
+async function affichageRoute(stopPoints) {
+    const calcDistancePromises = stopPoints.map(stopPoint => { // Création d'une variable Promise contenant les variables , .map permet de faire un tableau de toutes les informations de stopPoints
+        return new Promise(resolve => {
+            calcDistance(stopPoint);
+            resolve();
+        });
+    });
+
+    try {
+        await Promise.all(calcDistancePromises);// Toutes les promesses de calcDistance sont résolues ici
+        affichageTrajetPause();
+    } catch (error) {
+        console.error('Une erreur s\'est produite :', error);
+    }
+}
+
+function calcDistance(stopPoint) {
+    const pizzeriaLocation = {latitude: 47.2264, longitude: -1.62076}; // Localisation de la pizzeria
+    const distanceInMeters = geolib.getDistance(pizzeriaLocation, {latitude: stopPoint[0], longitude: stopPoint[1]});
+
+    arretsLivreur[distanceInMeters / 1000] = stopPoint; // Convertir la distance en kilomètres et stocker dans le tableau associatif
+}
+
+function affichageTrajetPause() {
+    const clientIcone = L.icon({
+        iconUrl: '/images/client.png',
+        iconSize: [50, 50],
+        iconAnchor: [20, 40],
+        shadowAnchor: [4, 62],
+        popupAnchor: [-3, -76]
+    });
+    const pizzeriaLocation = [47.2264, -1.62076]; // Localisation de la pizzeria
+    const sortedKeys = Object.keys(arretsLivreur).sort((a, b) => parseFloat(a) - parseFloat(b)); // Trie les clés en ordre croissant
+     arretsLivreurTri = sortedKeys.map(key => arretsLivreur[key]);
+    arretsLivreurTri.unshift(pizzeriaLocation); // Permet d'inclure la localisation de la pizzeria en premier dans le tableau
+
+
+    for (let i = 0; i < arretsLivreurTri.length - 1; i++) {
+        let startPoint = arretsLivreurTri[i];
+        let endPoint = arretsLivreurTri[i + 1];
+
+        L.marker(endPoint, {icon: clientIcone})
+            .addTo(map)
+            .on('click', function() {
+                fonctionAvecNumeroMarker(i + 1);
+            });
+
+        if (i === 0) {
+            affichageLivreur(arretsLivreurTri[0] , arretsLivreurTri[1]);
+        }
+
+        L.Routing.control({
+            waypoints: [
+                L.latLng(startPoint),
+                L.latLng(endPoint)
+            ],
+            routeWhileDragging: true,
+            show: false,
+            lineOptions: {
+                styles: [
+                    {color: 'blue', opacity: 0.6, weight: 4, dashArray: '10, 10'},
+                ]
+            }
+        }).addTo(map);
+    }
+}
+
+function affichageLivreur(a , b) {
+    var voitureIcone = L.icon({
+        iconUrl: '/images/voiturePizza.png',
+        iconSize: [40, 40], // Les dimensions réelles de votre icône
+        iconAnchor: [20, 40], // L'ancre devrait être au milieu en bas de l'icône
+        shadowAnchor: [4, 62],
+        popupAnchor: [-3, -76]
+    });
+    let  [latA, lngA] = a ;
+    let  [latB, lngB] = b ;
+    let halfwayPoint = [
+        (parseFloat(latA) + parseFloat(latB)) / 2,
+        (parseFloat(lngA) + parseFloat(lngB)) / 2
+    ];
+
+    console.log('latA =' + latA + "lngA =" + lngA);
+    console.log('latB =' + latB + "lngB =" + lngB);
+
+    L.marker(halfwayPoint, { icon: voitureIcone }).addTo(map);
+}
+
+function fonctionAvecNumeroMarker(index){
+    console.log(index);
+    let index2 = index + 1 ;
+    console.log(index2);
+    affichageLivreur(arretsLivreurTri[index] , arretsLivreurTri[index2]);
+    // L.marker[index].setOpacity(0);
+    // L.marker[index].setZIndexOffset(-1000);
+}

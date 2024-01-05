@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "flowbite": "^1.8.1",
+        "geolib": "^3.3.4",
         "leaflet": "^1.9.4",
         "leaflet-routing-machine": "^3.2.12",
         "leaflet.animatedmarker": "^1.0.0"
