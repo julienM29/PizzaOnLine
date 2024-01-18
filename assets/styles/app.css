@@ -48,7 +48,7 @@ body {
 }
 #mapAdresse {
     height: 400px;
-    width: 500px;
+    width: 550px;
     border-radius: 10%;
     border: 3px solid;
     margin-left: auto;
@@ -77,5 +77,9 @@ body {
 }
 .reverseTexte{
     direction : ltr;
+}
+.checkbox_role{
+    display: flex;
+    flex-direction: column;
 }
 

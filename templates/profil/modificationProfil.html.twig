@@ -1,66 +1,258 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h2 class="flex item-center justify-center text-5xl mt-8 mb-16 font-semibold"> Modification du profil
-    de {{ user.prenom }} {{ user.nom }}</h2>
-<div class="grid w-1/3 mx-auto ">
-    <div class=" flex flex-col items-center justify-center  rounded border-2 border-white mb-24">
+    <h2 class="flex item-center justify-center text-5xl mt-4 mb-8 font-semibold"> Profil
+        de {{ user.prenom }} {{ user.nom }}</h2>
 
-        {{ form_start(profilForm) }}
-        <div class="w-full flex mt-8">
-            <div class="w-1/2 flex justify-end text-3xl  mr-5 mb-6"> {{ form_label(profilForm.nom) }}&nbsp;:</div>
-            <div class="w-1/2 text-3xl ml-5 mb-6 text-black font-semibold"> {{ form_widget(profilForm.nom, {'attr': {'style': 'width: 250px'}}) }}</div>
-        </div>
-        <div class="w-full flex">
-            <div class="w-1/2 flex justify-end text-3xl mr-5 mb-6"> {{ form_label(profilForm.prenom) }}&nbsp;:</div>
-            <div class="w-1/2 text-3xl ml-5 mb-6 text-black font-semibold"> {{ form_widget(profilForm.prenom, {'attr': {'style': 'width: 250px'}}) }}</div>
-        </div>
-        <div class="w-full flex">
-            <div class="w-1/2 flex justify-end text-3xl mr-5 mb-6"> {{ form_label(profilForm.email) }}&nbsp;:</div>
-            <div class="w-1/2 text-3xl ml-5 mb-6 text-black font-semibold"> {{ form_widget(profilForm.email, {'attr': {'style': 'width: 250px'}}) }}</div>
-        </div>
-        <div class="w-full flex">
-            <div class="w-1/2 flex justify-end text-3xl mr-5 mb-6"> {{ form_label(profilForm.sexe) }}&nbsp;:</div>
-            <div class="w-1/2 text-3xl ml-5 mb-6 text-black font-semibold"> {{ form_widget(profilForm.sexe, {'attr': {'style': 'width: 250px'}}) }}</div>
-        </div>
+{#    {{ form_start(profilForm) }}#}
+{#    <div class="flex flex-wrap justify-center mb-24 mt-8">#}
+{#        <div class="w-1/3">#}
+{#            <div class="flex flex-wrap -mx-3 mb-4">#}
+{#                <div class="w-full md:w-1/2 px-3 mb-4 md:mb-0">#}
+{#                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"#}
+{#                           for="grid-first-name">#}
+{#                        {{ form_label(profilForm.nom) }} :#}
+{#                    </label>#}
+{#                    <input#}
+{#                            name="{{ field_name(profilForm.nom) }}"#}
+{#                            value="{{ field_value(profilForm.nom) }}"#}
+{#                            placeholder="{{ field_label(profilForm.nom) }}"#}
+{#                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"#}
+{#                            type="text"#}
+{#                    >#}
+{#                </div>#}
+{#                <div class="w-full md:w-1/2 px-3">#}
+{#                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"#}
+{#                           for="grid-last-name">#}
+{#                        {{ form_label(profilForm.prenom) }} :#}
+{#                    </label>#}
+{#                    <input#}
+{#                            name="{{ field_name(profilForm.prenom) }}"#}
+{#                            value="{{ field_value(profilForm.prenom) }}"#}
+{#                            placeholder="{{ field_label(profilForm.prenom) }}"#}
+{#                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"#}
+{#                            type="text"#}
+{#                    >#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="flex flex-wrap -mx-3 mb-4">#}
+{#                <div class="w-full px-3">#}
+{#                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"#}
+{#                           for="grid-password">#}
+{#                        {{ form_label(profilForm.sexe) }} :#}
+{#                    </label>#}
+{#                    <div class="text-gray-700 ">#}
+{#                        {{ form_widget(profilForm.sexe, {'attr': {'class': 'w-full'}}) }}#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="flex flex-wrap -mx-3 mb-4">#}
+{#                <div class="w-full px-3">#}
+{#                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"#}
+{#                           for="grid-password">#}
+{#                        {{ form_label(profilForm.telephone) }} :#}
+{#                    </label>#}
+{#                    <input#}
+{#                            name="{{ field_name(profilForm.telephone) }}"#}
+{#                            value="{{ field_value(profilForm.telephone) }}"#}
+{#                            placeholder="Téléphone"#}
+{#                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"#}
+{#                            type="number"#}
+{#                    >#}
+{#                </div>#}
+{#            </div>#}
+{#            <div class="flex flex-wrap -mx-3 mb-4">#}
+{#                <div class="w-full px-3">#}
+{#                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"#}
+{#                           for="grid-password">#}
+{#                        {{ form_label(profilForm.email) }} :#}
+{#                    </label>#}
+{#                    <input#}
+{#                            name="{{ field_name(profilForm.email) }}"#}
+{#                            value="{{ field_value(profilForm.email) }}"#}
+{#                            placeholder="email"#}
+{#                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"#}
+{#                            type="email"#}
+{#                    >#}
+{#                </div>#}
+{#            </div>#}
+{#            {% if is_granted('ROLE_GERANT') %}#}
+{#            <div class="flex flex-wrap -mx-3 mb-4">#}
+{#                {% else %}#}
+{#                <div class="flex flex-wrap -mx-3 mb-4 hidden">#}
+{#                    {% endif %}#}
+{#                    <div class="w-full px-3">#}
+{#                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"#}
+{#                               for="grid-password">#}
+{#                            {{ form_label(profilForm.roles) }} :#}
+{#                        </label>#}
+{#                        <div class="text-gray-700 flex flex-col">#}
+{#                            {% for choice in profilForm.roles %}#}
+{#                                <div class="checkbox_pair text-xl text-gray-50 mb-2">#}
+{#                                    {{ form_widget(choice, {'attr': {'class': 'mr-4 mb-1', 'style': 'width: 1.25rem; height: 1.25rem;'}}) }}#}
+{#                                    {{ form_label(choice) }}#}
+{#                                </div>#}
+{#                            {% endfor %}#}
+{#                        </div>#}
 
-        {% if is_granted('ROLE_GERANT') %}
-        <div class="w-full flex">
-            {% else %}
-            <div class="w-full flex hidden">
-                {% endif %}
-                <div class="w-1/2 flex justify-end text-3xl mr-5 mb-6">
-                    <label for="countries_multiple" class="">Rôles :</label>
+{#                    </div>#}
+{#                </div>#}
+
+{#                <div class="flex  text-3xl mr-5 mb-6 hover:text-red-500 underline underline-offset-4 mb-4"><a#}
+{#                            href="{{ path('_modificationMotDePasse', {'id': user.id}) }}">Modifier son mot de passe</a>#}
+{#                </div>#}
+{#                <div class="btn flex justify-center items-center text-3xl text-white bg-blue-500 hover:bg-blue-700 font-bold mt-4">#}
+{#                    {{ form_widget(profilForm.ajouter) }}#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{#    {{ form_end(profilForm) }}#}
+
+    {{ form_errors(profilForm) }}
+    {{ form_start(profilForm) }}
+    <div class="flex flex-wrap justify-center mb-12 mt-8">
+
+        <div class="w-1/3">
+            <div class="flex flex-wrap -mx-3 mb-4">
+                <div class="w-full md:w-1/2 px-3 mb-4 md:mb-0">
+                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                           for="grid-first-name">
+                        {{ form_label(profilForm.nom) }} :
+                    </label>
+                    <input
+                            name="{{ field_name(profilForm.nom) }}"
+                            value="{{ field_value(profilForm.nom) }}"
+                            placeholder="{{ field_label(profilForm.nom) }}"
+                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                            type="text"
+                    >
                 </div>
-                <div class="w-1/2 text-3xl ml-5 mb-6">
-                    {% for role in profilForm.roles %}
-                        <div>
-                            {{ form_widget(role, {'attr': {'class': 'mr-2'}}) }}
-                            {{ form_label(role) }}
-                        </div>
-                    {% endfor %}
+                <div class="w-full md:w-1/2 px-3">
+                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                           for="grid-last-name">
+                        {{ form_label(profilForm.prenom) }} :
+                    </label>
+                    <input
+                            name="{{ field_name(profilForm.prenom) }}"
+                            value="{{ field_value(profilForm.prenom) }}"
+                            placeholder="{{ field_label(profilForm.prenom) }}"
+                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                            type="text"
+                    >
                 </div>
             </div>
-            <div class="flex justify-center items-center text-3xl mr-5 mb-6 hover:text-red-500 underline underline-offset-4
-"><a
-                        href="{{ path('_modificationMotDePasse', {'id': user.id}) }}">Modifier son mot de passe</a>
+            <div class="flex flex-wrap -mx-3 mb-4">
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                           for="grid-password">
+                        {{ form_label(profilForm.sexe) }} :
+                    </label>
+                    <div>
+                        {{ form_widget(profilForm.sexe) }}
+                    </div>
+                </div>
             </div>
-
-
-            <div class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-4 mb-8 ">
-                {{ form_label(profilForm.ajouter) }}
-                {{ form_widget(profilForm.ajouter, {'attr': {'style': 'width: 250px'}}) }}
+            <div class="flex flex-wrap -mx-3 mb-4">
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                           for="grid-password">
+                        {{ form_label(profilForm.telephone) }} :
+                    </label>
+                    <input
+                            name="{{ field_name(profilForm.telephone) }}"
+                            value="{{ field_value(profilForm.telephone) }}"
+                            placeholder="Téléphone"
+                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            type="number"
+                    >
+                </div>
             </div>
-
-            {{ form_end(profilForm) }}
-
+            <div class="flex flex-wrap -mx-3 mb-4">
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                           for="grid-password">
+                        {{ form_label(profilForm.email) }} :
+                    </label>
+                    <input
+                            name="{{ field_name(profilForm.email) }}"
+                            value="{{ field_value(profilForm.email) }}"
+                            placeholder="email"
+                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            type="email"
+                    >
+                </div>
+            </div>
+            <div class="flex justify-center items-center mt-7 mb-20">
+                <button type="submit"
+                        class="btn flex justify-center items-center text-2xl text-white bg-blue-500 hover:bg-blue-700 font-bold">
+                    Valider les nouvelles informations
+                </button>
+            </div>
+            <div class="hidden" id="">
+                {{ form_widget(profilForm.latitude, { 'id': 'latitude_form' }) }}
+            </div>
+            <div class="hidden" id="">
+                {{ form_widget(profilForm.longitude, { 'id': 'longitude_form' }) }}
+            </div>
         </div>
+        <div class="w-5/12 ml-8">
+            <div class="flex flex-wrap -mx-3 mb-2">
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                           for="grid-password">
+                        {{ form_label(profilForm.adresse) }} :
+                    </label>
+                    <input
+                            name="{{ field_name(profilForm.adresse) }}"
+                            value="{{ field_value(profilForm.adresse) }}"
+                            placeholder="Saisissez votre adresse"
+                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            type="text"
+                            onchange="window.showAdresse()"
+                            id="adresseUser"
+                    >
+                </div>
+            </div>
+            <div class="flex flex-col">
+                <div class="flex flex-col mr-4">
+                    <div class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2 mt-3"> Adresses correspondantes :
+                    </div>
+                    <select class="" id="conteneurAdresse">
+                        <option value=""> Sélectionner une adresse </option>
+                    </select>
+                </div>
+                <div class=" static z-10 ">
+                    <div id="mapAdresse" class=" mt-6"></div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    {{ form_end(profilForm) }}
+
+
     <script src="{{ asset('build/app.js') }}"></script>
     <script>
         window.onload = function () {
-            initProfil();
+            initAdresse();
+            var latitude = document.getElementById("latitude_form").value;
+            var longitude = document.getElementById("longitude_form").value;
+            flyToAdresseCoordonnee(latitude,longitude);
         };
+        // Intercepte l'événement de touche pressée
+        document.addEventListener('keydown', function (event) {
+            // Si la touche pressée est la touche Entrée et le formulaire est en focus
+            if (event.key === 'Enter' && document.activeElement.tagName !== 'BUTTON') {
+                // Annule l'événement pour empêcher la soumission du formulaire
+                event.preventDefault();
+            }
+            if (event.key === 'Enter' && document.activeElement.id === 'adresseUser') {
+                // Annule l'événement pour empêcher la soumission du formulaire
+                window.showAdresse();
+            }
+        });
     </script>
-    {% endblock %}
+{% endblock %}
 

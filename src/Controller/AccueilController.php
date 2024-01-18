@@ -249,7 +249,7 @@ class AccueilController extends AbstractController
                     $idProduit = $detail->getProduit()->getId();
                     $pizza = $produitRepository->findOneBy(array('id' => $idProduit));
                     if ($detail->getTaille() === $tailleLarge) { // Si il y a une taille large on change le prix
-                        $prixDuDetail = 5 + ($pizza->getPrix() * $detail->getQuantite());
+                        $prixDuDetail =  (($pizza->getPrix()+5 ) * $detail->getQuantite());
                     } else {
                         $prixDuDetail = ($pizza->getPrix() * $detail->getQuantite());
                     }

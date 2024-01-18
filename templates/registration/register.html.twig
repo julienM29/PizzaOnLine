@@ -1,90 +1,159 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="flex content-center justify-center text-5xl mt-12 mb-6">Création d'un compte</h1>
+    <h1 class="flex content-center justify-center text-5xl mt-5 ">Création d'un compte</h1>
+    {{ form_errors(registrationForm) }}
+    {{ form_start(registrationForm) }}
+    <div class="flex flex-wrap justify-center mb-12 mt-8">
 
-    <div class="flex justify-center items-center mt-12">
-        <div class="mt-12 border-2 border-white rounded px-4 py-4 ">
-            <div class="block mr-12">
-                {{ form_errors(registrationForm) }}
-                {{ form_start(registrationForm) }}
+        <div class="w-1/3">
+                <div class="flex flex-wrap -mx-3 mb-4">
+                    <div class="w-full md:w-1/2 px-3 mb-4 md:mb-0">
+                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                               for="grid-first-name">
+                            {{ form_label(registrationForm.nom) }} :
+                        </label>
+                        <input
+                                name="{{ field_name(registrationForm.nom) }}"
+                                value="{{ field_value(registrationForm.nom) }}"
+                                placeholder="{{ field_label(registrationForm.nom) }}"
+                                class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                                type="text"
+                        >
+                    </div>
+                    <div class="w-full md:w-1/2 px-3">
+                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                               for="grid-last-name">
+                            {{ form_label(registrationForm.prenom) }} :
+                        </label>
+                        <input
+                                name="{{ field_name(registrationForm.prenom) }}"
+                                value="{{ field_value(registrationForm.prenom) }}"
+                                placeholder="{{ field_label(registrationForm.prenom) }}"
+                                class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                                type="text"
+                        >
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-4">
+                    <div class="w-full px-3">
+                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                               for="grid-password">
+                            {{ form_label(registrationForm.sexe) }} :
+                        </label>
+                        <div>
+                            {{ form_widget(registrationForm.sexe) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-4">
+                    <div class="w-full px-3">
+                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                               for="grid-password">
+                            {{ form_label(registrationForm.telephone) }} :
+                        </label>
+                        <input
+                                name="{{ field_name(registrationForm.telephone) }}"
+                                value="{{ field_value(registrationForm.telephone) }}"
+                                placeholder="Téléphone"
+                                class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                type="number"
+                        >
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-4">
+                    <div class="w-full px-3">
+                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                               for="grid-password">
+                            {{ form_label(registrationForm.email) }} :
+                        </label>
+                        <input
+                                name="{{ field_name(registrationForm.email) }}"
+                                value="{{ field_value(registrationForm.email) }}"
+                                placeholder="email"
+                                class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                type="email"
+                        >
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-4">
+                    <div class="w-full px-3">
+                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                               for="grid-password">
+                            {{ form_label(registrationForm.plainPassword, 'Password') }} :
+                        </label>
+                        <div>
+                            {{ form_widget(registrationForm.plainPassword) }}
+                        </div>
 
-                <div class="text-2xl mb-6 flex">
-                    <div style="flex: 1; text-align: start;">
-                        {{ form_label(registrationForm.nom) }}
-                    </div>
-                    <div style="text-align: end;">
-                        {{ form_widget(registrationForm.nom) }}
                     </div>
                 </div>
-                <div class="text-2xl mb-6 flex">
-                    <div style="flex: 1; text-align: start;">
-                        {{ form_label(registrationForm.prenom) }}
-                    </div>
-                    <div style="text-align: end;">
-                    {{ form_widget(registrationForm.prenom) }}
-                    </div>
+            <div class="hidden" id="">
+                {{ form_widget(registrationForm.latitude, { 'id': 'latitude_form' }) }}
+            </div>
+            <div class="hidden" id="">
+                {{ form_widget(registrationForm.longitude, { 'id': 'longitude_form' }) }}
+            </div>
+            <div class="flex justify-center items-center mt-7 mb-20">
+                <button type="submit"
+                        class="btn flex justify-center items-center text-3xl text-white bg-blue-500 hover:bg-blue-700 font-bold">
+                    Enregistrer son compte
+                </button>
+            </div>
+        </div>
+        <div class="w-5/12 ml-8">
+            <div class="flex flex-wrap -mx-3 mb-2">
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                           for="grid-password">
+                        {{ form_label(registrationForm.adresse) }} :
+                    </label>
+                    <input
+                            name="{{ field_name(registrationForm.adresse) }}"
+                            value="{{ field_value(registrationForm.adresse) }}"
+                            placeholder="Saisissez votre adresse"
+                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            type="text"
+                            onchange="window.showAdresse()"
+                            id="adresseUser"
+                    >
                 </div>
-                <div class="text-2xl mb-6 flex">
-                    <div style="flex: 1; text-align: start;">
-                        {{ form_label(registrationForm.email) }}
+            </div>
+            <div class="flex flex-col">
+                <div class="flex flex-col mr-4">
+                    <div class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2 mt-3"> Adresses correspondantes :
                     </div>
-                    <div style="text-align: end;">
-                    {{ form_widget(registrationForm.email) }}
-                    </div>
+                    <select class="" id="conteneurAdresse">
+                        <option value=""> Sélectionner une adresse </option>
+                    </select>
                 </div>
-                <div class="text-2xl mb-6 flex">
-                    <div style="flex: 1; text-align: start;" class="mr-2">
-                        {{ form_label(registrationForm.plainPassword, 'Password') }}
-                    </div>
-                    <div style="text-align: end;">
-                    {{ form_widget(registrationForm.plainPassword, {
-                            label: 'Password'
-                        }) }}                    </div>
+                <div class=" static z-10 ">
+                    <div id="mapAdresse" class=" mt-6"></div>
                 </div>
-                <div class="text-2xl mb-6 flex">
-                    <div style="flex: 1; text-align: start;">
-                        {{ form_label(registrationForm.telephone) }}
-                    </div>
-                    <div style="text-align: end;">
-                        {{ form_widget(registrationForm.telephone) }}
-                    </div>
-                </div>
-                <div class="text-2xl mb-6 flex">
-                    <div style="flex: 1; text-align: start;">
-                        {{ form_label(registrationForm.sexe) }}
-                    </div>
-                    <div class="text-black font-semibold" style="text-align: end;">
-                        {{ form_widget(registrationForm.sexe) }}
-                    </div>
-                </div>
-                <div class="invisible">
-                    {{ form_label(registrationForm.adresse) }}
-                    {{ form_widget(registrationForm.adresse, {'attr': {'id': 'registration_form_adresse'}}) }}
-                </div>
-                <div class="flex justify-center items-center">
-                    <button type="submit" class="btn flex justify-center items-center text-2xl hover:text-red-500 duration-200 font-bold">Enregistrer son compte</button>
-                </div>
-
-                {{ form_end(registrationForm) }}
             </div>
         </div>
 
-        <div class="block ml-12 text-2xl ">
-            <div class="mb-6">
-                <label class="mr-2 ">Saisissez une adresse</label>
-                <input type="text" style="width: 250px;" class="flex-grow" id="adresseUser" name="adresse"
-                       onchange="window.flyToAdresse()"/>
-            </div>
-            <div>
-                <div id="mapAdresse" class="z-50 w-1/4"></div>
-            </div>
-        </div>
     </div>
+
+    {{ form_end(registrationForm) }}
+
+
     <script src="{{ asset('build/app.js') }}"></script>
     <script>
         window.onload = function () {
             initAdresse();
         };
+        // Intercepte l'événement de touche pressée
+        document.addEventListener('keydown', function (event) {
+            // Si la touche pressée est la touche Entrée et le formulaire est en focus
+            if (event.key === 'Enter' && document.activeElement.tagName !== 'BUTTON') {
+                // Annule l'événement pour empêcher la soumission du formulaire
+                event.preventDefault();
+            }
+            if (event.key === 'Enter' && document.activeElement.id === 'adresseUser') {
+                // Annule l'événement pour empêcher la soumission du formulaire
+                window.showAdresse();
+            }
+        });
     </script>
 {% endblock %}

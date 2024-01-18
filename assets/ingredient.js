@@ -9,8 +9,13 @@ function initIngredient() {
     }
     let decrement = document.getElementById('decrement');
     let increment = document.getElementById('increment');
-    increment.addEventListener('click', augmentationQuantite);
-    decrement.addEventListener('click', diminutionQuantite);
+    if(decrement){
+        decrement.addEventListener('click', diminutionQuantite);
+    }
+    if(increment){
+        increment.addEventListener('click', augmentationQuantite);
+    }
+
 
     boutonCategorie.addEventListener('change', affichageIngredient);
 }

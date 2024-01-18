@@ -1,10 +1,9 @@
-function init() {
+function initMapClient() {
     affichageMapVille();
     adresseTest();
 }
 
-window.init = init;
-
+window.initMapClient = initMapClient;
 
 let arretsLivreur = [];
 const geolib = require('geolib'); // Permet de calculer la distance entre 2 points
@@ -22,14 +21,13 @@ function affichageMapVille() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright"></a>'
     }).addTo(map);
     affichagePointeurs();
-    // cacherLesMarkerAuto();
 }
 
 function affichagePointeurs() {
     var startPoint = [47.2264, -1.62076];
 
     var defaultIcon = L.icon({
-        iconUrl: './images/marker-icon.png',
+        iconUrl: '/images/epingle.png',
         iconSize: [25, 41],
         iconAnchor: [12, 41],
         popupAnchor: [0, -41]
@@ -58,43 +56,41 @@ function affichagePointeurs() {
     });
 }
 
-
-// async function affichageArret(tabAdresse) {
-//
-//     const fetchPromises = tabAdresse.map(async (adresse, index) => { // Fonction asynchrone donnant une réponse à chaque action
-//         const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${adresse}&format=geojson`);
-//         const json = await response.json(); // Attends une réponse de la fonction asynchrone avant d'effectuer le reste du code
-//         const coordonnees = json.features[0]?.geometry?.coordinates; // Récupération des coordonnées
-//         if (coordonnees) {
-//             const [longitude, latitude] = coordonnees;
-//             const endPoint = [latitude, longitude];
-//
-//             return endPoint;
-//         }
-//         return null;
-//     });
-//
-//     try {
-//         const stopPoints = await Promise.all(fetchPromises); // Quand toutes les promesses ( réponses ) sont faites on éxecute le code
-//         const filteredStopPoints = stopPoints.filter(point => point !== null); // Si l'API renvoie des valeurs nulles elles seront pas mises dans le tableau
-//         affichageRoute(filteredStopPoints);
-//     } catch (error) {
-//         console.error('Erreur lors de la récupération des coordonnées :', error);
-//     }
-// }
 function adresseTest() {
-    fetch('https://127.0.0.1:8000/coordonneesClient') // Appel au controller Symfony
+    fetch('https://127.0.0.1:8000/profilDuClient') // Appel au controller Symfony
         .then(res => res.json())// Récupération de la réponse
         .then(json => {
-            let tabAdresse = json['adresses'];
-            affichageRoute(tabAdresse);
-            // affichageArret(tabAdresse);
+            let tabAdresse = json['adressesDuClient'];
+            affichageArret(tabAdresse);
         })
         .catch(error => {
             console.error('Erreur de requête Fetch :', error);
         });
 }
 
+async function affichageArret(tabAdresse) {
+
+    const fetchPromises = tabAdresse.map(async (adresse, index) => { // Fonction asynchrone donnant une réponse à chaque action
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${adresse}&format=geojson`);
+        const json = await response.json(); // Attends une réponse de la fonction asynchrone avant d'effectuer le reste du code
+        const coordonnees = json.features[0]?.geometry?.coordinates; // Récupération des coordonnées
+        if (coordonnees) {
+            const [longitude, latitude] = coordonnees;
+            const endPoint = [latitude, longitude];
+
+            return endPoint;
+        }
+        return null;
+    });
+
+    try {
+        const stopPoints = await Promise.all(fetchPromises); // Quand toutes les promesses ( réponses ) sont faites on éxecute le code
+        const filteredStopPoints = stopPoints.filter(point => point !== null); // Si l'API renvoie des valeurs nulles elles seront pas mises dans le tableau
+        affichageRoute(filteredStopPoints);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des coordonnées :', error);
+    }
+}
 
 
 async function affichageRoute(stopPoints) {
@@ -139,10 +135,7 @@ function affichageTrajetPause() {
             let endPoint = arretsLivreurTri[i + 1];
 
             clients[i] = L.marker(endPoint, {icon: clientIcone})
-                .addTo(map)
-                .on('click', function () {
-                    fonctionAvecNumeroMarker(i + 1);
-                });
+                .addTo(map);
             let routingControl = L.Routing.control({
                 waypoints: [
                     L.latLng(startPoint),
@@ -188,39 +181,4 @@ function affichageLivreur(index) {
     let voiture = L.marker(middlePosition, {icon: voitureIcone}).addTo(map);
     voitures.push(voiture);
 }
-function affichageLivreurClick(index) {
-    var voitureIcone = L.icon({
-        iconUrl: '/images/voiturePizza.png',
-        iconSize: [40, 40], // Les dimensions réelles de votre icône
-        iconAnchor: [20, 40], // L'ancre devrait être au milieu en bas de l'icône
-        shadowAnchor: [4, 62],
-        popupAnchor: [-3, -76]
-    });
-    if(index < routes.length){
-        let route = routes[index]; // Accès à la première route par exemple
-        let coordonnee = route.coordinates;
-        let middleIndex = Math.floor(coordonnee.length / 2);
-        let middlePosition = coordonnee[middleIndex];
 
-        let voiture = L.marker(middlePosition, {icon: voitureIcone}).addTo(map);
-        voitures.push(voiture);
-    } else {
-        console.log('error');
-    }
-
-}
-function fonctionAvecNumeroMarker(index) {
-    affichageLivreurClick(index);
-    hiddenClient(index);
-    hiddenVoiture(index);
-
-}
-function hiddenClient (index){
-    let newIndex = index -1;
-    clients[newIndex].setOpacity(0); // Rendre le marqueur invisible en définissant son opacité à 0
-}
-function hiddenVoiture (index){
-    let newIndex = index -1;
-    voitures[newIndex].setOpacity(0); // Rendre le marqueur invisible en définissant son opacité à 0
-
-}

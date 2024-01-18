@@ -167,5 +167,34 @@ class ProfilController extends AbstractController
         }
         return new JsonResponse(['adresses' => $adresseLivraison]);
     }
+    #[Route('/coordonneesClient', name: '_coordonneesClient')]
+    public function coordonneesClient(Request $request, IngredientRepository $ingredientRepository,EtatRepository $etatRepository,CommandeRepository $commandeRepository, EntityManagerInterface $entityManager)
+    {
+        $etatLivraison = $etatRepository->findOneBy(array('id' => 4)); // État livré
+        $commandesALivrer = $commandeRepository->findBy(['etat' => $etatLivraison,]); // Récupération des commandes prêtes à être livrées
+        $adresseLivraison = [];
 
+        foreach( $commandesALivrer as $index => $commande){
+            $latitude = $commande->getCollaborateur()->getLatitude();
+            $longitude = $commande->getCollaborateur()->getLongitude(); // Récupération de l'adresse de la commande
+            $adresseLivraison[$index]= [$latitude,$longitude]; // Tableau associatif
+        }
+        return new JsonResponse(['adresses' => $adresseLivraison]);
+    }
+    #[Route('/profilDuClient', name: '_profilDuClient')]
+    public function profilDuClient(Request $request, IngredientRepository $ingredientRepository,EtatRepository $etatRepository,CommandeRepository $commandeRepository, EntityManagerInterface $entityManager)
+    {
+        $etatLivraison = $etatRepository->findOneBy(array('id' => 4)); // État en livraison
+        $idClient = $this->getUser();
+        $commandesALivrer = $commandeRepository->findBy(['etat' => $etatLivraison,
+            'collaborateur' => $idClient]); // Récupération des commandes prêtes à être livrées
+        $adresseLivraison = [];
+
+        foreach( $commandesALivrer as $index => $commande){
+            $adresse = $commande->getCollaborateur()->getAdresse(); // Récupération de l'adresse de la commande
+            $adresseLivraison[$index]= $adresse; // Tableau associatif
+
+        }
+        return new JsonResponse(['adressesDuClient' => $adresseLivraison]);
+    }
 }

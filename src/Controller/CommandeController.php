@@ -149,7 +149,7 @@ class CommandeController extends AbstractController
             $commande->setEtat($etatLivree);
             $entityManager->persist($commande);
             $entityManager->flush();
-            return $this->redirectToRoute('_preparationCommande');
+            return $this->redirectToRoute('_livraisonCommande');
         }
 
         return $this->render('livraisonCommandeLivreur.html.twig');

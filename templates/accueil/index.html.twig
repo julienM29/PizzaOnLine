@@ -3,6 +3,9 @@
 
 {% block body %}
     <h2 class="flex item-center justify-center text-5xl mt-8 mb-14"> La carte des pizzas : </h2>
+    <div class="flex">
+
+    </div>
     <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
         {% for pizza in pizzas %}
             <div class="bg-gray-200 p-4 w-81 mb-6 flex flex-col rounded justify-between border-4 border-gray-500">
@@ -46,7 +49,7 @@
 {#                                                                >Commander#}
 {#                                                                </button> #}
                                 <button type="button"
-                                        class="afficherModal mt-1 text-xl text-white bg-slate-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        class="afficherModal mt-1 text-xl text-white bg-slate-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                         data-pizza-id="{{ pizza.id }}"
                                         data-pizza-nom="{{ pizza.nom }}"
                                         data-pizza-prix="{{ pizza.prix }}">

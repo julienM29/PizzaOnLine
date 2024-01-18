@@ -18,6 +18,10 @@ class ModificationProfilFormType extends AbstractType
             ->add('email')
             ->add('nom')
             ->add('prenom')
+            ->add('telephone')
+            ->add('adresse')
+            ->add('latitude')
+            ->add('longitude')
             ->add('roles', ChoiceType::class, [
                 'choices' => [
                     'USER' => 'ROLE_USER',
@@ -36,8 +40,13 @@ class ModificationProfilFormType extends AbstractType
                     'Autre' => 'Autre',
                 ],
                 'placeholder' => 'Sélectionnez votre sexe',
+                'attr' => [
+                    'class' => 'appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500',
+                ],
             ])
-            ->add('ajouter', SubmitType::class)
+            ->add('ajouter', SubmitType::class, [
+                'label' => 'Modifier les informations',
+            ])
         ;
     }
 

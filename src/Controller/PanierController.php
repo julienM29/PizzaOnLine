@@ -107,7 +107,7 @@ class PanierController extends AbstractController
             $commande->setEtat($etatPreparee);
             $commande->setLivreur($livreur);
             $entityManager->flush();
-            return $this->redirectToRoute('_accueil');
+            return $this->redirectToRoute('_preparationCommande');
         }
         return $this->render('commande/preparationCommande.html.twig');
     }
@@ -121,7 +121,7 @@ class PanierController extends AbstractController
                     $idProduit = $detail->getProduit()->getId();
                     $pizza = $produitRepository->findOneBy(array('id' => $idProduit));
                     if ($detail->getTaille() === $tailleLarge) { // Si il y a une taille large on change le prix
-                        $prixDuDetail = 1.20 * ($pizza->getPrix() * $detail->getQuantite());
+                        $prixDuDetail =  (($pizza->getPrix()+ 5 )  * $detail->getQuantite());
                     } else {
                         $prixDuDetail = ($pizza->getPrix() * $detail->getQuantite());
                     }

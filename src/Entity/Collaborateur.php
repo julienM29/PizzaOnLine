@@ -51,6 +51,12 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $Sexe = null;
 
+    #[ORM\Column(length: 25)]
+    private ?string $latitude = null;
+
+    #[ORM\Column(length: 25)]
+    private ?string $longitude = null;
+
 
 
     public function __construct()
@@ -250,6 +256,30 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSexe(string $Sexe): static
     {
         $this->Sexe = $Sexe;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?string
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(string $latitude): static
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?string
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(string $longitude): static
+    {
+        $this->longitude = $longitude;
 
         return $this;
     }
