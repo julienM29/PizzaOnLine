@@ -91,16 +91,22 @@ class GerantController extends AbstractController
 
             }
             $produit->setUrlImage($newFilename);
-
+            $produit->setDisponible(true);
             $ingredientsPizza = $produitForm->get('ingredients')->getData();
-            foreach ($ingredientsPizza as $ingredient) {
-                $QuantiteIngredient = $ingredient->getQuantite();
-                if ($QuantiteIngredient == 0) {
-                    $produit->setDisponible(false);
-                } else {
-                    $produit->setDisponible(true);
+            $type = $produitForm->get('typeProduit')->getData();
+            if($type === '1'){
+                foreach ($ingredientsPizza as $ingredient) {
+                    $QuantiteIngredient = $ingredient->getQuantite();
+                    if ($QuantiteIngredient == 0) {
+                        $produit->setDisponible(false);
+                    } else {
+                        $produit->setDisponible(true);
+                    }
                 }
+            } elseif ($type === '2'){
+                $produit->setDisponible(true);
             }
+
             $entityManager->persist($produit);
             $entityManager->flush();
             return $this->redirectToRoute('_gerant');

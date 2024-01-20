@@ -12,10 +12,12 @@ use App\Repository\EtatRepository;
 use App\Repository\IngredientRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
+use App\Repository\TypeProduitRepository;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,9 +25,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class AccueilController extends AbstractController
 {
     #[Route('/accueil', name: '_accueil')]
-    public function index(EntityManagerInterface $entityManager,IngredientRepository $ingredientRepository,  TailleProduitRepository $tailleProduitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EtatRepository $etatRepository, ProduitRepository $produitRepository, CommandeRepository $commandeRepository): Response
+    public function index(EntityManagerInterface $entityManager,TypeProduitRepository $typeProduitRepository ,IngredientRepository $ingredientRepository,  TailleProduitRepository $tailleProduitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EtatRepository $etatRepository, ProduitRepository $produitRepository, CommandeRepository $commandeRepository): Response
     {
         $pizzas = $produitRepository->findAll();
+        $typesProduits = $typeProduitRepository->findAll();
         $detailCommande = new DetailCommande();
         $now = new DateTime();
         $utilisateur = $this->getUser();
@@ -98,7 +101,7 @@ class AccueilController extends AbstractController
 
         }
 
-        return $this->render('accueil/index.html.twig', compact('pizzas', 'detailCommandeForm', 'detailsCommandePanier', 'prixDuPanier'));
+        return $this->render('accueil/index.html.twig', compact('pizzas', 'detailCommandeForm', 'detailsCommandePanier', 'prixDuPanier', 'typesProduits'));
     }
 
     #[Route('/detailPizza/{id}', name: '_detailPizza')]
@@ -272,5 +275,17 @@ class AccueilController extends AbstractController
 
         }
         $entityManager->flush();
+    }
+
+    #[Route('/typeProduit', name: '_typeProduit')]
+    public function typeProduit(Request $request, IngredientRepository $ingredientRepository,TypeProduitRepository $typeProduitRepository,CommandeRepository $commandeRepository, EntityManagerInterface $entityManager)
+    {
+        $typeProduits = $typeProduitRepository->findAll();
+//
+        foreach( $typeProduits as $index => $type){
+
+            $typesDeProduit[$index]= [$type->getLibelle()]; // Tableau associatif
+        }
+        return new JsonResponse(['typesProduits' => $typesDeProduit]);
     }
 }

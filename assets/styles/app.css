@@ -83,3 +83,8 @@ body {
     flex-direction: column;
 }
 
+
+.titrePizza {
+    font-family: 'Pacifico', cursive;
+    color: #212738
+}

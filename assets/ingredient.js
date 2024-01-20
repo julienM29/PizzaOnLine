@@ -39,7 +39,7 @@ function affichageIngredient() {
 
 
     if (!valeurBouton || valeurBouton === 0 ||valeurBouton === '0') { // Page création produit c'est un select donc '0' et dans la page gestion stock c'est un bouton valeur 0 int
-        hideAllCategory(categories);
+        showAllCategory(categories);
     } else {
         let index = parseInt(valeurBouton) - 1;
         showCategory(categories[index]);
@@ -83,7 +83,13 @@ function hideAllCategory(categories) {
         }
     }
 }
-
+function showAllCategory(categories) {
+    for (let category of categories) {
+        for (let i = 0; i < category.length; i++) {
+            category[i].classList.remove('hidden');
+        }
+    }
+}
 function showCategory(category) {
     for (let i = 0; i < category.length; i++) {
         category[i].classList.remove('hidden');

@@ -4,6 +4,26 @@ function initModal() {
     ajouterPanier();
     document.getElementById('quantiteModal').addEventListener('change', modificationPrixModal);
     document.getElementById('inputQuantite').addEventListener('change', verificationInput);
+    let boutonFiltre = document.getElementsByClassName('boutonFiltre');
+
+    Array.from(boutonFiltre).forEach(function(element) {
+        element.addEventListener('click', function() {
+            // Cacher toutes les images
+            let allImages = document.querySelectorAll('.w-8.h-8');
+            Array.from(allImages).forEach(function(image) {
+                image.classList.add('hidden');
+            });
+
+            // Montrer l'image spécifique du bouton cliqué
+            let imageSelectionnee = element.querySelector('.w-8.h-8');
+            if (imageSelectionnee) {
+                imageSelectionnee.classList.remove('hidden');
+            }
+            // Appeler votre fonction de filtrage (filtreProduit())
+            filtreProduit(element.textContent.trim()); // trim permet d'enlever les blancs avant et après le texte
+        });
+    });
+
 
     let decrement = document.getElementById('decrement');
     let increment = document.getElementById('increment');
@@ -179,7 +199,38 @@ function inputForm() {
     let input = document.getElementById('inputQuantite');
     inputForm.value = parseInt(input.value);
 }
-
+function filtreProduit(libelle) {
+    console.log(libelle);
+    recuperationTypesProduit()
+        .then(typesProduits => {
+            for (let i = 0; i < typesProduits.length; i++) {
+                let produits = document.getElementsByClassName(typesProduits[i]);
+                Array.from(produits).forEach(function (produit) {
+                    produit.classList.add('hidden');
+                });
+            }
+            // Après avoir masqué les produits, montrer les produits sélectionnés
+            let produitsSelectionner = document.getElementsByClassName(libelle);
+            Array.from(produitsSelectionner).forEach(function (produit) {
+                produit.classList.remove('hidden');
+            });
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération des types de produit :', error);
+        });
+}
+function recuperationTypesProduit(){
+    return fetch('https://127.0.0.1:8000/typeProduit')
+        .then(res => res.json())
+        .then(json => {
+            let typesProduits = json['typesProduits'];
+            return typesProduits;
+        })
+        .catch(error => {
+            console.error('Erreur de requête Fetch :', error);
+            throw error; // Rejeter la promesse en cas d'erreur
+        });
+}
 
 ////////////////////////////// FONCTION PAS UTILISER SERVANT A CONNAITRE LA POSITION DU CURSEUR ET D UN BOUTON ///////////////////////////////////////////
 

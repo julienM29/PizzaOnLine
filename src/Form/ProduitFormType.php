@@ -18,10 +18,10 @@ class ProduitFormType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('description')
+//            ->add('description')
             ->add('prix')
             ->add('urlImage', FileType::class, [
-                'label' => 'Choisir un fichier',
+                'label' => 'Choisir une image',
                 'data_class' => null
             ])
             ->add('ingredients', EntityType::class, [
