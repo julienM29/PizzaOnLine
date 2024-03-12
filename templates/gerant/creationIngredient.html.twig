@@ -1,7 +1,8 @@
 {% extends 'base.html.twig' %}
+{% block title %}PizzaOnLine - Ajout ingrédient{% endblock %}
 
     {% block body %}
-        <h2 class="flex content-center justify-center text-5xl mt-8 "> Ajouter un ingrédient au stock</h2>
+        <h2 class="flex content-center justify-center text-5xl mt-2 "> Ajouter un ingrédient au stock</h2>
         <div class="w-full flex flex-col justify-center items-center mt-10">
             <div class="w-10/12 flex justify-center items-center">
                 {{ form_start(ingredientForm, {'attr': {'class': 'w-full flex justify-center '}}) }}
@@ -44,9 +45,8 @@
                         {{ form_label(ingredientForm.ajouter) }}
                         {{ form_widget(ingredientForm.ajouter, {'attr': {'class': 'btn flex justify-center items-center text-xl text-white bg-blue-500 hover:bg-blue-700 font-bold'}}) }}
                     </div>
-                    <div class=" justify-end hidden">
-                        <div class="text-3xl">{{ form_label(ingredientForm.quantite) }}</div>
-                        <div class="text-black">{{ form_widget(ingredientForm.quantite, {'id': 'quantiteModal','attr': {'style': 'width : 250px; font-size:1.25rem'}}) }}</div>
+                    <div class=" hidden">
+                       {{ form_widget(ingredientForm.quantite, {'id': 'quantiteModal','attr': {'style': 'width : 250px; font-size:1.25rem'}}) }}
                     </div>
                 </div>
                 {{ form_end(ingredientForm) }}

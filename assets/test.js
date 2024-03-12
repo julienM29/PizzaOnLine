@@ -1,18 +1,12 @@
 function initTest() {
-    // console.log('Je suis dans modal.js');
-    //
-    // ajouterPanier();
-    // document.getElementById('quantiteModal').addEventListener('change', modificationPrixModal);
-    // document.getElementById('inputQuantite').addEventListener('change', verificationInput);
+
 
     let decrement = document.getElementById('decrement');
     let increment = document.getElementById('increment');
     increment.addEventListener('click', augmentationQuantite);
     decrement.addEventListener('click', diminutionQuantite);
-    // let detail_commande_form_taille_1 = document.getElementById('detail_commande_form_taille_1');
-    // let detail_commande_form_taille_2 = document.getElementById('detail_commande_form_taille_2');
-    // detail_commande_form_taille_1.addEventListener('click', modificationPrixModal);
-    // detail_commande_form_taille_2.addEventListener('click', modificationPrixModal);
+
+    hiddenTaille();
 
 }
 
@@ -178,4 +172,63 @@ function inputForm() {
     let inputForm = document.getElementById('quantiteModal');
     let input = document.getElementById('inputQuantite');
     inputForm.value = parseInt(input.value);
+}
+function hiddenTaille (){
+    let checkboxs = [
+        document.getElementById('detail_commande_form_taille_1'),
+        document.getElementById('detail_commande_form_taille_2'),
+        document.getElementById('detail_commande_form_taille_3'),
+        document.getElementById('detail_commande_form_taille_4'),
+        document.getElementById('detail_commande_form_taille_5'),
+        document.getElementById('detail_commande_form_taille_6')
+    ];
+    let labels = [
+        document.querySelector('label[for="detail_commande_form_taille_1"]'),
+        document.querySelector('label[for="detail_commande_form_taille_2"]'),
+        document.querySelector('label[for="detail_commande_form_taille_3"]'),
+        document.querySelector('label[for="detail_commande_form_taille_4"]'),
+        document.querySelector('label[for="detail_commande_form_taille_5"]'),
+        document.querySelector('label[for="detail_commande_form_taille_6"]')
+    ];
+    let type = document.getElementById('typeProduit').innerText;
+    console.log(type);
+    if (type === 'Pizza') {
+        console.log('je passe ici car pizza = type ');
+
+        for (let i = 0; i < checkboxs.length; i++) {
+            if (i === 0 || i === 1) {
+                checkboxs[i].classList.remove('hidden');
+                labels[i].classList.remove('hidden');
+                checkboxs[i].parentNode.classList.add('mr-6');
+            } else {
+                checkboxs[i].classList.add('hidden');
+                labels[i].classList.add('hidden');
+            }
+        }
+    }
+    if (type === 'Canette') {
+        for (let i = 0; i < checkboxs.length; i++) {
+            if (i === 2 || i === 3) {
+                checkboxs[i].classList.remove('hidden');
+                labels[i].classList.remove('hidden');
+                checkboxs[i].parentNode.classList.add('mr-6');
+            } else {
+                checkboxs[i].classList.add('hidden');
+                labels[i].classList.add('hidden');
+            }
+        }
+    }
+    if (type === 'Bouteille') {
+        console.log('je passe dans bouteille')
+        for (let i = 0; i < checkboxs.length; i++) {
+            if (i === 4 || i === 5) {
+                checkboxs[i].classList.remove('hidden');
+                labels[i].classList.remove('hidden');
+                checkboxs[i].parentNode.classList.add('mr-6');
+            } else {
+                checkboxs[i].classList.add('hidden');
+                labels[i].classList.add('hidden');
+            }
+        }
+    }
 }

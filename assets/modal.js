@@ -1,6 +1,5 @@
 function initModal() {
     console.log('Je suis dans modal.js');
-
     ajouterPanier();
     document.getElementById('quantiteModal').addEventListener('change', modificationPrixModal);
     document.getElementById('inputQuantite').addEventListener('change', verificationInput);
@@ -40,15 +39,68 @@ window.initModal = initModal;
 let prixPizza = 0;
 
 ///////////////////////////// AFFICHAGE MODAL AJOUT ///////////////////////////////////////
-function openModal(id, nom, prix) {
+function openModal(id, nom, prix, type) {
     document.getElementById('prixPizza').classList.remove('hidden');
     prixPizza = prix;
-    let prixPizzaLarge = (parseFloat(prix) + 5);
     document.getElementById('nom').innerText = nom;
     const champId = document.getElementById('idPizzaModal');
     const champQuantite = document.getElementById('quantiteModal');
-    let detail_commande_form_taille_1 = document.getElementById('detail_commande_form_taille_1');
-    let detail_commande_form_taille_2 = document.getElementById('detail_commande_form_taille_2');
+
+    let checkboxs = [
+        document.getElementById('detail_commande_form_taille_1'),
+        document.getElementById('detail_commande_form_taille_2'),
+        document.getElementById('detail_commande_form_taille_3'),
+        document.getElementById('detail_commande_form_taille_4'),
+        document.getElementById('detail_commande_form_taille_5'),
+        document.getElementById('detail_commande_form_taille_6')
+    ];
+    let labels = [
+        document.querySelector('label[for="detail_commande_form_taille_1"]'),
+        document.querySelector('label[for="detail_commande_form_taille_2"]'),
+        document.querySelector('label[for="detail_commande_form_taille_3"]'),
+        document.querySelector('label[for="detail_commande_form_taille_4"]'),
+        document.querySelector('label[for="detail_commande_form_taille_5"]'),
+        document.querySelector('label[for="detail_commande_form_taille_6"]')
+    ];
+
+    console.log('je passe ici');
+    console.log(type);
+    if (type === 'Pizza') {
+        console.log('je passe ici car pizza = type ');
+
+        for (let i = 0; i < checkboxs.length; i++) {
+            if (i === 0 || i === 1) {
+                checkboxs[i].classList.remove('hidden');
+                labels[i].classList.remove('hidden');
+            } else {
+                checkboxs[i].classList.add('hidden');
+                labels[i].classList.add('hidden');
+            }
+        }
+    }
+    if (type === 'Canette') {
+        for (let i = 0; i < checkboxs.length; i++) {
+            if (i === 2 || i === 3) {
+                checkboxs[i].classList.remove('hidden');
+                labels[i].classList.remove('hidden');
+            } else {
+                checkboxs[i].classList.add('hidden');
+                labels[i].classList.add('hidden');
+            }
+        }
+    }
+    if (type === 'Bouteille') {
+        for (let i = 0; i < checkboxs.length; i++) {
+            if (i === 4 || i === 5) {
+                checkboxs[i].classList.remove('hidden');
+                labels[i].classList.remove('hidden');
+            } else {
+                checkboxs[i].classList.add('hidden');
+                labels[i].classList.add('hidden');
+            }
+        }
+    }
+
     if (detail_commande_form_taille_1) {
         detail_commande_form_taille_1.checked = false;
     }
@@ -93,9 +145,10 @@ function ajouterPanier() {
             const pizzaId = event.target.dataset.pizzaId;
             const pizzaNom = event.target.dataset.pizzaNom;
             const pizzaPrix = event.target.dataset.pizzaPrix;
-            console.log(`Pizza ID: ${pizzaId}, Nom: ${pizzaNom}, Prix: ${pizzaPrix}`);
+            var typeProduit = event.target.dataset.pizzaTypeproduit;
+            console.log(`Pizza ID: ${pizzaId}, Nom: ${pizzaNom}, Prix: ${pizzaPrix}` + ',type : ' +typeProduit);
 
-            openModal(pizzaId, pizzaNom, pizzaPrix);
+            openModal(pizzaId, pizzaNom, pizzaPrix, typeProduit);
         });
     });
     window.onclick = function (event) {

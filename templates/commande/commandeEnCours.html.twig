@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}PizzaOnLine - Commande en cours{% endblock %}
 {% block body %}
 
-    <h2 class="flex item-center justify-center text-5xl mt-8 mb-12"> Commande en cours </h2>
+    <h2 class="flex item-center justify-center text-5xl mt-2 mb-12"> Commande en cours </h2>
 
     {% if commandeDetailsClient is empty %}
         <div class="flex justify-center items-center text-2xl hover:text-red-500 duration-200 font-bold ">Vous n'avez

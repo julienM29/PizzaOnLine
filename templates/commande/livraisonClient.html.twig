@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}PizzaOnLine - Livraison{% endblock %}
 {% block body %}
     <div class="invisible" id="premiereAdresse"> {{ premiereAdresseLivreur }}</div>
     {% if not is_granted('ROLE_LIVREUR') and (commandeDetailsClient is not empty) %}

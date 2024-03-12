@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-
+{% block title %}PizzaOnLine - Carte des pizzas{% endblock %}
 {% block body %}
-    <h2 class="flex item-center justify-center text-5xl mt-8 mb-6"> La carte des pizzas : </h2>
-    <div class="flex text-1xl w-full justify-center items-center mb-8">
+    <h2 class="flex item-center justify-center text-5xl mt-2 mb-6"> Nos produits : </h2>
+    <div class="flex text-1xl w-full justify-center items-center mb-10">
         <div class="w-1/3 flex items-center space-x-4 p-2">
             <div class="text-4xl font-semibold">
                 Filtres :
@@ -12,70 +12,164 @@
                 <div class="flex boutonFiltre">
                     <button class="flex items-center bg-green-500 text-white p-2 rounded group ">
                         {{ type.libelle }}
-                        <img src="{{ asset('images/verifiez-le-cercle.png') }}" class="w-8 h-8 ml-2 hidden group-hover:block focus:block imageFiltre">
+                        <img src="{{ asset('images/verifiez-le-cercle.png') }}"
+                             class="w-8 h-8 ml-2 hidden group-hover:block focus:block imageFiltre">
                     </button>
                 </div>
             {% endfor %}
         </div>
     </div>
 
-    <div class="grid grid-cols-4 gap-4 mx-32 mb-20">
+    <div class="grid grid-cols-4 gap-4 mx-32 mb-20 ">
         {% for pizza in pizzas %}
-            <div class="bg-gray-200 p-4 w-81 mb-6 flex flex-col rounded justify-between border-4 border-gray-500 {{ pizza.typeProduit.libelle }}">
-                <div id="premierBlock" class="mb-2">
-                    <img src="images/{{ pizza.urlImage }}"
-                         style="width: 300px; height: 250px; {% if not pizza.disponible %} filter: grayscale(100%);{% endif %}"
-                         class="mb-2 border-[1px] border-gray-400 {% if not pizza.disponible %} border-red-500{% endif %}">
+            {% if pizza.typeProduit.libelle == 'Pizza' %}
+                <div class="bg-gray-200 p-4 w-81 mb-6 flex flex-col rounded justify-between border-4 border-gray-500 {{ pizza.typeProduit.libelle }}">
+                    <div id="premierBlock" class="mb-2">
+                        <img src="images/{{ pizza.urlImage }}"
+                             style="width: 300px; height: 250px; {% if not pizza.disponible %} filter: grayscale(100%);{% endif %}"
+                             class="mb-2 border-[1px] border-gray-400 {% if not pizza.disponible %} border-red-500{% endif %}">
 
-                    <div class="mb-7 text-4xl text-black font-semibold flex justify-center items-center  titrePizza">{{ pizza.nom }}</div>
-                    <div id="lesIngre ">
-                        <div class="mb-2 text-xl text-black">
-                            {% for ingredient in pizza.Ingredients %}
-                                {{ ingredient.nom }}{% if not loop.last %}, {% endif %}
+                        <div class="mb-7 text-4xl text-black font-semibold flex justify-center items-center text-center titrePizza">
+                            {{ pizza.nom }}
+                        </div>
+                    </div>
+                    <div class="">
+                        <div id="lesIngre ">
+                            <div class="mb-2 text-xl text-black">
+                                {% for ingredient in pizza.Ingredients %}
+                                    {{ ingredient.nom }}{% if not loop.last %}, {% endif %}
 
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div id="lePrix">
+                            <div class="flex justify-between">
+                                <div class="mb-4 text-xl text-black font-semibold">Médium :</div>
+                                <div class="mb-4 text-xl text-black ">{{ (pizza.prix) | number_format(2, '.', ',') }}€
+                                </div>
+                                <div class="mb-4 text-xl text-black font-semibold">Large :</div>
+                                <div class="mb-4 text-xl text-black ">{{ (pizza.prix + 5) | number_format(2, '.', ',') }}
+                                    €
+                                </div>
+                            </div>
+                        </div>
+                        <div id="enSavoir">
+                            <a href="{{ path('_detailPizza', {'id': pizza.id}) }}"
+                               class="flex text-xl hover:text-red-500 duration-200 text-blue-800 font-semibold mb-5 underline underline-offset-2">En
+                                savoir plus</a>
+                            <div class="flex item-center justify-center ">
+                                {% if pizza.disponible == true %}
+                                    <button type="button"
+                                            class="afficherModal mt-1 text-xl text-white bg-slate-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            data-pizza-id="{{ pizza.id }}"
+                                            data-pizza-nom="{{ pizza.nom }}"
+                                            data-pizza-prix="{{ pizza.prix }}"
+                                            data-pizza-typeProduit="{{ pizza.typeProduit.libelle }}"
+                                    > Ajouter au panier
+                                        <svg class="w-6 h-6 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                             fill="currentColor" viewBox="0 0 18 21">
+                                            <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
+                                        </svg>
+
+                                    </button>
+                                {% else %}
+                                    <button type="button"
+                                            class=" mt-1 text-xl font-bold text-white bg-red-700  focus:ring-4 focus:outline-none   rounded-lg px-5 py-2.5 text-center inline-flex items-center  "
+                                    > Indisponible
+
+                                    </button>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="">
-                    <div id="lePrix">
-                        <div class="flex justify-between">
-                            <div class="mb-4 text-xl text-black font-semibold">Médium :</div>
-                            <div class="mb-4 text-xl text-black ">{{ (pizza.prix) | number_format(2, '.', ',') }}€
-                            </div>
-                            <div class="mb-4 text-xl text-black font-semibold">Large :</div>
-                            <div class="mb-4 text-xl text-black ">{{ (pizza.prix + 5) | number_format(2, '.', ',') }}€
-                            </div>
+            {% endif %}
+        {% endfor %}
+        {% for pizza in pizzas %}
+            {% if pizza.typeProduit.libelle != 'Pizza' %}
+                <div class="bg-gray-200 p-4 w-81 mb-6 flex flex-col rounded justify-between border-4 border-gray-500 {{ pizza.typeProduit.libelle }}">
+                    <div id="premierBlock" class="mb-2">
+                        <img src="images/{{ pizza.urlImage }}"
+                             style="width: 300px; height: 250px; {% if not pizza.disponible %} filter: grayscale(100%);{% endif %}"
+                             class="mb-2 border-[1px] border-gray-400 {% if not pizza.disponible %} border-red-500{% endif %}">
+
+                        <div class="mb-7 text-4xl text-black font-semibold flex justify-center items-center text-center titrePizza">
+                            {{ pizza.nom }}
                         </div>
                     </div>
-                    <div id="enSavoir">
-                        <a href="{{ path('_detailPizza', {'id': pizza.id}) }}"
-                           class="flex text-xl hover:text-red-500 duration-200 text-blue-800 font-semibold mb-5 underline underline-offset-2">En
-                            savoir plus</a>
-                        <div class="flex item-center justify-center ">
-                            {% if pizza.disponible == true %}
-                                <button type="button"
-                                        class="afficherModal mt-1 text-xl text-white bg-slate-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        data-pizza-id="{{ pizza.id }}"
-                                        data-pizza-nom="{{ pizza.nom }}"
-                                        data-pizza-prix="{{ pizza.prix }}"> Ajouter au panier
-                                    <svg class="w-6 h-6 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                         fill="currentColor" viewBox="0 0 18 21">
-                                        <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
-                                    </svg>
+                    <div class="">
+                        <div id="lesIngre ">
+                            <div class="mb-2 text-xl text-black">
+                                {% for ingredient in pizza.Ingredients %}
+                                    {{ ingredient.nom }}{% if not loop.last %}, {% endif %}
 
-                                </button>
-                            {% else %}
-                                <div class=" text-2xl text-red-700 font-bold ">Indisponible</div>
-                            {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% if pizza.typeProduit.libelle == 'Canette' %}
+                            <div id="lePrix">
+                                <div class="flex justify-between">
+                                    <div class="mb-4 text-xl text-black font-semibold">33cL :</div>
+                                    <div class="mb-4 text-xl text-black ">{{ (pizza.prix) | number_format(2, '.', ',') }}
+                                        €
+                                    </div>
+                                    <div class="mb-4 text-xl text-black font-semibold">50cL :</div>
+                                    <div class="mb-4 text-xl text-black ">{{ (pizza.prix + 1) | number_format(2, '.', ',') }}
+                                        €
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if pizza.typeProduit.libelle == 'Bouteille' %}
+                            <div id="lePrix">
+                                <div class="flex justify-between">
+                                    <div class="mb-4 text-xl text-black font-semibold">75cL :</div>
+                                    <div class="mb-4 text-xl text-black ">{{ (pizza.prix) | number_format(2, '.', ',') }}
+                                        €
+                                    </div>
+                                    <div class="mb-4 text-xl text-black font-semibold">1L :</div>
+                                    <div class="mb-4 text-xl text-black ">{{ (pizza.prix + 1.5) | number_format(2, '.', ',') }}
+                                        €
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div id="enSavoir">
+                            <a href="{{ path('_detailPizza', {'id': pizza.id}) }}"
+                               class="flex text-xl hover:text-red-500 duration-200 text-blue-800 font-semibold mb-5 underline underline-offset-2">En
+                                savoir plus</a>
+                            <div class="flex item-center justify-center ">
+                                {% if pizza.disponible == true %}
+                                    <button type="button"
+                                            class="afficherModal mt-1 text-xl text-white bg-slate-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            data-pizza-id="{{ pizza.id }}"
+                                            data-pizza-nom="{{ pizza.nom }}"
+                                            data-pizza-prix="{{ pizza.prix }}"
+                                            data-pizza-typeProduit="{{ pizza.typeProduit.libelle }}"
+                                    >
+                                        Ajouter au panier
+                                        <svg class="w-6 h-6 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                             fill="currentColor" viewBox="0 0 18 21">
+                                            <path d="M15 12a1 1 0 0 0 .962-.726l2-7A1 1 0 0 0 17 3H3.77L3.175.745A1 1 0 0 0 2.208 0H1a1 1 0 0 0 0 2h.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 9 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3H6.78l-.5-2H15Z"/>
+                                        </svg>
+
+                                    </button>
+                                {% else %}
+                                    <button type="button"
+                                            class="  mt-1 text-xl font-bold text-white bg-red-700  focus:ring-4 focus:outline-none   rounded-lg px-5 py-2.5 text-center inline-flex items-center  "
+                                    > Indisponible
+
+                                    </button>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
         {% endfor %}
     </div>
     <div id="modalAjout" class="fixed rounded inset-0 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-        <div id="conteneurModal" class="bg-gray-200 w-1/4 h-3/6 p-4 border-4 border-red-400 rounded relative">
+        <div id="conteneurModal" class="bg-gray-200 w-1/4  p-4 border-4 border-red-400 rounded relative">
             <button class="hiddenModal absolute top-0 right-0 p-2">
                 <img id="plus" style="height: 30px; width: 30px;" src="{{ asset('images/fermer-la-croix.png') }}">
             </button>
@@ -85,13 +179,14 @@
             <div class="hidden">
                 <input id="idPizzaModal" name="idPizzaModal">
             </div>
-            <div class=" mt-7 flex justify-center items-center text-black">
-                <div class="mr-5 text-4xl mb-2 text-black">
-                    {{ form_label(detailCommandeForm.quantite) }}
-                </div>
+            <div class=" mt-7 flex  text-black mb-2">
+                <label class=" flex items-center w-1/2 block uppercase tracking-wide text-gray-700 text-xl font-bold "
+                       for="grid-first-name">
+                    Quantité :
+                </label>
                 <button type="button"
                         data-input-counter-decrement="quantity-input" id="decrement"
-                        class="  bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                        class="  bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-13 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                     <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true"
                          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -100,12 +195,12 @@
                 </button>
                 <input type="text" data-input-counter data-input-counter-min="1"
                        data-input-counter-max="50" aria-describedby="helper-text-explanation" style="width:65px"
-                       class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                       class="bg-gray-50 border-x-0 border-gray-300 h-13 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                        placeholder="999" value="0" id="inputQuantite"
                        required>
                 <button type="button" id="increment"
                         data-input-counter-increment="quantity-input"
-                        class=" bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+                        class=" bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-13 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
                     <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true"
                          xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -120,23 +215,33 @@
             <div class="hidden text-red-700 underline-offset-4 underline font-semibold" id="messageError">
                 Veuillez saisir un chiffre entier supérieur à 0.
             </div>
-            <div class="mb-7 mt-7 text-4xl flex justify-center items-center text-black">
-                {{ form_widget(detailCommandeForm.taille, {'id': 'tailleModal','attr': {'class': 'custom-checkbox'}}) }}
-            </div>
-            <div class="mb-7 mt-9 flex justify-center items-center text-black ">
-                <div class="mr-5 text-4xl mb-2 text-black">
-                    Prix :
-                </div>
-                <div class="flex items-center text-4xl mb-2 text-black">
-                    <div id="prixPizza"> 0</div>
-                    <div class="ml-1"> euros</div>
-                </div>
-            </div>
-            <div class="flex justify-center item-center text-4xl hover:text-red-500 duration-200 font-bold mt-8 text-black">
-                <div>
-                    {{ form_label(detailCommandeForm.ajouter) }}
+            <div class=" flex flex-wrap -mx-3 ">
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xl font-bold mb-2"
+                           for="grid-first-name">
+                        Taille :
+                    </label>
+                    <div class="flex justify-center items-center form-control appearance-none block text-1xl w-full bg-gray-700 text-gray-50 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                        {{ form_widget(detailCommandeForm.taille, {'id': 'tailleModal','attr': {'class': 'custom-checkbox'}}) }}
+                    </div>
 
-                    {{ form_widget(detailCommandeForm.ajouter, {'attr': {'style': 'width : 250px'}}) }}
+                </div>
+            </div>
+            <div class=" flex flex-wrap -mx-3 ">
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-700 text-xl font-bold mb-2"
+                           for="grid-first-name">
+                        Prix :
+                    </label>
+                    <div class="flex flex-wrap justify-center items-center appearance-none block w-full text-1xl bg-gray-700 text-gray-50 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                        <div id="prixPizza"> 0</div>
+                        <div class="ml-1"> euros</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center item-center  font-bold mt-2 ">
+                <div>
+                    {{ form_widget(detailCommandeForm.ajouter, {'attr': {'class': 'btn flex text-2xl justify-center items-center text-white bg-blue-500 hover:bg-blue-700 font-bold border-transparent'}}) }}
                 </div>
             </div>
             {{ form_end (detailCommandeForm) }}

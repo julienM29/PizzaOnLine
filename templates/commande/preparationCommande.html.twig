@@ -1,11 +1,12 @@
 {% extends 'base.html.twig' %}
+{% block title %}PizzaOnLine - Préparation{% endblock %}
 
 {% block body %}
 
-    <h2 class="flex item-center justify-center text-5xl mt-8 mb-8"> Préparation des commandes </h2>
+    <h2 class="flex item-center justify-center text-5xl mt-2 mb-8"> Préparation des commandes </h2>
     {% if is_granted('ROLE_GERANT') or is_granted('ROLE_LIVREUR') %}
         <h4 class="h-6 mb-6 text-2xl mt-4 font-bold underline underline-offset-4"> Commandes en attente de livraison :</h4>
-        <div class="grid grid-cols-4 gap-4 mx-32 mb-12">
+        <div class="grid grid-cols-4 gap-4 mx-32 mb-4">
             {% for commandeId, commande in commandeDetailsLivraison %}
                 <div class="bg-gray-200 p-2 w-80 mb-6 flex flex-col justify-between rounded border-gray-400 border-4">
                     <div class=" flex justify-center item-center text-2xl text-black mb-4 font-bold border-b-2 border-black">Commande n°
@@ -38,7 +39,7 @@
     {% endif %}
     {% if is_granted('ROLE_GERANT') %}
         {% if premierePizza is not empty %}
-            <h4 class="h-6 mb-6 text-2xl mt-4 font-bold underline underline-offset-4"> Commandes en attente de préparation
+            <h4 class="h-6 mb-6 text-2xl mt-2 font-bold underline underline-offset-4"> Commandes en attente de préparation
                 pour {{ premierePizza.dateHeurePreparation|date(' H:i') }} : </h4>
         {% endif %}
     {% endif %}

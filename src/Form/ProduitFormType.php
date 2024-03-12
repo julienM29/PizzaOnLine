@@ -32,7 +32,8 @@ class ProduitFormType extends AbstractType
             ])
             ->add('typeProduit', EntityType::class, [
                 'class' => TypeProduit::class,
-                'choice_label' => 'libelle'
+                'choice_label' => 'libelle',
+                'placeholder' => 'Sélectionner un type de produit'
             ])
             ->add('ajouter', SubmitType::class)
         ;

@@ -1,10 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}PizzaOnLine - Panier{% endblock %}
 
 {% block body %}
 
 
-    <h2 class="flex item-center justify-center text-5xl mt-8"> Votre panier </h2>
+    <h2 class="flex item-center justify-center text-5xl mt-2"> Votre panier </h2>
 
     {% if detailsCommandePanier is not empty %}
         <div class="w-full justify-center items-center flex mt-8 ">
@@ -42,10 +43,6 @@
                                 <a href="{{ path('_suppressionDuPanier', {'id': detailCommande.id}) }}"
                                    class="text-xl mt-2 hover:text-red-500 text-blue-800 duration-200 font-semibold justify-end">
                                     Supprimer l'article
-                                </a>
-                                <a href="{{ path('_suppressionDuPanier', {'id': detailCommande.id}) }}"
-                                   class="text-xl ml-4 mt-2 hover:text-red-500 text-blue-800 duration-200 font-semibold justify-end">
-                                    Modifier l'article
                                 </a>
                             </div>
                         </div>

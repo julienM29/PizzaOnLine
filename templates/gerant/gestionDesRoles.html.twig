@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
+{% block title %}PizzaOnLine - Gestion des rôles{% endblock %}
 
 {% block body %}
 
-    <h2 class="flex item-center justify-center text-5xl mt-8 mb-20"> Gestion des collaborateurs</h2>
+    <h2 class="flex item-center justify-center text-5xl mt-2 mb-10"> Gestion des utilisateurs</h2>
     <div class="grid grid-cols-4 gap-4 mx-32 mb-32">
         {% for collaborateur in collaborateurs %}
             <div class="bg-gray-200 p-4 w-81 mb-6 flex flex-col justify-between rounded relative">
@@ -16,42 +17,76 @@
                          class="absolute top-0 right-0 px-1.5 py-1.5 w-24 h-24 ">
                 {% endif %}
 
-                <div class=" flex mt-5">
-                    <div class="flex text-xl  w-1/3 font-bold text-black">Nom :</div>
-                    <div class="flex text-xl w-1/3 font-semibold text-black"> {{ collaborateur.nom }}</div>
-                </div>
-                <div class=" flex mt-5">
-                    <div class="flex text-xl w-1/3 font-bold text-black">Prénom :</div>
-                    <div class="flex text-xl w-1/3 font-semibold text-black"> {{ collaborateur.prenom }}</div>
-                </div>
-                <div class=" flex  mt-5">
-                    <div class="flex text-xl w-1/3  font-bold text-black">Email :</div>
-                    <div class="flex text-xl w-1/3 font-semibold text-black"> {{ collaborateur.email }}</div>
-                </div>
-                <div class=" flex  mt-5">
-                    <div class="flex text-xl w-1/3  font-bold text-black">Sexe :</div>
-                    <div class="flex text-xl w-1/3 font-semibold text-black"> {{ collaborateur.sexe }}</div>
-                </div>
-                {% if collaborateur.roles is not empty %}
-                    <div class="flex mt-5 ">
-                        <div class="flex w-1/3 text-xl text-black font-bold">Rôle :</div>
-                        <div class="flex-col  w-1/3 font-semibold  text-xl ">
-                            {% for role in collaborateur.roles %}
-                                <div class="mb-4 text-xl text-black">{{ role }}</div>
-                            {% endfor %}
+                <div>
+                    <div class=" flex flex-wrap -mx-3 mt-12">
+                        <div class="w-full px-3">
+                            <label class="block uppercase tracking-wide text-gray-700 text-lg font-bold mb-2"
+                                   for="grid-first-name">
+                                Prenom :
+                            </label>
+                            <div class="form-control appearance-none block w-full bg-gray-700 text-gray-50 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                                {{ collaborateur.prenom }}
+                            </div>
+
                         </div>
                     </div>
-                {% endif %}
-                <button type="submit"
-                        class=" font-bold text-2xl flex justify-center items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300  rounded-lg px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                    <a href="{{ path('_modificationProfil', { 'id': collaborateur.id }) }}"
-                       >Modifier
-                        le profil</a>
-                </button>
+                    <div class=" flex flex-wrap -mx-3 ">
+                        <div class="w-full px-3">
+                            <label class="block uppercase tracking-wide text-gray-700 text-lg font-bold mb-2"
+                                   for="grid-first-name">
+                                Nom :
+                            </label>
+                            <div class="form-control appearance-none block w-full bg-gray-700 text-gray-50 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                                {{ collaborateur.nom }}                        </div>
 
+                        </div>
+                    </div>
+                    <div class=" flex flex-wrap -mx-3 ">
+                        <div class="w-full px-3">
+                            <label class="block uppercase tracking-wide text-gray-700 text-lg font-bold mb-2"
+                                   for="grid-first-name">
+                                Email :
+                            </label>
+                            <div class="form-control appearance-none block w-full bg-gray-700 text-gray-50 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                                {{ collaborateur.email }}                        </div>
+
+                        </div>
+                    </div>
+                    <div class=" flex flex-wrap -mx-3">
+                        <div class="w-full px-3">
+                            <label class="block uppercase tracking-wide text-gray-700 text-lg font-bold mb-2"
+                                   for="grid-first-name">
+                                Sexe :
+                            </label>
+                            <div class="form-control appearance-none block w-full bg-gray-700 text-gray-50 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white">
+                                {{ collaborateur.sexe }}                        </div>
+
+                        </div>
+                    </div>
+                    {% if collaborateur.roles is not empty %}
+                        <div class="flex ">
+                            <label class="block uppercase tracking-wide text-gray-700 text-lg font-bold mb-2 mr-4"
+                                   for="grid-first-name">Rôle :</label>
+                            <div class="flex-col  w-1/3 font-semibold  text-xl ">
+                                {% for role in collaborateur.roles %}
+                                    <div class="mb-4 text-xl text-black">{{ role }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="">
+                    <div class="flex w-full justify-center">
+                        <button type="submit"
+                                class=" font-bold text-2xl flex justify-center items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300  rounded-lg px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                            <a href="{{ path('_modificationProfil', { 'id': collaborateur.id }) }}"
+                            >Modifier
+                                le profil</a>
+                        </button>
+                    </div>
+
+                </div>
             </div>
-
-
         {% endfor %}
     </div>
 {% endblock %}

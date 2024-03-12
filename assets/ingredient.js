@@ -9,36 +9,80 @@ function initIngredient() {
     }
     let decrement = document.getElementById('decrement');
     let increment = document.getElementById('increment');
-    if(decrement){
+    if (decrement) {
         decrement.addEventListener('click', diminutionQuantite);
     }
-    if(increment){
+    if (increment) {
         increment.addEventListener('click', augmentationQuantite);
     }
 
 
     boutonCategorie.addEventListener('change', affichageIngredient);
+
+    hideAllCategory(categories);
+    hiddenIngredientPart();
+    var selectType = document.getElementById('produit_form_typeProduit');
+    var selectCategorie = document.getElementById('ingredient_form_categorie');
+
+    if (selectCategorie) {
+        for (let i = 0; i < selectCategorie.options.length; i++) {
+            if (selectCategorie.options[i].innerText === 'Boisson') {
+                selectCategorie.options[i].classList.add('hidden');
+                break;
+            }
+        }
+    }
+    if (selectType) {
+
+        selectType.addEventListener('change', function () {
+            var typeValue = selectType.value;
+            if (typeValue === '1') {
+                showIngredientPizza();
+                showIngredientPart();
+            }
+            if (typeValue === '2') {
+                showIngredientBoisson();
+                showIngredientPart();
+                showMessageTypeBoisson();
+                verificationCheckboxBoisson();
+            }
+            if (typeValue === '3') {
+                showIngredientBoisson();
+                showIngredientPart();
+                showMessageTypeBoisson();
+                verificationCheckboxBoisson();
+            }
+
+        });
+    }
+
+    let inputQuantite = document.getElementById('inputQuantite');
+    if (inputQuantite) {
+        inputQuantite.addEventListener('change', inputForm);
+    }
 }
+
 window.initIngredient = initIngredient;
 
+let categories = [
+    document.getElementsByClassName('Viande'),
+    document.getElementsByClassName('Légumes'),
+    document.getElementsByClassName('Fromages'),
+    document.getElementsByClassName('Sauces'),
+    document.getElementsByClassName('Herbes et épices'),
+    document.getElementsByClassName('Fruits de mer'),
+    document.getElementsByClassName('Garnitures spéciales'),
+    document.getElementsByClassName('Boisson'),
+]
 let ingredients = []; // Tableau pour l'affichage des ingrédients
 
 function affichageIngredient() {
 
-    let categories = [
-        document.getElementsByClassName('Viande'),
-        document.getElementsByClassName('Légumes'),
-        document.getElementsByClassName('Fromages'),
-        document.getElementsByClassName('Sauces'),
-        document.getElementsByClassName('Herbes et épices'),
-        document.getElementsByClassName('Fruits de mer'),
-        document.getElementsByClassName('Garnitures spéciales'),
-    ]
 
     let valeurBouton = document.getElementById('ingredient_form_categorie').value;
 
 
-    if (!valeurBouton || valeurBouton === 0 ||valeurBouton === '0') { // Page création produit c'est un select donc '0' et dans la page gestion stock c'est un bouton valeur 0 int
+    if (!valeurBouton || valeurBouton === 0 || valeurBouton === '0') { // Page création produit c'est un select donc '0' et dans la page gestion stock c'est un bouton valeur 0 int
         showAllCategory(categories);
     } else {
         let index = parseInt(valeurBouton) - 1;
@@ -65,6 +109,7 @@ function afficherIngredient(value, checked) {
     let conteneurIngredient = document.getElementById('ingredients');
     conteneurIngredient.innerText = ingredientsText;
 }
+
 // Affichage ou rendre invisible les champs non correspondants ///
 function hideCategory(category, index) {
     for (let i = 0; i < category.length; i++) {
@@ -83,6 +128,7 @@ function hideAllCategory(categories) {
         }
     }
 }
+
 function showAllCategory(categories) {
     for (let category of categories) {
         for (let i = 0; i < category.length; i++) {
@@ -90,11 +136,17 @@ function showAllCategory(categories) {
         }
     }
 }
+
 function showCategory(category) {
-    for (let i = 0; i < category.length; i++) {
-        category[i].classList.remove('hidden');
+    if (category.length === 0) {
+
+    } else {
+        for (let i = 0; i < category.length; i++) {
+            category[i].classList.remove('hidden');
+        }
     }
 }
+
 
 function diminutionQuantite() {
     let input = document.getElementById('inputQuantite');
@@ -134,4 +186,99 @@ function inputForm() {
     let inputForm = document.getElementById('quantiteModal');
     let input = document.getElementById('inputQuantite');
     inputForm.value = parseInt(input.value);
+}
+
+function hiddenIngredientPart() {
+    let elementIngredient = document.getElementsByClassName('ingredientPart');
+    for (let i = 0; i < elementIngredient.length; i++) {
+        elementIngredient[i].classList.add('hidden');
+    }
+}
+
+function showIngredientPart() {
+    let elementIngredient = document.getElementsByClassName('ingredientPart');
+    for (let i = 0; i < elementIngredient.length; i++) {
+        elementIngredient[i].classList.remove('hidden');
+    }
+}
+
+function showIngredientPizza() {
+    hideIngredientBoisson();
+    for (let i = 0; i < categories.length; i++) {
+        if (categories[i] !== document.getElementsByClassName('Boisson')) {
+            for (let j = 0; j < categories[i].length; j++) {
+                categories[i][j].classList.remove('hidden');
+            }
+        }
+    }
+}
+
+function hideIngredientPizza() {
+    for (let i = 0; i < categories.length; i++) {
+        if (categories[i] !== document.getElementsByClassName('Boisson')) {
+            for (let j = 0; j < categories[i].length; j++) {
+                categories[i][j].classList.add('hidden');
+            }
+        }
+    }
+}
+
+function showIngredientBoisson() {
+    hideIngredientPizza();
+    for (let i = 0; i < categories.length; i++) {
+        if (categories[i] === document.getElementsByClassName('Boisson')) {
+            for (let j = 0; j < categories[i].length; j++) {
+                categories[i][j].classList.remove('hidden');
+            }
+        }
+    }
+}
+
+function hideIngredientBoisson() {
+    for (let i = 0; i < categories.length; i++) {
+        if (categories[i] === document.getElementsByClassName('Boisson')) {
+            for (let j = 0; j < categories[i].length; j++) {
+                categories[i][j].classList.add('hidden');
+            }
+        }
+    }
+}
+
+function showMessageTypeBoisson() {
+    let conteneurMessage = document.getElementById('messageTypeBoisson');
+    let conteneurCategorieIngredient = document.getElementById('messageCategorieIngredient');
+    let selectCategorieIngredient = document.getElementById('selectCategorieIngredient');
+    let inputIngredient = document.getElementById('inputIngredient');
+    conteneurMessage.classList.remove('hidden');
+    conteneurCategorieIngredient.classList.add('hidden');
+    selectCategorieIngredient.classList.add('hidden');
+    inputIngredient.classList.add('hidden');
+}
+
+function verificationCheckboxBoisson() {
+    // Sélectionnez toutes les divs avec la classe "Boisson"
+    var divsBoisson = document.querySelectorAll('.Boisson');
+    let allCheckbox =  document.querySelectorAll('input[type="checkbox"]');
+
+
+// Parcourez chaque div Boisson
+    divsBoisson.forEach(function(divBoisson) {
+        // Sélectionnez toutes les cases à cocher à l'intérieur de chaque div Boisson
+        var checkboxes = divBoisson.querySelectorAll('input[type="checkbox"]');
+
+        // Ajoutez un écouteur d'événements pour chaque case à cocher
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                // Si la case à cocher est cochée, décochez les autres dans la même div
+                if (checkbox.checked) {
+                    allCheckbox.forEach(function(otherCheckbox) {
+                        if (otherCheckbox !== checkbox) {
+                            otherCheckbox.checked = false;
+                        }
+                    });
+                }
+            });
+        });
+    });
+
 }
