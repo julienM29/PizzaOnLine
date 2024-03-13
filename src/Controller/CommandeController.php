@@ -11,6 +11,7 @@ use App\Repository\DetailCommandeRepository;
 use App\Repository\EtatRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
+use App\Repository\UserMessageRepository;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +34,6 @@ class CommandeController extends AbstractController
     #[Route('/ajoutPanier/{id}', name: '_ajoutPanier')]
     public function ajoutPanier($id, ProduitRepository $produitRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager, CommandeRepository $commandeRepository): Response
     {
-
         $pizza = $produitRepository->findOneBy(array('id' => $id));
         $detailCommande = new DetailCommande();
         $now = new DateTime();
@@ -83,8 +83,9 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/preparationCommande', name: '_preparationCommande')]
-    public function preparationCommande(DetailCommandeRepository $detailCommandeRepository,TailleProduitRepository $tailleProduitRepository, EtatRepository $etatRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
+    public function preparationCommande(DetailCommandeRepository $detailCommandeRepository,UserMessageRepository $userMessageRepository,TailleProduitRepository $tailleProduitRepository, EtatRepository $etatRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $etatPayeer = $etatRepository->findOneBy(['id' => 2]);
         $commandes = $commandeRepository->findBy(['etat' => $etatPayeer]);
         $etatPrepare = $etatRepository->findOneBy(array('id' => 3));
@@ -121,7 +122,8 @@ class CommandeController extends AbstractController
             'commandeDetailsLivraison' => $commandeDetailsLivraison,
             'premierePizza' => $premierePizza,
             'detailsCommandePanier' => $detailsCommandePanier,
-            'prixDuPanier' => $prixDuPanier
+            'prixDuPanier' => $prixDuPanier,
+            'messagesNonLu' => $messagesNonLu
         ]);
     }
     #[Route('/livrer/{id}', name: '_livrer')]
@@ -155,9 +157,9 @@ class CommandeController extends AbstractController
         return $this->render('livraisonCommandeLivreur.html.twig');
     }
     #[Route('/livraisonCommande/{id}', name: '_livraisonCommande')]
-    public function livraisonCommande($id,CollaborateurRepository $collaborateurRepository,TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
+    public function livraisonCommande($id,CollaborateurRepository $collaborateurRepository,UserMessageRepository $userMessageRepository,TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
     {
-
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $client = $collaborateurRepository->findOneBy(array('id' => $id));
         $livreur = $collaborateurRepository->findUsersByRole('ROLE_LIVREUR');
         $allCommande = $commandeRepository->findAll();
@@ -202,12 +204,12 @@ class CommandeController extends AbstractController
             $idClients[]= $idClient;
             $commandeDetailsLivreur[$commandeLivreur->getId()] = $detailsCommande;
         }
-        return $this->render('commande/livraisonCommandeLivreur.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur', 'detailsCommandePanier', 'prixDuPanier'));
+        return $this->render('commande/livraisonCommandeLivreur.html.twig', compact( 'commandeDetailsClient','commandeDetailsLivreur', 'idClients','allCommande','premiereAdresseLivreur', 'commandeVide', 'livreur', 'detailsCommandePanier', 'prixDuPanier','messagesNonLu'));
     }
     #[Route('/livraisonClient/{id}', name: '_livraisonClient')]
-    public function livraisonClient($id,CollaborateurRepository $collaborateurRepository,TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
+    public function livraisonClient($id,CollaborateurRepository $collaborateurRepository,UserMessageRepository $userMessageRepository,TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, ProduitRepository $produitRepository, DetailCommandeRepository $detailCommandeRepository): Response
     {
-
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $client = $collaborateurRepository->findOneBy(array('id' => $id));
         $livreur = $collaborateurRepository->findUsersByRole('ROLE_LIVREUR');
         $etatLivraison = $etatRepository->findOneBy(array('id' => 4));
@@ -251,12 +253,12 @@ class CommandeController extends AbstractController
             $numeroLivreurAvecEspaces = chunk_split($numeroLivreur, 2, ' ');
         }
     }
-        return $this->render('commande/livraisonClient.html.twig', compact( 'commandeDetailsClient','commandesClient', 'premiereAdresseLivreur',  'livreur', 'detailsCommandePanier', 'prixDuPanier', 'utilisateur','numeroLivreurAvecEspaces'));
+        return $this->render('commande/livraisonClient.html.twig', compact( 'commandeDetailsClient','commandesClient', 'premiereAdresseLivreur',  'livreur', 'detailsCommandePanier', 'prixDuPanier', 'utilisateur','numeroLivreurAvecEspaces','messagesNonLu'));
     }
     #[Route('/commandeEnCours', name: '_commandeEnCours')]
-    public function commandeEnCours(EntityManagerInterface $entityManager, TailleProduitRepository $tailleProduitRepository,ProduitRepository $produitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, CollaborateurRepository $collaborateurRepository, DetailCommandeRepository $detailCommandeRepository): Response
+    public function commandeEnCours(EntityManagerInterface $entityManager,UserMessageRepository $userMessageRepository, TailleProduitRepository $tailleProduitRepository,ProduitRepository $produitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, CollaborateurRepository $collaborateurRepository, DetailCommandeRepository $detailCommandeRepository): Response
     {
-
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $client = $collaborateurRepository->findOneBy(array('id' => $this->getUser()->getId()));
         $etatLivraison = $etatRepository->findOneBy(array('id' => 4));
         $pizzas = $produitRepository->findAll();
@@ -315,7 +317,7 @@ class CommandeController extends AbstractController
             $etatsCommandes[] = $etatString;
         }
 
-        return $this->render('commande/commandeEnCours.html.twig', compact('commandesClient','commandeDetailsClient','pizzas','etatsCommandes','detailsCommandePanier', 'prixDuPanier'));
+        return $this->render('commande/commandeEnCours.html.twig', compact('commandesClient','commandeDetailsClient','pizzas','etatsCommandes','detailsCommandePanier', 'prixDuPanier','messagesNonLu'));
     }
     public function prixDuPanier ($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier){
         $prixDuPanier = 0; // Instancie une variable de prix de panier à 0 qui sera envoyé au twig

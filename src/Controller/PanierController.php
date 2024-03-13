@@ -9,6 +9,7 @@ use App\Repository\DetailCommandeRepository;
 use App\Repository\EtatRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
+use App\Repository\UserMessageRepository;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,8 +20,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class PanierController extends AbstractController
 {
     #[Route('/panier', name: '_panier')]
-    public function index(TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EtatRepository $etatRepository): Response
+    public function index(TailleProduitRepository $tailleProduitRepository,UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EtatRepository $etatRepository): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $utilisateur = $this->getUser();
         $etatCreer = $etatRepository->findOneBy(['id' => 1]);
 
@@ -47,7 +49,7 @@ class PanierController extends AbstractController
             $derniereCommande = [];
         }
 
-        return $this->render('panier/index.html.twig', compact('detailsCommandePanier', 'prixDuPanier','pizzas'));
+        return $this->render('panier/index.html.twig', compact('detailsCommandePanier', 'prixDuPanier','pizzas','messagesNonLu'));
     }
 
     #[Route('/payementPanier', name: '_payementPanier')]

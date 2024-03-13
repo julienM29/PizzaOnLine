@@ -13,6 +13,7 @@ use App\Repository\CommandeRepository;
 use App\Repository\IngredientRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
+use App\Repository\UserMessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,20 +26,22 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class GerantController extends AbstractController
 {
     #[Route('/gerant', name: '_gerant')]
-    public function index(CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
+    public function index(CommandeRepository $commandeRepository,UserMessageRepository $userMessageRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
         $detailsCommandePanier = $result['detailsCommandePanier'];
         $prixDuPanier = $result['prixDuPanier'];
 
 
-        return $this->render('gerant/index.html.twig', compact('prixDuPanier', 'detailsCommandePanier'));
+        return $this->render('gerant/index.html.twig', compact('prixDuPanier', 'detailsCommandePanier','messagesNonLu'));
     }
 
     ////////////////////////////////////////////////////// CREATION /////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/ingredient', name: '_ingredient')]
-    public function creationIngredient(Request $requete, EntityManagerInterface $entityManager, IngredientRepository $ingredientRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
+    public function creationIngredient(Request $requete, EntityManagerInterface $entityManager,UserMessageRepository $userMessageRepository, IngredientRepository $ingredientRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $ingredient = new Ingredient();
         $allIngredient = $ingredientRepository->findAll();
         $count = count($allIngredient) - 1;
@@ -55,12 +58,13 @@ class GerantController extends AbstractController
             return $this->redirectToRoute('_ingredient');
         }
 
-        return $this->render('gerant/creationIngredient.html.twig', compact('ingredientForm', 'allIngredient', 'count', 'prixDuPanier', 'detailsCommandePanier'));
+        return $this->render('gerant/creationIngredient.html.twig', compact('ingredientForm', 'allIngredient', 'count', 'prixDuPanier', 'detailsCommandePanier','messagesNonLu'));
     }
 
     #[Route('/produit', name: '_produit')]
-    public function creationProduit(Request $requete, CommandeRepository $commandeRepository, IngredientRepository $ingredientRepository, CategorieIngredientRepository $categorieIngredientRepository, SluggerInterface $slugger, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
+    public function creationProduit(Request $requete, CommandeRepository $commandeRepository,UserMessageRepository $userMessageRepository, IngredientRepository $ingredientRepository, CategorieIngredientRepository $categorieIngredientRepository, SluggerInterface $slugger, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $produit = new Produit();
         $produitForm = $this->createForm(ProduitFormType::class, $produit);
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
@@ -112,23 +116,25 @@ class GerantController extends AbstractController
             return $this->redirectToRoute('_gerant');
         }
 
-        return $this->render('gerant/creationProduit.html.twig', compact('produitForm', 'ingredients', 'detailsCommandePanier', 'prixDuPanier', 'categories', 'categoriesByIngredient'));
+        return $this->render('gerant/creationProduit.html.twig', compact('produitForm', 'ingredients', 'detailsCommandePanier', 'prixDuPanier', 'categories', 'categoriesByIngredient','messagesNonLu'));
     }
 
     ////////////////////////////////////////////////////// MODIFICATION /////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/listeProduit', name: '_listeProduit')]
-    public function listeProduit(Request $requete, EntityManagerInterface $entityManager, ProduitRepository $produitRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository): Response
+    public function listeProduit(Request $requete, EntityManagerInterface $entityManager,UserMessageRepository $userMessageRepository, ProduitRepository $produitRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $allPizzas = $produitRepository->findAll();
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
         $detailsCommandePanier = $result['detailsCommandePanier'];
         $prixDuPanier = $result['prixDuPanier'];
-        return $this->render('gerant/listeProduit.html.twig', compact('allPizzas', 'detailsCommandePanier', 'prixDuPanier'));
+        return $this->render('gerant/listeProduit.html.twig', compact('allPizzas', 'detailsCommandePanier', 'prixDuPanier','messagesNonLu'));
     }
 
     #[Route('/modificationProduit/{id}', name: '_modificationProduit')]
-    public function modificationProduit($id, Request $requete, CategorieIngredientRepository $categorieIngredientRepository, CommandeRepository $commandeRepository, SluggerInterface $slugger, TailleProduitRepository $tailleProduitRepository, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
+    public function modificationProduit($id, Request $requete, CategorieIngredientRepository $categorieIngredientRepository,UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, SluggerInterface $slugger, TailleProduitRepository $tailleProduitRepository, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
         $detailsCommandePanier = $result['detailsCommandePanier'];
         $prixDuPanier = $result['prixDuPanier'];
@@ -158,7 +164,7 @@ class GerantController extends AbstractController
             return $this->redirectToRoute('_listeProduit');
         }
 
-        return $this->render('gerant/modificationProduit.html.twig', compact('produitForm', 'pizza', 'detailsCommandePanier', 'prixDuPanier'));
+        return $this->render('gerant/modificationProduit.html.twig', compact('produitForm', 'pizza', 'detailsCommandePanier', 'prixDuPanier','messagesNonLu'));
     }
 
     #[Route('/supprimerProduit/{id}', name: '_supprimerProduit')]
@@ -175,13 +181,14 @@ class GerantController extends AbstractController
 
     ////////////////////////////////////////////////////// Gestion /////////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/gestionDesRoles', name: '_gestionDesRoles')]
-    public function gestionDesRoles(CollaborateurRepository $collaborateurRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
+    public function gestionDesRoles(CollaborateurRepository $collaborateurRepository,UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, EntityManagerInterface $entityManager): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $collaborateurs = $collaborateurRepository->findAll();
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
         $detailsCommandePanier = $result['detailsCommandePanier'];
         $prixDuPanier = $result['prixDuPanier'];
-        return $this->render('gerant/gestionDesRoles.html.twig', compact('collaborateurs', 'prixDuPanier', 'detailsCommandePanier'));
+        return $this->render('gerant/gestionDesRoles.html.twig', compact('collaborateurs', 'prixDuPanier', 'detailsCommandePanier','messagesNonLu'));
     }
 
     public function prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier)
@@ -208,8 +215,9 @@ class GerantController extends AbstractController
     }
 
     #[Route('/gestionStock', name: '_gestionStock')]
-    public function gestionStock(CommandeRepository $commandeRepository, CategorieIngredientRepository $categorieIngredientRepository, IngredientRepository $ingredientRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository)
+    public function gestionStock(CommandeRepository $commandeRepository,UserMessageRepository $userMessageRepository, CategorieIngredientRepository $categorieIngredientRepository, IngredientRepository $ingredientRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository)
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $ingredients = $ingredientRepository->findAll();
         $categories = $categorieIngredientRepository->findAll();
 
@@ -218,7 +226,7 @@ class GerantController extends AbstractController
         $detailsCommandePanier = $result['detailsCommandePanier'];
         $prixDuPanier = $result['prixDuPanier'];
 
-        return $this->render('gerant/gestionStock.html.twig', compact('prixDuPanier', 'detailsCommandePanier', 'categories', 'ingredients'));
+        return $this->render('gerant/gestionStock.html.twig', compact('prixDuPanier', 'detailsCommandePanier', 'categories', 'ingredients','messagesNonLu'));
     }
 
     public function tooltip($commandeRepository, $tailleProduitRepository, $produitRepository)

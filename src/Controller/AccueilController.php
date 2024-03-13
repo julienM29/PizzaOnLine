@@ -13,6 +13,7 @@ use App\Repository\IngredientRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
 use App\Repository\TypeProduitRepository;
+use App\Repository\UserMessageRepository;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AccueilController extends AbstractController
 {
     #[Route('/accueil', name: '_accueil')]
-    public function index(EntityManagerInterface $entityManager,TypeProduitRepository $typeProduitRepository ,IngredientRepository $ingredientRepository,  TailleProduitRepository $tailleProduitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EtatRepository $etatRepository, ProduitRepository $produitRepository, CommandeRepository $commandeRepository): Response
+    public function index(EntityManagerInterface $entityManager,UserMessageRepository $userMessageRepository,TypeProduitRepository $typeProduitRepository ,IngredientRepository $ingredientRepository,  TailleProduitRepository $tailleProduitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EtatRepository $etatRepository, ProduitRepository $produitRepository, CommandeRepository $commandeRepository): Response
     {
         $pizzas = $produitRepository->findAll();
         $typesProduits = $typeProduitRepository->findAll();
@@ -100,8 +101,8 @@ class AccueilController extends AbstractController
             }
 
         }
-
-        return $this->render('accueil/index.html.twig', compact('pizzas', 'detailCommandeForm', 'detailsCommandePanier', 'prixDuPanier', 'typesProduits'));
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
+        return $this->render('accueil/index.html.twig', compact('pizzas', 'detailCommandeForm', 'detailsCommandePanier', 'prixDuPanier', 'typesProduits','messagesNonLu'));
     }
 
     #[Route('/detailPizza/{id}', name: '_detailPizza')]
@@ -116,6 +117,7 @@ class AccueilController extends AbstractController
         $etatCreer = $etatRepository->findOneBy(array('id' => 1));
         $heurePreparation = $now->add(new DateInterval('PT30M'));
         $heureLivraison = $heurePreparation->add(new DateInterval('PT30M'));
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
 ////////////////////////////////////////// Liste Mot //////////////////////////////////////////////////////////////////
         $viandes = ["Jambon Cru", "Lardon", "Viande haché", "Merguez", "Jambon"];
 ////////////////////////////////////////// FORMULAIRE ET TRAITEMENT //////////////////////////////////////////////////////////////////
@@ -161,7 +163,7 @@ class AccueilController extends AbstractController
             }
 
         }
-        return $this->render('panier/detail.html.twig', compact('pizza', 'detailCommandeForm', 'viandes', 'detailsCommandePanier', 'prixDuPanier'));
+        return $this->render('panier/detail.html.twig', compact('pizza', 'detailCommandeForm', 'viandes', 'detailsCommandePanier', 'prixDuPanier','messagesNonLu'));
     }
 
 // CREATION D UNE COMMANDE

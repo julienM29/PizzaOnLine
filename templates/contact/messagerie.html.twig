@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="flex justify-center items-center flex-col">
+        <div class="w-3/4 flex justify-center text-4xl text-gray-50 mb-6 mt-6"> Messagerie de la pizzéria</div>
+        <div class="w-3/4 flex justify-center">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
+                <table class="w-full text-base text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-lg text-gray-50 uppercase bg-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Sujet du message
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Nom
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Prénom
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            ID de l'utilisateur
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Lu
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="sr-only">Edit</span>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for message in messages %}
+                        <tr class=" bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <th scope="row"
+                                class=" px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ message.sujet }}
+                            </th>
+                            <td class="px-6 py-4">
+                                {{ message.nom }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ message.prenom }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ message.userId.id }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if message.checked == 0 %}
+                                    <img src="{{ asset('images/croixRouge.png') }}"
+                                         style="width: 25px; height: 25px; ">
+                                {% else %}
+                                    <img src="{{ asset('images/valide.png') }}"
+                                         style="width: 25px; height: 25px; ">
+                                {% endif %}
+
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="#"
+                                   class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Lire</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+

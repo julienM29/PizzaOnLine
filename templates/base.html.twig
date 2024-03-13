@@ -43,13 +43,6 @@
                         Commande en cours</a>
                 </button>
             {% endif %}
-            {% if is_granted("ROLE_GERANT") %}
-                <button>
-                    <a href="{{ path('_gerant') }}"
-                       class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer active">
-                        Gestion</a>
-                </button>
-            {% endif %}
             {% if is_granted("ROLE_PIZZAIOLO") or is_granted('ROLE_GERANT') or is_granted('ROLE_LIVREUR') %}
                 <button>
                     <a href="{{ path('_preparationCommande', {'id': app.user.id}) }}"
@@ -69,6 +62,22 @@
                     <a href="{{ path('_livraisonClient', {'id': app.user.id}) }}"
                        class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer active">
                         Livraison</a>
+                </button>
+            {% endif %}
+            {% if is_granted("ROLE_GERANT") and app.user %}
+                <button>
+                    <a href="{{ path('_gerant') }}"
+                       class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer active">
+                        Gestion</a>
+                </button>
+                <button>
+                    <a href="{{ path('_messagerie') }}"
+                       class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer active">
+                        Messagerie
+                        {% if messagesNonLu > 0 %}
+                            <img src="{{ asset('images/attention.png') }}" class="absolute top-0 right-0 w-7 h-7" alt="Image">
+                        {% endif %}
+                    </a>
                 </button>
             {% endif %}
             {% if not app.user %}

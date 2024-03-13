@@ -11,6 +11,7 @@ use App\Repository\EtatRepository;
 use App\Repository\IngredientRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
+use App\Repository\UserMessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,8 +23,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfilController extends AbstractController
 {
     #[Route('/profil/{id}', name: '_profil')]
-    public function index($id, CollaborateurRepository $collaborateurRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
+    public function index($id, CollaborateurRepository $collaborateurRepository,UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $utilisateur = $this->getUser();
         $derniereCommande = $commandeRepository->findOneBy(
             ['collaborateur' => $utilisateur],
@@ -45,12 +47,13 @@ class ProfilController extends AbstractController
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
         $numero = $user->getTelephone();
         $numeroAvecEspaces = chunk_split($numero, 2, ' ');
-        return $this->render('profil/index.html.twig', compact('user', 'detailsCommandePanier', 'prixDuPanier', 'numeroAvecEspaces'));
+        return $this->render('profil/index.html.twig', compact('user', 'detailsCommandePanier', 'prixDuPanier', 'numeroAvecEspaces','messagesNonLu'));
     }
 
     #[Route('/modificationProfil/{id}', name: '_modificationProfil')]
-    public function modificationProfil($id, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
+    public function modificationProfil($id, CommandeRepository $commandeRepository,UserMessageRepository $userMessageRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
         $utilisateurConnecter = $this->getUser();
         $derniereCommande = $commandeRepository->findOneBy(
@@ -80,12 +83,13 @@ class ProfilController extends AbstractController
             return $this->redirectToRoute('_profil', ['id' => $id]);
         }
 
-        return $this->render('profil/modificationProfil.html.twig', compact('user', 'profilForm', 'detailsCommandePanier', 'prixDuPanier'));
+        return $this->render('profil/modificationProfil.html.twig', compact('user', 'profilForm', 'detailsCommandePanier', 'prixDuPanier','messagesNonLu'));
     }
 
     #[Route('/modificationMotDePasse/{id}', name: '_modificationMotDePasse')]
-    public function modificationMotDePasse($id, UserPasswordHasherInterface $userPasswordHasher, CollaborateurRepository $collaborateurRepository, UserPasswordHasherInterface $passwordHasher, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, Request $requete, EntityManagerInterface $entityManager): Response
+    public function modificationMotDePasse($id, UserPasswordHasherInterface $userPasswordHasher,UserMessageRepository $userMessageRepository, CollaborateurRepository $collaborateurRepository, UserPasswordHasherInterface $passwordHasher, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, Request $requete, EntityManagerInterface $entityManager): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
         $utilisateurConnecter = $this->getUser();
         $derniereCommande = $commandeRepository->findOneBy(
@@ -128,7 +132,7 @@ class ProfilController extends AbstractController
                 $this->addFlash('error', 'Mot de passe incorrect');
             }
         }
-        return $this->render('profil/modificationPassword.html.twig', compact('mdpForm', 'prixDuPanier', 'detailsCommandePanier'));
+        return $this->render('profil/modificationPassword.html.twig', compact('mdpForm', 'prixDuPanier', 'detailsCommandePanier','messagesNonLu'));
     }
 
     public function prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier)

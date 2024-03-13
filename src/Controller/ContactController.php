@@ -8,6 +8,7 @@ use App\Repository\CollaborateurRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
+use App\Repository\UserMessageRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,6 +21,7 @@ class ContactController extends AbstractController
     #[Route('/contact', name: '_contact')]
     public function index(CommandeRepository $commandeRepository,Request $request,EntityManagerInterface $entityManager,CollaborateurRepository $collaborateurRepository, UserMessageType $messageType, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $utilisateur = $this->getUser();
         //////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
         $derniereCommande = $commandeRepository->findOneBy(
@@ -63,7 +65,33 @@ class ContactController extends AbstractController
 
         }
 
-        return $this->render('contact/index.html.twig', compact('prixDuPanier', 'detailsCommandePanier', 'pizzaDuMoment', 'messageForm'));
+        return $this->render('contact/index.html.twig', compact('prixDuPanier', 'detailsCommandePanier', 'pizzaDuMoment', 'messageForm', 'messagesNonLu'));
+    }
+    #[Route('/messagerie', name: '_messagerie')]
+    public function messagerie(CommandeRepository $commandeRepository,UserMessageRepository $userMessageRepository, Request $request,EntityManagerInterface $entityManager,CollaborateurRepository $collaborateurRepository, UserMessageType $messageType, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
+    {
+        $utilisateur = $this->getUser();
+        //////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur],
+            ['id' => 'DESC']
+        );
+        $detailsCommandePanier = [];
+        $prixDuPanier = 0;
+        if ($derniereCommande) {
+
+            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            if ($detailsCommandePanier) {
+                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+            } else {
+                $detailsCommandePanier = [];
+            }
+        } else {
+            $derniereCommande = [];
+        }
+        $messages = $userMessageRepository->findAll();
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
+        return $this->render('contact/messagerie.html.twig', compact('prixDuPanier', 'detailsCommandePanier', 'messages', 'messagesNonLu'));
     }
     public function prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier)
     {
