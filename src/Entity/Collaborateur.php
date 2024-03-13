@@ -57,12 +57,16 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 25)]
     private ?string $longitude = null;
 
+    #[ORM\OneToMany(mappedBy: 'userId', targetEntity: UserMessage::class, orphanRemoval: true)]
+    private Collection $userMessages;
+
 
 
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
         $this->commandesLivreur = new ArrayCollection();
+        $this->userMessages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -280,6 +284,36 @@ class Collaborateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLongitude(string $longitude): static
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserMessage>
+     */
+    public function getUserMessages(): Collection
+    {
+        return $this->userMessages;
+    }
+
+    public function addUserMessage(UserMessage $userMessage): static
+    {
+        if (!$this->userMessages->contains($userMessage)) {
+            $this->userMessages->add($userMessage);
+            $userMessage->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserMessage(UserMessage $userMessage): static
+    {
+        if ($this->userMessages->removeElement($userMessage)) {
+            // set the owning side to null (unless already changed)
+            if ($userMessage->getUserId() === $this) {
+                $userMessage->setUserId(null);
+            }
+        }
 
         return $this;
     }

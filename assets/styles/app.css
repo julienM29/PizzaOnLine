@@ -88,3 +88,9 @@ body {
     font-family: 'Pacifico', cursive;
     color: #212738
 }
+.border-gradient-italy {
+    background: linear-gradient(90deg, rgba(17,179,22,1) 0%, rgba(255,255,255,1) 48%, rgba(180,7,7,1) 84%);
+}
+.titrePizzaDuMoment {
+     font-family: 'Pacifico', cursive;
+ }

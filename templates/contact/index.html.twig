@@ -1,18 +1,227 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ContactController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="h-screen w-screen ">
+        <div class="w-full h-full section mt-4 ">
+            <div id="section1" class="h-3/4">
+                <div class="flex justify-center">
+                    <div class="flex justify-center font-semibold text-4xl mb-20 w-3/4 text-gray-50 ">
+                        La pizzéria PizzaOnLine
+                    </div>
+                </div>
 
-<div class="example-wrapper">
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/33649/Documents/PizzaOnLine/src/Controller/ContactController.php'|file_link(0) }}">src/Controller/ContactController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/33649/Documents/PizzaOnLine/templates/contact/index.html.twig'|file_link(0) }}">templates/contact/index.html.twig</a></code></li>
-    </ul>
-</div>
+                <div class="flex justify-center">
+                    <div class="flex">
+                        <div class="w-1/2 text-gray-50 ">
+                            <div class="mb-4 flex justify-center">La pizzéria se situe au 2B rue Benjamin Franklin à
+                                Saint-Herblain 44800
+                            </div>
+                            <div class="mb-4 flex justify-center text-gray-50 font-semibold underline-offset-4 underline">
+                                Horraires d'ouvertures
+                            </div>
+                            <div class="flex justify-center">
+                                <table class="text-center w-1/2 table-auto">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Matin</th>
+                                        <th scope="col">Après-midi</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row" class="text-gray-50">Lundi</th>
+                                        <td class="px-1 py-1 text-red-700 font-semibold">Fermé</td>
+                                        <td class="px-1 py-1 text-red-700 font-semibold">Fermé</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Mardi</th>
+                                        <td class="px-1 py-1">10h - 14h</td>
+                                        <td class="px-1 py-1">18h30 - 23h</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Mercredi</th>
+                                        <td class="px-1 py-1">10h - 14h</td>
+                                        <td class="px-1 py-1">18h30 - 23h</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Jeudi</th>
+                                        <td class="px-1 py-1">10h - 14h</td>
+                                        <td class="px-1 py-1">18h30 - 23h</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Vendredi</th>
+                                        <td class="px-1 py-1">10h - 14h</td>
+                                        <td class="px-1 py-1">18h30 - 23h</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Samedi</th>
+                                        <td class="px-1 py-1">10h - 14h</td>
+                                        <td class="px-1 py-1">18h30 - 23h</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Dimanche</th>
+                                        <td class="px-1 py-1">10h - 14h</td>
+                                        <td class="px-1 py-1">18h30 - 23h</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                        <div class="w-1/2">
+                            <img src="{{ asset('images/9-devanture.jpg') }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-0">
+                <div class="h/-1/4 flex justify-center">
+                    <div class="w-16 h-16 flex justify-center mb-1 cursor-pointer active">
+                        <img src="{{ asset('images/fleche.png') }}" class="w-14 h-14" id="imgSection1">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="h-screen w-screen ">
+        <div class="w-full h-full section mt-4 ">
+            <div id="section2" class="h-3/4">
+                <div class="text-4xl font-semibold text-gray-50 mb-8 flex justify-center">La carte de nos produits</div>
+                <div class="flex justify-center ">
+                    <div class="w-1/3 flex flex-col justify-center items-center">
+                        <div class="text-3xl text-gray-50 font-semibold mb-6 italic"> La pizza du moment !</div>
+                        <div class="w-3/4  bg-gradient-to-r from-green-600 via-white to-red-700 p-1.5">
+                            <div class=" w-full h-full border-4 border-white">
+                                <div class=" w-full h-full bg-gray-400 flex flex-col  text-white py-2 px-4 justify-between">
+                                    <div class="flex justify-center mb-2 text-2xl font-semibold titrePizzaDuMoment text-gray-50"> {{ pizzaDuMoment.nom }}</div>
+                                    <div class="flex justify-center">
+                                        <img src="images/{{ pizzaDuMoment.urlImage }}"
+                                             style="width: 300px; height: 250px; {% if not pizzaDuMoment.disponible %} filter: grayscale(100%);{% endif %}"
+                                             class="mb-4 border-[1px] border-black {% if not pizzaDuMoment.disponible %} border-red-500{% endif %}">
+                                    </div>
+                                    <div class="mb-4 text-xl text-gray-50">
+                                        {% for ingredient in pizzaDuMoment.Ingredients %}
+                                            {{ ingredient.nom }}{% if not loop.last %}, {% endif %}
+
+                                        {% endfor %}
+                                    </div>
+                                    <div id="lePrix">
+                                        <div class="flex justify-between">
+                                            <div class="mb-4 text-xl text-gray-50 font-semibold">Médium :</div>
+                                            <div class="mb-4 text-xl text-gray-50 ">{{ (pizzaDuMoment.prix) | number_format(2, '.', ',') }}
+                                                €
+                                            </div>
+                                            <div class="mb-4 text-xl text-gray-50 font-semibold">Large :</div>
+                                            <div class="mb-4 text-xl text-gray-50 ">{{ (pizzaDuMoment.prix + 5) | number_format(2, '.', ',') }}
+                                                €
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-1/3 flex-col flex items-center justify-center">
+                        <div class="mb-8 tex-xl italic text-gray-50">Découvrez la carte de notre pizzaïollo, toutes les
+                            pizzas sont constituées de produits
+                            locaux de nos différents maraichers. Une cuisine qui se transmet de père en fils depuis 240
+                            après J-C.
+                        </div>
+                        <div class="border-4 py-3 px-3 border-blue-800 transform transition-transform hover:scale-110">
+                            <a href="{{ path('_accueil') }}"
+                               class="text-xl text-gray-50 p-4 hover:text-red-500 duration-200 cursor-pointer active">
+                                DÉCOUVRIR</a></div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-0">
+                <div class="h/-1/4 flex justify-center">
+                    <div class="w-16 h-16 flex justify-center mb-1 cursor-pointer active">
+                        <img src="{{ asset('images/fleche.png') }}" class="w-14 h-14" id="imgSection2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="h-screen w-screen ">
+        <div class="w-full h-full section mt-4 ">
+            <div id="section3" class="h-full ">
+                <div class="flex justify-center text-4xl font-semibold text-gray-50 mb-6"> Contact</div>
+                    {{ form_start(messageForm) }}
+                    <div class="flex flex-col w-full justify-center items-center">
+                    <div class="w-1/3 mb-4">
+                            <label class=" block uppercase tracking-wide text-gray-50 text-lg font-bold mb-3"
+                                   for="grid-password">
+                                {{ form_label(messageForm.sujet) }} :
+                            </label>
+                            <div>
+                                {{ form_widget(messageForm.sujet, {'attr': {'class': 'w-full border  rounded-md'}}) }}
+                            </div>
+                    </div>
+                    <div class="w-1/3 mb-4 ">
+                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-3"
+                               for="grid-password">
+                            {{ form_label(messageForm.message) }} :
+                        </label>
+                        <div class="w-full h-full mb-2">
+                            {{ form_widget(messageForm.message, {'attr': {'class': 'w-full h-full text-black font-semibold px-4 py-2 border rounded-md resize-none'}}) }}
+                        </div>
+                    </div>
+                    <div class="flex justify-center w-1/3">
+                        {{ form_widget(messageForm.Envoyer, {'attr': {'class': 'btn flex text-2xl justify-center items-center text-white border-4 border-blue-600 hover:bg-blue-700 font-bold '}}) }}
+                    </div>
+                    {{ form_end(messageForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let currentSection = 1;
+
+            document.body.style.overflow = 'hidden'; // Désactive le défilement de la page
+
+            document.addEventListener('wheel', function (event) {
+                if (event.deltaY > 0) {
+                    // Scrolling down
+                    scrollToSection(currentSection + 1);
+                } else {
+                    // Scrolling up
+                    scrollToSection(currentSection - 1);
+                }
+            });
+
+            function scrollToSection(sectionNumber) {
+                const totalSections = 3;
+
+                if (sectionNumber >= 1 && sectionNumber <= totalSections) {
+                    currentSection = sectionNumber;
+                    const sectionId = 'section' + currentSection;
+                    const section = document.getElementById(sectionId);
+
+                    if (section) {
+                        const topMargin = 70;
+                        const offset = section.getBoundingClientRect().top + window.scrollY - topMargin;
+
+                        window.scrollTo({
+                            top: offset,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            }
+
+            document.getElementById('imgSection1').addEventListener('click', function () {
+                scrollToSection(2);
+            });
+
+            document.getElementById('imgSection2').addEventListener('click', function () {
+                scrollToSection(3);
+            });
+        });
+    </script>
 {% endblock %}

@@ -2,9 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\UserMessage;
+use App\Form\UserMessageType;
+use App\Repository\CollaborateurRepository;
 use App\Repository\CommandeRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ContactController extends AbstractController
 {
     #[Route('/contact', name: '_contact')]
-    public function index(CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
+    public function index(CommandeRepository $commandeRepository,Request $request,EntityManagerInterface $entityManager,CollaborateurRepository $collaborateurRepository, UserMessageType $messageType, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
         $utilisateur = $this->getUser();
         //////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
@@ -33,8 +39,31 @@ class ContactController extends AbstractController
         } else {
             $derniereCommande = [];
         }
-        return $this->render('contact/index.html.twig', compact('prixDuPanier', 'detailsCommandePanier'));
+        /////////////// Pizza du moment /////////////////////////////
+//        $pizzas = $produitRepository->findAll();
+        $pizzas = $produitRepository->findBy(['typeProduit' => 1,
+            'Disponible' => 1]);
+//        $nombrePizzas = count($pizzas);
+        $nombreAleatoire = array_rand($pizzas);
+        $pizzaDuMoment = $pizzas[$nombreAleatoire];
+///////////// PARTIE MESSAGE UTILISATEUR /////////////////////////////
+        $newMessage = new UserMessage();
+        $messageForm = $this->createForm(UserMessageType::class, $newMessage);
+        $messageForm->handleRequest($request);
+        if($messageForm->isSubmitted() && $messageForm->isValid()){
+            $utilisateurConnecter = $collaborateurRepository->findOneBy(['id' => $utilisateur->getId()]);
+            if($utilisateurConnecter){
+                $newMessage->setUserId($utilisateurConnecter);
+                $newMessage->setChecked(0);
+                $newMessage->setNom($utilisateurConnecter->getNom());
+                $newMessage->setPrenom($utilisateurConnecter->getPrenom());
+                $entityManager->persist($newMessage);
+                $entityManager->flush();
+                return $this->redirectToRoute('_accueil');            }
 
+        }
+
+        return $this->render('contact/index.html.twig', compact('prixDuPanier', 'detailsCommandePanier', 'pizzaDuMoment', 'messageForm'));
     }
     public function prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier)
     {
