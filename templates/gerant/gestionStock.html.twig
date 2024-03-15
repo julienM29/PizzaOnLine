@@ -6,34 +6,46 @@
     <h2 class="flex item-center justify-center text-5xl mt-2 underline underline-offset-8"> Gestion du stock des
         ingrédients </h2>
 
-    <div class="w-full mt-8 ">
-        <div class="flex justify-center items-center flex-col ">
-            <div>
+    <div class="w-full mt-6 flex justify-center">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-1/2 mt-6">
+            <div class="w-full text-sm text-gray-700 flex justify-between mb-4 ">
                 <select name="categories" id="ingredient_form_categorie" class="text-xl">
-                    <option class="0 text-xl" value="0">Choisissez une catégorie</option>
+                    <option class="0 text-lg" value="0">Choisissez une catégorie</option>
                     {% set i = 1 %}
                     {% for category in categories %}
-                        <option class="text-xl" value="{{ i }}">{{ category.libelle }}</option>
+                        <option class="text-lg" value="{{ i }}">{{ category.libelle }}</option>
                         {% set i = i + 1 %}
                     {% endfor %}
                 </select>
-                <input type="text" id="search" class="text-xl">
-                <button class=" bg-gray-500 text-white text-xl font-bold hover:text-white py-2 px-4 border border-black hover:border-transparent hover:border-white rounded mt-4 "
+                <input type="text" id="search" class="text-lg">
+                <button class=" bg-gray-500 text-white text-lg font-bold hover:text-white py-2 px-4 border border-black hover:border-transparent hover:border-white rounded "
                         id="changement">
                     Valider les changements
                 </button>
             </div>
-            <div class="mt-8 px-8 py-4 border-2 border-white w-1/3 flex justify-between mb-24">
-                <div class="w-full ">
-                    <div class="flex justify-between mb-4  ">
-                        <div class="text-3xl mb-4 ml-2">Ingrédients</div>
-                        <div class="text-3xl mb-4 mr-2">Quantité</div>
-                    </div>
-                    {% for ingredient in ingredients %}
-                        <div id="{{ ingredient.nom }}"
-                             class="flex justify-between {% if not loop.last %}mb-4{% endif %}  {{ ingredient.categorie.libelle }}">
-                            <div class="text-3xl">{{ ingredient.nom }}</div>
-                            <div class=" flex items-center w-1/4 {{ ingredient.id }}">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-24">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-lg">
+                        Ingrédient
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-lg">
+                        Quantité
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-lg">
+                        Supprimer
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ingredient in ingredients %}
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 {{ ingredient.categorie.libelle }}"
+                        id="{{ ingredient.nom }}">
+                        <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                            {{ ingredient.nom }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class=" flex items-center w-1/2 {{ ingredient.id }}">
                                 <button type="button"
                                         data-input-counter-decrement="quantity-input"
                                         class="decrement-button {{ ingredient.id }} bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
@@ -58,11 +70,16 @@
                                     </svg>
                                 </button>
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline">Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
+
     </div>
 
 

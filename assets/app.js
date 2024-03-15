@@ -22,4 +22,5 @@ import './test.js';
 import './adresseClient.js';
 import './ingredient.js';
 import './contact.js';
+import './message.js'
 import './styles/app.css';

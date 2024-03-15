@@ -6,11 +6,13 @@ use App\Entity\UserMessage;
 use App\Form\UserMessageType;
 use App\Repository\CollaborateurRepository;
 use App\Repository\CommandeRepository;
+use App\Repository\IngredientRepository;
 use App\Repository\ProduitRepository;
 use App\Repository\TailleProduitRepository;
 use App\Repository\UserMessageRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,9 +21,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class ContactController extends AbstractController
 {
     #[Route('/contact', name: '_contact')]
-    public function index(CommandeRepository $commandeRepository,Request $request,EntityManagerInterface $entityManager,CollaborateurRepository $collaborateurRepository, UserMessageType $messageType, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
+    public function index(CommandeRepository $commandeRepository,UserMessageRepository $userMessageRepository,Request $request,EntityManagerInterface $entityManager,CollaborateurRepository $collaborateurRepository, UserMessageType $messageType, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
-        $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
+        $messagesNonLu = $userMessageRepository->findBy(['checked' => '0']);
         $utilisateur = $this->getUser();
         //////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
         $derniereCommande = $commandeRepository->findOneBy(
@@ -93,6 +95,19 @@ class ContactController extends AbstractController
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         return $this->render('contact/messagerie.html.twig', compact('prixDuPanier', 'detailsCommandePanier', 'messages', 'messagesNonLu'));
     }
+    #[Route('/messageVerifier', name: '_messageVerifier')]
+    public function messageVerifier(Request $request, UserMessageRepository $userMessageRepository, EntityManagerInterface $entityManager)
+    {
+        $data = json_decode($request->getContent(), true); // Convertir les données JSON en tableau associatif
+
+        if ($data) {
+            $messageAModifier = $userMessageRepository->findOneBy(['id' => $data]);
+            $messageAModifier->setChecked('1');
+            $entityManager->persist($messageAModifier);
+            $entityManager->flush();
+            }
+            return new JsonResponse(['success' => true]);
+        }
     public function prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier)
     {
         $prixDuPanier = 0;

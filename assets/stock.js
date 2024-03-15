@@ -23,7 +23,7 @@ function initStock() {
     }
 
     validation.addEventListener('click', envoiDonnee);
-    search.addEventListener('change', affichageIngredient);
+    search.addEventListener('input', affichageIngredient);
     boutonCategorie.addEventListener('change', affichageIngredient);
 
 
@@ -38,11 +38,12 @@ let categories = [
     document.getElementsByClassName('Herbes et épices'),
     document.getElementsByClassName('Fruits de mer'),
     document.getElementsByClassName('Garnitures spéciales'),
+    document.getElementsByClassName('Boisson'),
 ]
 window.initStock = initStock;
 
 function affichageIngredient() {
-
+console.log('hello');
     let index = document.getElementById('ingredient_form_categorie').value;
     let texte = document.getElementById('search').value;
 

@@ -70,11 +70,12 @@
                        class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer active">
                         Gestion</a>
                 </button>
+
                 <button>
                     <a href="{{ path('_messagerie') }}"
                        class="text-xl inline-block transform transition-transform hover:scale-110 p-4 mr-4 border-b-2 border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 duration-200 cursor-pointer active">
                         Messagerie
-                        {% if messagesNonLu > 0 %}
+                        {% if messagesNonLu %}
                             <img src="{{ asset('images/attention.png') }}" class="absolute top-0 right-0 w-7 h-7" alt="Image">
                         {% endif %}
                     </a>

@@ -78,7 +78,8 @@ let ingredients = []; // Tableau pour l'affichage des ingrédients
 
 function affichageIngredient() {
 
-
+    let search = document.getElementById('verifNomNewIngredient');
+    search.addEventListener('input', verificationNewIngredient);
     let valeurBouton = document.getElementById('ingredient_form_categorie').value;
 
 
@@ -258,20 +259,20 @@ function showMessageTypeBoisson() {
 function verificationCheckboxBoisson() {
     // Sélectionnez toutes les divs avec la classe "Boisson"
     var divsBoisson = document.querySelectorAll('.Boisson');
-    let allCheckbox =  document.querySelectorAll('input[type="checkbox"]');
+    let allCheckbox = document.querySelectorAll('input[type="checkbox"]');
 
 
 // Parcourez chaque div Boisson
-    divsBoisson.forEach(function(divBoisson) {
+    divsBoisson.forEach(function (divBoisson) {
         // Sélectionnez toutes les cases à cocher à l'intérieur de chaque div Boisson
         var checkboxes = divBoisson.querySelectorAll('input[type="checkbox"]');
 
         // Ajoutez un écouteur d'événements pour chaque case à cocher
-        checkboxes.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
                 // Si la case à cocher est cochée, décochez les autres dans la même div
                 if (checkbox.checked) {
-                    allCheckbox.forEach(function(otherCheckbox) {
+                    allCheckbox.forEach(function (otherCheckbox) {
                         if (otherCheckbox !== checkbox) {
                             otherCheckbox.checked = false;
                         }
@@ -282,3 +283,59 @@ function verificationCheckboxBoisson() {
     });
 
 }
+
+function verificationNewIngredient() {
+    let nomInscrit = document.getElementById('verifNomNewIngredient').value;
+    let valueCategorie = document.getElementById('ingredient_form_categorie').value;
+    if (!nomInscrit || nomInscrit !== '') {
+        if (!valueCategorie || valueCategorie !== '0') {
+            let indexCat = parseInt(valueCategorie) - 1;
+            searchIngredient(nomInscrit, indexCat);
+        }
+    }
+}
+
+function searchIngredient(texte, index) {
+    let input = document.getElementById('verifNomNewIngredient');
+    let label = document.getElementById('labelNom');
+    let boutonAjout = document.getElementById('boutonAjouter');
+    let nomExistant = document.getElementById('nomExistant');
+
+    // Supprimer le surlignement de l'ingrédient si il a été trouvé avant
+    let elementsSurlignes = document.querySelectorAll('.bg-yellow-300');
+    elementsSurlignes.forEach(function(element) {
+        element.classList.remove('bg-yellow-300');
+    });
+
+    if (input.classList.contains('border-red-700') && boutonAjout.classList.contains('hidden') && !nomExistant.classList.contains('hidden') && label.classList.contains('text-red-700')) {
+        nomExistant.classList.add('hidden');
+        boutonAjout.classList.remove('hidden');
+        input.classList.remove('border-4');
+        input.classList.replace
+        ('border-red-700', 'border-gray-200');
+        input.classList.replace
+        ('text-red-700', 'text-gray-700');
+        label.classList.remove('text-red-700');
+    }
+
+    if (texte !== '') { // Input plein
+        if (index !== '0') { // Une catégorie sélectionnée
+
+            for (let h = 0; h < categories[index].length; h++) {
+                if (categories[index][h].id.toLowerCase() === texte.toLowerCase()) {
+                    document.getElementById(categories[index][h].id).classList.add('bg-yellow-300');
+                    nomExistant.classList.remove('hidden');
+                    boutonAjout.classList.add('hidden');
+                    input.classList.add('border-4');
+                    input.classList.replace
+                    ('border-gray-200', 'border-red-700');
+                    input.classList.replace
+                    ('text-gray-700', 'text-red-700');
+                    label.classList.add('text-red-700');
+                }
+            }
+
+        }
+    }
+}
+

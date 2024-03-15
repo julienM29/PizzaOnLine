@@ -27,6 +27,9 @@
                         <th scope="col" class="px-6 py-3">
                             <span class="sr-only">Edit</span>
                         </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="sr-only">Edit</span>
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -45,10 +48,11 @@
                             <td class="px-6 py-4">
                                 {{ message.userId.id }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4" >
                                 {% if message.checked == 0 %}
                                     <img src="{{ asset('images/croixRouge.png') }}"
-                                         style="width: 25px; height: 25px; ">
+                                         style="width: 25px; height: 25px; "
+                                         id="imageMessage{{ message.id }}">
                                 {% else %}
                                     <img src="{{ asset('images/valide.png') }}"
                                          style="width: 25px; height: 25px; ">
@@ -57,7 +61,20 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <a href="#"
-                                   class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Lire</a>
+                                   class="font-medium text-blue-600 dark:text-blue-500 hover:underline lireMessage"
+                                   data-message-id="{{ message.id }}">Lire</a>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <a href="#"
+                                   class="font-medium text-blue-600 dark:text-blue-500 hover:underline messageVu "
+                                   data-message-id="{{ message.id }}">Vu</a>
+                            </td>
+                        </tr>
+                        <tr id="messageNum_{{ message.id }}" class="hidden">
+                            <td colspan="7">
+                                <div class="p-4 bg-gray-200 dark:bg-gray-700">
+                                    <p class="font-semibold">{{ message.message }}</p>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
@@ -67,6 +84,11 @@
         </div>
     </div>
 
-
+    <script src="{{ asset('build/app.js') }}"></script>
+    <script>
+        window.onload = function () {
+            initMessage();
+        };
+    </script>
 {% endblock %}
 
