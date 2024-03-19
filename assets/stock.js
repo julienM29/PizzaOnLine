@@ -43,10 +43,10 @@ let categories = [
 window.initStock = initStock;
 
 function affichageIngredient() {
-console.log('hello');
     let index = document.getElementById('ingredient_form_categorie').value;
     let texte = document.getElementById('search').value;
-
+    console.log('texte : ' + texte);
+    console.log('index : ' + index);
     if (!texte || texte !== '') {
         if (!index || index === '0') {
             showAllCategory(categories);
@@ -143,12 +143,11 @@ function envoiDonnee() {
 }
 
 function searchIngredient(texte, index) {
-
     if (texte !== '') { // Input plein
         if (index === '0') { // Aucune catégorie
             for (let i = 0; i < categories.length; i++) {
                 for (let j = 0; j < categories[i].length; j++) {
-                    if (!categories[i][j].id.toLowerCase().includes(texte)) {
+                    if (!categories[i][j].id.toLowerCase().includes(texte.toLowerCase())) {
                         if (categories[i][j].tagName.toLowerCase() === 'input') {
                             categories[i][j].classList.remove('hidden');
                         } else {
@@ -160,7 +159,7 @@ function searchIngredient(texte, index) {
             }
         } else { // Une catégorie sélectionnée
             for (let h = 0; h < categories[index].length; h++) {
-                if (!categories[index][h].id.toLowerCase().includes(texte)) {
+                if (!categories[index][h].id.toLowerCase().includes(texte.toLowerCase())) {
                     if (categories[index][h].tagName.toLowerCase() === 'input') {
                         categories[index][h].classList.remove('hidden');
                     } else {

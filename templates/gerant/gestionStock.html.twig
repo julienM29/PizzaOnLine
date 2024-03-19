@@ -17,7 +17,12 @@
                         {% set i = i + 1 %}
                     {% endfor %}
                 </select>
-                <input type="text" id="search" class="text-lg">
+                <div class="relative">
+                    <input type="text" id="search" class="text-lg pl-8 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <img class="w-6 h-6" src="{{ asset('images/loupe.png') }}" alt="Rechercher">
+                    </div>
+                </div>
                 <button class=" bg-gray-500 text-white text-lg font-bold hover:text-white py-2 px-4 border border-black hover:border-transparent hover:border-white rounded "
                         id="changement">
                     Valider les changements
@@ -55,9 +60,9 @@
                                               stroke-width="2" d="M1 1h16"/>
                                     </svg>
                                 </button>
-                                <input type="text" data-input-counter data-input-counter-min="1"
+                                <input type="number" data-input-counter data-input-counter-min="1"
                                        data-input-counter-max="50" aria-describedby="helper-text-explanation"
-                                       class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                       class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-0 focus:outline-none block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-0 dark:focus:outline-none disable-spinners"
                                        placeholder="999" value="{{ ingredient.quantite }}" id="{{ ingredient.id }}"
                                        required>
                                 <button type="button" id=""
@@ -83,6 +88,13 @@
     </div>
 
 
+    <style>
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
 
     <script src="{{ asset('build/app.js') }}"></script>
     <script>

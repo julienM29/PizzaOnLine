@@ -3,8 +3,12 @@ function initIngredient() {
     let checkbox = document.getElementsByClassName('custom-checkbox');
 
     for (let i = 0; i < checkbox.length; i++) {
+        if(checkbox[i].checked){
+            afficherIngredient('produit_form_ingredients_'+ (i+1), true);
+        }
         checkbox[i].addEventListener('change', function () {
             afficherIngredient(this.id, checkbox[i].checked);
+
         });
     }
     let decrement = document.getElementById('decrement');
@@ -33,12 +37,30 @@ function initIngredient() {
         }
     }
     if (selectType) {
-
+        if(selectType.value !== '0'){
+            if (selectType.value === '1') {
+                showIngredientPizza();
+                showIngredientPart();
+            }
+            if (selectType.value === '2') {
+                showIngredientBoisson();
+                showIngredientPart();
+                showMessageTypeBoisson();
+                verificationCheckboxBoisson();
+            }
+            if (selectType.value === '3') {
+                showIngredientBoisson();
+                showIngredientPart();
+                showMessageTypeBoisson();
+                verificationCheckboxBoisson();
+            }
+        }
         selectType.addEventListener('change', function () {
             var typeValue = selectType.value;
             if (typeValue === '1') {
                 showIngredientPizza();
                 showIngredientPart();
+                showMessageTypePizza();
             }
             if (typeValue === '2') {
                 showIngredientBoisson();
@@ -79,7 +101,9 @@ let ingredients = []; // Tableau pour l'affichage des ingrédients
 function affichageIngredient() {
 
     let search = document.getElementById('verifNomNewIngredient');
-    search.addEventListener('input', verificationNewIngredient);
+    if(search){
+        search.addEventListener('input', verificationNewIngredient);
+    }
     let valeurBouton = document.getElementById('ingredient_form_categorie').value;
 
 
@@ -254,6 +278,12 @@ function showMessageTypeBoisson() {
     conteneurCategorieIngredient.classList.add('hidden');
     selectCategorieIngredient.classList.add('hidden');
     inputIngredient.classList.add('hidden');
+}
+function showMessageTypePizza() {
+    let conteneurMessage = document.getElementById('messageTypeBoisson');
+    let conteneurCategorieIngredient = document.getElementById('messageCategorieIngredient');
+    conteneurMessage.classList.add('hidden');
+    conteneurCategorieIngredient.classList.remove('hidden');
 }
 
 function verificationCheckboxBoisson() {

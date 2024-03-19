@@ -4,82 +4,131 @@
 {% block body %}
     <h2 class="flex item-center justify-center text-5xl mt-2 mb-20"> Modification de la pizza : {{ pizza.nom }}</h2>
     {{ form_start(produitForm) }}
+    <div class="w-full flex justify-center items-center flex-col">
+        <div class="w-1/2">
+            <div class="flex flex-wrap -mx-3 mb-4">
+                <div class="w-full md:w-1/2 px-3 mb-4 md:mb-0">
+                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                           for="grid-first-name">
+                        Type de produit :
+                    </label>
+                    <div>{{ form_widget(produitForm.typeProduit, {'attr': {'class': 'form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white'}}) }}</div>
 
-    <div class="flex justify-center items-center"> <!-- Utilisation de flexbox pour aligner deux colonnes -->
-        <div class="w-1/2 flex flex-col "> <!-- Colonne de gauche -->
-            <div class="mb-4 text-2xl mt-8">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
-                    <div class="mr-4 ">
-                        {{ form_label(produitForm.nom) }}
-                    </div>
-                    <div >
-                        {{ form_widget(produitForm.nom, {'attr': {'style': 'width: 250px'}}) }}
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                           for="grid-last-name">
+                        {{ form_label(produitForm.prix) }} :
+                    </label>
+                    <input
+                            name="{{ field_name(produitForm.prix) }}"
+                            value="{{ field_value(produitForm.prix) }}"
+                            placeholder="{{ field_label(produitForm.prix) }}"
+                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                            type="text"
+                    >
+                </div>
+            </div>
+            <div>
+                <div class="flex flex-wrap -mx-3 mb-4">
+                    <div class="w-full px-3">
+                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                               for="grid-password">
+                            {{ form_label(produitForm.nom) }} :
+                        </label>
+                        <input
+                                name="{{ field_name(produitForm.nom) }}"
+                                value="{{ field_value(produitForm.nom) }}"
+                                placeholder="Nom du produit"
+                                class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                type="text"
+                        >
                     </div>
                 </div>
             </div>
-            <div class="mb-4 text-2xl">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
-                    <div>
-                        {{ form_label(produitForm.description) }}
-                    </div>
-                    <div class="ml-4">
-                        {{ form_widget(produitForm.description, {'attr': {'style': 'width: 250px'}}) }}
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4 text-2xl">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
-                    <div>
-                        {{ form_label(produitForm.prix) }}
-                    </div>
-                    <div class="ml-4">
-                        {{ form_widget(produitForm.prix, {'attr': {'style': 'width: 250px'}}) }}
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4 text-2xl">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
-                    <div>
-                        {{ form_label(produitForm.typeProduit) }}
-                    </div>
-                    <div class="ml-4">
-                        {{ form_widget(produitForm.typeProduit, {'attr': {'style': 'width: 250px'}}) }}
-                    </div>
-                </div>
-            </div>
-            <div class="mb-4 text-2xl">
-                <div class="flex justify-end"> <!-- Utilisez justify-end pour aligner les champs à droite -->
-                    <div>
-                        {{ form_label(produitForm.urlImage) }}
-                    </div>
-                    <div class="ml-4">
-                        {{ form_widget(produitForm.urlImage, {'attr': {'style': 'width: 250px'}}) }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="w-1/2 ml-6">
-            <div class="space-y-1 text-xl">
-                {{ form_label(produitForm.ingredients, 'Ingrédients', {'label_attr': {'class': 'labelIngredient text-2xl ml-72'}}) }}
-                <div class="grid grid-cols-3 ">
-                    {% for ingredient in produitForm.ingredients %}
-                        <div class="custom-checkbox">
-                            {{ form_widget(ingredient, {'attr': {'class': 'custom-checkbox'}}) }}
-                            {{ form_label(ingredient) }}
+            <div>
+                <div class="flex flex-wrap -mx-3 mb-4">
+                    <div class="w-full px-3 flex flex-wrap">
+                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold flex items-center w-1/4"
+                               for="grid-password">
+                            {{ form_label(produitForm.urlImage) }} :
+                        </label>
+                        <div class=" bg-gray-300 text-black font-semibold w-9/12">
+                            {{ form_widget(produitForm.urlImage) }}
                         </div>
-                    {% endfor %}
+                    </div>
                 </div>
             </div>
+            {# Ancienne image -> pas beau, à changer la façon de voir la page pour l'afficher et montrer à l'utilisateur ce qu'il y avait avant #}
+            {# Impossible de mettre l'url de l'image comme le form_type ne permet que la création d'un emplacement de fichier pour l'image et non directement une image #}
+{#            <div>#}
+{#                <div class="flex flex-wrap -mx-3 mb-4">#}
+{#                    <div class="w-full px-3">#}
+{#                        <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"#}
+{#                               for="grid-password">#}
+{#                            Ancienne image :#}
+{#                        </label>#}
+{#                        <img src="{{ absolute_url(asset('images/' ~ pizza.urlImage)) }}">#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+            <div class="mb-2 ingredientPart">
+                <div class="flex flex-wrap mt-8 mb-2 ">
+                    <div class="uppercase tracking-wide text-gray-50 font-bold text-lg  flex items-center"
+                         id="messageCategorieIngredient">
+                        Sélectionner une catégorie d'ingrédient :
+                    </div>
+                    <div class="uppercase tracking-wide text-gray-50 font-bold text-lg  flex items-center hidden"
+                         id="messageTypeBoisson">
+                        Sélectionner un type de boisson :
+                    </div>
+                    <div class="ml-2 " id="selectCategorieIngredient">
+                        <select name="categories" id="ingredient_form_categorie"
+                                class="text-xl text-black">
+                            <option class="0 text-xl" value="0">Choisissez une catégorie</option>
+                            {% set i = 1 %}
+                            {% for category in categories %}
+                                <option class="text-xl" value="{{ i }}">{{ category.libelle }}</option>
+                                {% set i = i + 1 %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="w-full space-y-1 text-2xl ingredientPart">
+                    <div class="grid grid-cols-3  ">
+                        {% for ingredient in produitForm.ingredients %}
+                            <div class="{{ categoriesByIngredient[ingredient.vars.value] }} ">
+                                {{ form_widget(ingredient, {'attr': {'class': 'custom-checkbox'}}) }}
+                                {{ form_label(ingredient) }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-wrap -mx-3 mt-4 ingredientPart" id="inputIngredient">
+                <div class="w-full px-3">
+                    <label class="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2"
+                           for="grid-password">
+                        Ingrédients choisis :
+                    </label>
+                    <div
+                            id="ingredients"
+                            class="form-control appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                            type="number"
+                    ></div>
+                </div>
+            </div>
+            <div class="flex justify-center items-center mt-7 mb-20">
+                {{ form_widget(produitForm.ajouter, {'attr': {'class': 'btn flex justify-center items-center text-3xl text-white bg-blue-500 hover:bg-blue-700 font-bold'}, 'label': 'Ajouter le produit '}) }}
+            </div>
         </div>
-
     </div>
-    <div class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-12">
-        {{ form_label(produitForm.ajouter) }}
-        {{ form_widget(produitForm.ajouter, {'attr': {'style': 'width: 250px'}}) }}
-    </div>
-
     {{ form_end(produitForm) }}
-
-    <a href="{{ path('_gerant') }}" class="flex justify-center item-center text-3xl hover:text-red-500 duration-200 font-bold mt-12">Retour à la page de gestion</a>
+    <script src="{{ asset('build/app.js') }}"></script>
+    <script>
+        window.onload = function () {
+            initIngredient();
+        };
+    </script>
 {% endblock %}

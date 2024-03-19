@@ -132,7 +132,7 @@ class GerantController extends AbstractController
     }
 
     #[Route('/modificationProduit/{id}', name: '_modificationProduit')]
-    public function modificationProduit($id, Request $requete, CategorieIngredientRepository $categorieIngredientRepository,UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, SluggerInterface $slugger, TailleProduitRepository $tailleProduitRepository, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
+    public function modificationProduit($id, Request $requete,IngredientRepository $ingredientRepository, CategorieIngredientRepository $categorieIngredientRepository,UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, SluggerInterface $slugger, TailleProduitRepository $tailleProduitRepository, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
@@ -142,6 +142,14 @@ class GerantController extends AbstractController
 
         $produitForm = $this->createForm(ProduitFormType::class, $pizza);
         $categories = $categorieIngredientRepository->findAll();
+        $ingredients = $ingredientRepository->findAll();
+        $categoriesByIngredient = [];
+
+        foreach ($ingredients as $ingredient) {
+            $categoryName = $ingredient->getCategorie()->getLibelle();
+            $categoriesByIngredient[$ingredient->getId()] = $categoryName;
+        }
+
         $produitForm->handleRequest($requete);
 
         if ($produitForm->isSubmitted() && $produitForm->isValid()) {
@@ -164,7 +172,7 @@ class GerantController extends AbstractController
             return $this->redirectToRoute('_listeProduit');
         }
 
-        return $this->render('gerant/modificationProduit.html.twig', compact('produitForm', 'pizza', 'detailsCommandePanier', 'prixDuPanier','messagesNonLu'));
+        return $this->render('gerant/modificationProduit.html.twig', compact('produitForm', 'pizza', 'detailsCommandePanier', 'prixDuPanier','messagesNonLu','categories', 'categoriesByIngredient'));
     }
 
     #[Route('/supprimerProduit/{id}', name: '_supprimerProduit')]
