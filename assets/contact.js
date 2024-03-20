@@ -1,30 +1,27 @@
-function initContact(){
-    console.log('initContact');
-    document.addEventListener('DOMContentLoaded', function () {
+function initContact() {
+    document.body.style.overflow = 'hidden'; // Désactive le défilement de la page
 
+    document.addEventListener('wheel', function (event) {
+        if (event.deltaY > 0) {
+            // Scrolling down
+            scrollToSection(currentSection + 1);
+        } else {
+            // Scrolling up
+            scrollToSection(currentSection - 1);
+        }
+    });
 
-        document.body.style.overflow = 'hidden'; // Désactive le défilement de la page
+    document.getElementById('imgSection1').addEventListener('click', function () {
+        scrollToSection(2);
+    });
 
-        document.addEventListener('wheel', function (event) {
-            if (event.deltaY > 0) {
-                // Scrolling down
-                scrollToSection(currentSection + 1);
-            } else {
-                // Scrolling up
-                scrollToSection(currentSection - 1);
-            }
-        });
-
-        document.getElementById('imgSection1').addEventListener('click', function () {
-            scrollToSection(2);
-        });
-
-        document.getElementById('imgSection2').addEventListener('click', function () {
-            scrollToSection(3);
-        });
+    document.getElementById('imgSection2').addEventListener('click', function () {
+        scrollToSection(3);
     });
 }
+
 window.initContact = initContact;
+
 
 let currentSection = 1;
 function scrollToSection(sectionNumber) {

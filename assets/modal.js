@@ -1,5 +1,4 @@
 function initModal() {
-    console.log('Je suis dans modal.js');
     ajouterPanier();
     document.getElementById('quantiteModal').addEventListener('change', modificationPrixModal);
     document.getElementById('inputQuantite').addEventListener('change', verificationInput);
@@ -253,7 +252,6 @@ function inputForm() {
     inputForm.value = parseInt(input.value);
 }
 function filtreProduit(libelle) {
-    console.log(libelle);
     recuperationTypesProduit()
         .then(typesProduits => {
             for (let i = 0; i < typesProduits.length; i++) {
@@ -261,6 +259,14 @@ function filtreProduit(libelle) {
                 Array.from(produits).forEach(function (produit) {
                     produit.classList.add('hidden');
                 });
+            }
+            if(libelle === 'Pizza & Boisson'){
+                for (let i = 0; i < typesProduits.length; i++) {
+                    let produits = document.getElementsByClassName(typesProduits[i]);
+                    Array.from(produits).forEach(function (produit) {
+                        produit.classList.remove('hidden');
+                    });
+                }
             }
             // Après avoir masqué les produits, montrer les produits sélectionnés
             let produitsSelectionner = document.getElementsByClassName(libelle);
