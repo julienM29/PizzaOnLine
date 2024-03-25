@@ -92,14 +92,16 @@ class CommandeController extends AbstractController
         $pizzas = $produitRepository->findAll();
         $commandesAttenteLivraison = $commandeRepository->findBy(['etat' => $etatPrepare]);
         $utilisateur = $this->getUser();
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit();
-        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
-
-
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
+        } else {
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
+        }
+//////////////////////////////////////////////////////////////////////////////
         $premierePizza = null;
         if($commandes){
             $premierePizza = $commandes[0];
@@ -172,14 +174,16 @@ class CommandeController extends AbstractController
             'etat' => $etatLivraison,
         ]);
         $utilisateur = $this->getUser();
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit();
-        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
-
-
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
+        } else {
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
+        }
+//////////////////////////////////////////////////////////////////////////////
         $commandeVide = null;
         $premiereCommandeLivreur = null;
         $premiereAdresseLivreur = null;
@@ -219,23 +223,16 @@ class CommandeController extends AbstractController
             'etat' => $etatLivraison,
         ]);
         $utilisateur = $this->getUser();
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = [];
-        $prixDuPanier = 0;
-        if ($derniereCommande) {
-
-            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
-            if ($detailsCommandePanier) {
-                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
-            } else {
-                $detailsCommandePanier = [];
-            }
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
         } else {
-            $derniereCommande = [];
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
         }
+//////////////////////////////////////////////////////////////////////////////
         $premiereAdresseLivreur = '';
         $numeroLivreurAvecEspaces ='';
         $commandeDetailsClient = [];
@@ -260,29 +257,21 @@ class CommandeController extends AbstractController
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $client = $collaborateurRepository->findOneBy(array('id' => $this->getUser()->getId()));
-        $etatLivraison = $etatRepository->findOneBy(array('id' => 4));
         $pizzas = $produitRepository->findAll();
         $commandesClient = $commandeRepository->findBy([
             'collaborateur' => $client,
         ]);
         $utilisateur = $this->getUser();
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = [];
-        $prixDuPanier = 0;
-        if ($derniereCommande) {
-
-            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
-            if ($detailsCommandePanier) {
-                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
-            } else {
-                $detailsCommandePanier = [];
-            }
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
         } else {
-            $derniereCommande = [];
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
         }
+//////////////////////////////////////////////////////////////////////////////
 
         $commandeDetailsClient = [];
         $etatsCommandes = [];
@@ -338,5 +327,24 @@ class CommandeController extends AbstractController
                 }
             } }
         return $prixDuPanier;
+    }
+    public function tooltip($commandeRepository, $tailleProduitRepository, $produitRepository)
+    {
+        $result = [];
+        $utilisateur = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur, 'etat' => '1'],
+            ['id' => 'DESC']
+        );
+        if ($derniereCommande) {
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit();
+            $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+
+            $result = [
+                'detailsCommandePanier' => $detailsCommandePanier,
+                'prixDuPanier' => $prixDuPanier,
+            ];
+        }
+        return $result;
     }
 }

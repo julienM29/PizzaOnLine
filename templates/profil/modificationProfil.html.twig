@@ -157,11 +157,10 @@
                 // Annule l'événement pour empêcher la soumission du formulaire
                 event.preventDefault();
             }
-        }
-        if (event.key === 'Enter' && document.activeElement.id === 'adresseUser') {
-            // Annule l'événement pour empêcher la soumission du formulaire
-            window.showAdresse();
-        }
+            if (event.key === 'Enter' && document.activeElement.id === 'adresseUser') {
+                // Annule l'événement pour empêcher la soumission du formulaire
+                window.showAdresse();
+            }
         })
         ;
 

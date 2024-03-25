@@ -20,40 +20,29 @@ use Symfony\Component\Routing\Annotation\Route;
 class PanierController extends AbstractController
 {
     #[Route('/panier', name: '_panier')]
-    public function index(TailleProduitRepository $tailleProduitRepository,UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EtatRepository $etatRepository): Response
+    public function index(TailleProduitRepository $tailleProduitRepository, UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, ProduitRepository $produitRepository, EtatRepository $etatRepository): Response
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $utilisateur = $this->getUser();
         $etatCreer = $etatRepository->findOneBy(['id' => 1]);
-
-        $derniereCommande = $commandeRepository->findOneBy(
-            [
-                'collaborateur' => $utilisateur,
-                'etat' => $etatCreer
-            ],
-            ['id' => 'DESC']
-        );
-
         $pizzas = $produitRepository->findAll();
-        $detailsCommandePanier = [];
-        $prixDuPanier = 0;
-        if($derniereCommande){
 
-            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
-            if($detailsCommandePanier){
-                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
-            } else {
-                $detailsCommandePanier =[];
-            }
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
         } else {
-            $derniereCommande = [];
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
         }
+//////////////////////////////////////////////////////////////////////////////
 
-        return $this->render('panier/index.html.twig', compact('detailsCommandePanier', 'prixDuPanier','pizzas','messagesNonLu'));
+        return $this->render('panier/index.html.twig', compact('detailsCommandePanier', 'prixDuPanier', 'pizzas', 'messagesNonLu'));
     }
 
     #[Route('/payementPanier', name: '_payementPanier')]
-    public function payementPanier(ProduitRepository $produitRepository,CommandeRepository $commandeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
+    public function payementPanier(ProduitRepository $produitRepository, CommandeRepository $commandeRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
         $etatCreer = $etatRepository->findOneBy(array('id' => 1));
         $etatPayer = $etatRepository->findOneBy(array('id' => 2));
@@ -62,7 +51,7 @@ class PanierController extends AbstractController
         $heurePreparation = $now->add(new DateInterval('PT30M'));
         $heureLivraison = $heurePreparation->add(new DateInterval('PT30M'));
         $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
+            ['collaborateur' => $utilisateur, 'etat' => '1'],
             ['id' => 'DESC']
         );
 
@@ -87,9 +76,9 @@ class PanierController extends AbstractController
             $entityManager->remove($articleASupprimer);
             $entityManager->flush();
             $detailCommandeRestant = $detailCommandeRepository->findBy(['commande' => $idCommande]);
-            if(empty($detailCommandeRestant)){
+            if (empty($detailCommandeRestant)) {
                 $utilisateur = $this->getUser();
-                $user= $collaborateurRepository->findOneBy(array('id' => $utilisateur->getId()));
+                $user = $collaborateurRepository->findOneBy(array('id' => $utilisateur->getId()));
                 $user->setPanier(0);
                 $entityManager->persist($user);
                 $entityManager->flush();
@@ -100,7 +89,7 @@ class PanierController extends AbstractController
     }
 
     #[Route('/etatPrepare{id}/{idLivreur}', name: '_etatPrepare')]
-    public function etatPrepare($id,$idLivreur, CommandeRepository $commandeRepository,CollaborateurRepository $collaborateurRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
+    public function etatPrepare($id, $idLivreur, CommandeRepository $commandeRepository, CollaborateurRepository $collaborateurRepository, EtatRepository $etatRepository, EntityManagerInterface $entityManager): Response
     {
         $commande = $commandeRepository->findOneBy(array('id' => $id));
         $livreur = $collaborateurRepository->findOneBy(array('id' => $idLivreur));
@@ -113,7 +102,9 @@ class PanierController extends AbstractController
         }
         return $this->render('commande/preparationCommande.html.twig');
     }
-    public function prixDuPanier ($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier){
+
+    public function prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier)
+    {
         $prixDuPanier = 0; // Instancie une variable de prix de panier à 0 qui sera envoyé au twig
         $tailleLarge = $tailleProduitRepository->findOneBy(array('id' => 2)); // récupère la taille large pour une condition (prix)
         if ($derniereCommande != null) { // Si il y a une dernière commande
@@ -123,14 +114,35 @@ class PanierController extends AbstractController
                     $idProduit = $detail->getProduit()->getId();
                     $pizza = $produitRepository->findOneBy(array('id' => $idProduit));
                     if ($detail->getTaille() === $tailleLarge) { // Si il y a une taille large on change le prix
-                        $prixDuDetail =  (($pizza->getPrix()+ 5 )  * $detail->getQuantite());
+                        $prixDuDetail = (($pizza->getPrix() + 5) * $detail->getQuantite());
                     } else {
                         $prixDuDetail = ($pizza->getPrix() * $detail->getQuantite());
                     }
 
                     $prixDuPanier = ($prixDuPanier + $prixDuDetail); // Total du panier
                 }
-            } }
+            }
+        }
         return $prixDuPanier;
+    }
+
+    public function tooltip($commandeRepository, $tailleProduitRepository, $produitRepository)
+    {
+        $result = [];
+        $utilisateur = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur, 'etat' => '1'],
+            ['id' => 'DESC']
+        );
+        if ($derniereCommande) {
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit();
+            $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+
+            $result = [
+                'detailsCommandePanier' => $detailsCommandePanier,
+                'prixDuPanier' => $prixDuPanier,
+            ];
+        }
+        return $result;
     }
 }

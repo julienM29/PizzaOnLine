@@ -27,23 +27,16 @@ class ProfilController extends AbstractController
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $utilisateur = $this->getUser();
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = [];
-        $prixDuPanier = 0;
-        if ($derniereCommande) {
-
-            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
-            if ($detailsCommandePanier) {
-                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
-            } else {
-                $detailsCommandePanier = [];
-            }
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
         } else {
-            $derniereCommande = [];
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
         }
+//////////////////////////////////////////////////////////////////////////////
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
         $numero = $user->getTelephone();
         $numeroAvecEspaces = chunk_split($numero, 2, ' ');
@@ -56,23 +49,16 @@ class ProfilController extends AbstractController
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
         $utilisateurConnecter = $this->getUser();
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateurConnecter],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = [];
-        $prixDuPanier = 0;
-        if ($derniereCommande) {
-
-            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
-            if ($detailsCommandePanier) {
-                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
-            } else {
-                $detailsCommandePanier = [];
-            }
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
         } else {
-            $derniereCommande = [];
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
         }
+//////////////////////////////////////////////////////////////////////////////
         $profilForm = $this->createForm(ModificationProfilFormType::class, $user);
         $profilForm->handleRequest($requete);
 
@@ -99,23 +85,16 @@ class ProfilController extends AbstractController
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
         $utilisateurConnecter = $this->getUser();
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateurConnecter],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = [];
-        $prixDuPanier = 0;
-        if ($derniereCommande) {
-
-            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
-            if ($detailsCommandePanier) {
-                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
-            } else {
-                $detailsCommandePanier = [];
-            }
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
         } else {
-            $derniereCommande = [];
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
         }
+//////////////////////////////////////////////////////////////////////////////
 
         $mdpForm = $this->createForm(ModificationMotDePasseFormType::class);
         $mdpForm->handleRequest($requete);
@@ -210,5 +189,24 @@ class ProfilController extends AbstractController
 
         }
         return new JsonResponse(['adressesDuClient' => $adresseLivraison]);
+    }
+    public function tooltip($commandeRepository, $tailleProduitRepository, $produitRepository)
+    {
+        $result = [];
+        $utilisateur = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur, 'etat' => '1'],
+            ['id' => 'DESC']
+        );
+        if ($derniereCommande) {
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit();
+            $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+
+            $result = [
+                'detailsCommandePanier' => $detailsCommandePanier,
+                'prixDuPanier' => $prixDuPanier,
+            ];
+        }
+        return $result;
     }
 }

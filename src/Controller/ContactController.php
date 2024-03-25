@@ -25,24 +25,16 @@ class ContactController extends AbstractController
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => '0']);
         $utilisateur = $this->getUser();
-        //////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = [];
-        $prixDuPanier = 0;
-        if ($derniereCommande) {
-
-            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
-            if ($detailsCommandePanier) {
-                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
-            } else {
-                $detailsCommandePanier = [];
-            }
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
         } else {
-            $derniereCommande = [];
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
         }
+//////////////////////////////////////////////////////////////////////////////
         /////////////// Pizza du moment /////////////////////////////
 //        $pizzas = $produitRepository->findAll();
         $pizzas = $produitRepository->findBy(['typeProduit' => 1,
@@ -73,24 +65,16 @@ class ContactController extends AbstractController
     public function messagerie(CommandeRepository $commandeRepository,UserMessageRepository $userMessageRepository, Request $request,EntityManagerInterface $entityManager,CollaborateurRepository $collaborateurRepository, UserMessageType $messageType, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
         $utilisateur = $this->getUser();
-        //////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
-        $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
-            ['id' => 'DESC']
-        );
-        $detailsCommandePanier = [];
-        $prixDuPanier = 0;
-        if ($derniereCommande) {
-
-            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
-            if ($detailsCommandePanier) {
-                $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
-            } else {
-                $detailsCommandePanier = [];
-            }
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
+        $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
         } else {
-            $derniereCommande = [];
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
         }
+//////////////////////////////////////////////////////////////////////////////
         $messages = $userMessageRepository->findAll();
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         return $this->render('contact/messagerie.html.twig', compact('prixDuPanier', 'detailsCommandePanier', 'messages', 'messagesNonLu'));
@@ -129,5 +113,24 @@ class ContactController extends AbstractController
             }
         }
         return $prixDuPanier;
+    }
+    public function tooltip($commandeRepository, $tailleProduitRepository, $produitRepository)
+    {
+        $result = [];
+        $utilisateur = $this->getUser();
+        $derniereCommande = $commandeRepository->findOneBy(
+            ['collaborateur' => $utilisateur, 'etat' => '1'],
+            ['id' => 'DESC']
+        );
+        if ($derniereCommande) {
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit();
+            $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+
+            $result = [
+                'detailsCommandePanier' => $detailsCommandePanier,
+                'prixDuPanier' => $prixDuPanier,
+            ];
+        }
+        return $result;
     }
 }

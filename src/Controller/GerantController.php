@@ -241,7 +241,7 @@ class GerantController extends AbstractController
     {
         $utilisateur = $this->getUser();
         $derniereCommande = $commandeRepository->findOneBy(
-            ['collaborateur' => $utilisateur],
+            ['collaborateur' => $utilisateur, 'etat' => '1'],
             ['id' => 'DESC']
         );
         $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit();
