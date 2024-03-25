@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfilController extends AbstractController
 {
     #[Route('/profil/{id}', name: '_profil')]
-    public function index($id, CollaborateurRepository $collaborateurRepository,UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
+    public function index($id, CollaborateurRepository $collaborateurRepository, UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $utilisateur = $this->getUser();
@@ -35,7 +35,7 @@ class ProfilController extends AbstractController
         $prixDuPanier = 0;
         if ($derniereCommande) {
 
-            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
             if ($detailsCommandePanier) {
                 $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
             } else {
@@ -47,11 +47,11 @@ class ProfilController extends AbstractController
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
         $numero = $user->getTelephone();
         $numeroAvecEspaces = chunk_split($numero, 2, ' ');
-        return $this->render('profil/index.html.twig', compact('user', 'detailsCommandePanier', 'prixDuPanier', 'numeroAvecEspaces','messagesNonLu'));
+        return $this->render('profil/index.html.twig', compact('user', 'detailsCommandePanier', 'prixDuPanier', 'numeroAvecEspaces', 'messagesNonLu'));
     }
 
     #[Route('/modificationProfil/{id}', name: '_modificationProfil')]
-    public function modificationProfil($id, CommandeRepository $commandeRepository,UserMessageRepository $userMessageRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
+    public function modificationProfil($id, CommandeRepository $commandeRepository, UserMessageRepository $userMessageRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, CollaborateurRepository $collaborateurRepository, Request $requete, EntityManagerInterface $entityManager): Response
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
@@ -64,7 +64,7 @@ class ProfilController extends AbstractController
         $prixDuPanier = 0;
         if ($derniereCommande) {
 
-            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
             if ($detailsCommandePanier) {
                 $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
             } else {
@@ -80,14 +80,21 @@ class ProfilController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-            return $this->redirectToRoute('_profil', ['id' => $id]);
+            if ($utilisateurConnecter !== null) {
+                // Vérifiez ensuite le rôle de l'utilisateur grâce à al fonction isGranted qui fonctionne pareil que pour les twig
+                if ($this->isGranted('ROLE_GERANT')) {
+                    return $this->redirectToRoute('_gestionDesRoles'); // Si c'est le gérant on le renvoie vers tout les profils utilisateur
+                } else {
+                    return $this->redirectToRoute('_profil', ['id' => $id]); // Si c'est un utilisateur on le renvoie vers son profil
+                }
+            }
         }
 
-        return $this->render('profil/modificationProfil.html.twig', compact('user', 'profilForm', 'detailsCommandePanier', 'prixDuPanier','messagesNonLu'));
+        return $this->render('profil/modificationProfil.html.twig', compact('user', 'profilForm', 'detailsCommandePanier', 'prixDuPanier', 'messagesNonLu'));
     }
 
     #[Route('/modificationMotDePasse/{id}', name: '_modificationMotDePasse')]
-    public function modificationMotDePasse($id, UserPasswordHasherInterface $userPasswordHasher,UserMessageRepository $userMessageRepository, CollaborateurRepository $collaborateurRepository, UserPasswordHasherInterface $passwordHasher, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, Request $requete, EntityManagerInterface $entityManager): Response
+    public function modificationMotDePasse($id, UserPasswordHasherInterface $userPasswordHasher, UserMessageRepository $userMessageRepository, CollaborateurRepository $collaborateurRepository, UserPasswordHasherInterface $passwordHasher, CommandeRepository $commandeRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository, Request $requete, EntityManagerInterface $entityManager): Response
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $user = $collaborateurRepository->findOneBy(array('id' => $id));
@@ -100,7 +107,7 @@ class ProfilController extends AbstractController
         $prixDuPanier = 0;
         if ($derniereCommande) {
 
-            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
             if ($detailsCommandePanier) {
                 $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
             } else {
@@ -132,7 +139,7 @@ class ProfilController extends AbstractController
                 $this->addFlash('error', 'Mot de passe incorrect');
             }
         }
-        return $this->render('profil/modificationPassword.html.twig', compact('mdpForm', 'prixDuPanier', 'detailsCommandePanier','messagesNonLu'));
+        return $this->render('profil/modificationPassword.html.twig', compact('mdpForm', 'prixDuPanier', 'detailsCommandePanier', 'messagesNonLu'));
     }
 
     public function prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier)
@@ -157,36 +164,39 @@ class ProfilController extends AbstractController
         }
         return $prixDuPanier;
     }
+
     #[Route('/profilsClient', name: '_profilsClient')]
-    public function profilsClient(Request $request, IngredientRepository $ingredientRepository,EtatRepository $etatRepository,CommandeRepository $commandeRepository, EntityManagerInterface $entityManager)
+    public function profilsClient(Request $request, IngredientRepository $ingredientRepository, EtatRepository $etatRepository, CommandeRepository $commandeRepository, EntityManagerInterface $entityManager)
     {
         $etatLivraison = $etatRepository->findOneBy(array('id' => 4)); // État livré
         $commandesALivrer = $commandeRepository->findBy(['etat' => $etatLivraison,]); // Récupération des commandes prêtes à être livrées
         $adresseLivraison = [];
 
-        foreach( $commandesALivrer as $index => $commande){
+        foreach ($commandesALivrer as $index => $commande) {
             $adresse = $commande->getCollaborateur()->getAdresse(); // Récupération de l'adresse de la commande
-            $adresseLivraison[$index]= $adresse; // Tableau associatif
+            $adresseLivraison[$index] = $adresse; // Tableau associatif
 
         }
         return new JsonResponse(['adresses' => $adresseLivraison]);
     }
+
     #[Route('/coordonneesClient', name: '_coordonneesClient')]
-    public function coordonneesClient(Request $request, IngredientRepository $ingredientRepository,EtatRepository $etatRepository,CommandeRepository $commandeRepository, EntityManagerInterface $entityManager)
+    public function coordonneesClient(Request $request, IngredientRepository $ingredientRepository, EtatRepository $etatRepository, CommandeRepository $commandeRepository, EntityManagerInterface $entityManager)
     {
         $etatLivraison = $etatRepository->findOneBy(array('id' => 4)); // État livré
         $commandesALivrer = $commandeRepository->findBy(['etat' => $etatLivraison,]); // Récupération des commandes prêtes à être livrées
         $adresseLivraison = [];
 
-        foreach( $commandesALivrer as $index => $commande){
+        foreach ($commandesALivrer as $index => $commande) {
             $latitude = $commande->getCollaborateur()->getLatitude();
             $longitude = $commande->getCollaborateur()->getLongitude(); // Récupération de l'adresse de la commande
-            $adresseLivraison[$index]= [$latitude,$longitude]; // Tableau associatif
+            $adresseLivraison[$index] = [$latitude, $longitude]; // Tableau associatif
         }
         return new JsonResponse(['adresses' => $adresseLivraison]);
     }
+
     #[Route('/profilDuClient', name: '_profilDuClient')]
-    public function profilDuClient(Request $request, IngredientRepository $ingredientRepository,EtatRepository $etatRepository,CommandeRepository $commandeRepository, EntityManagerInterface $entityManager)
+    public function profilDuClient(Request $request, IngredientRepository $ingredientRepository, EtatRepository $etatRepository, CommandeRepository $commandeRepository, EntityManagerInterface $entityManager)
     {
         $etatLivraison = $etatRepository->findOneBy(array('id' => 4)); // État en livraison
         $idClient = $this->getUser();
@@ -194,9 +204,9 @@ class ProfilController extends AbstractController
             'collaborateur' => $idClient]); // Récupération des commandes prêtes à être livrées
         $adresseLivraison = [];
 
-        foreach( $commandesALivrer as $index => $commande){
+        foreach ($commandesALivrer as $index => $commande) {
             $adresse = $commande->getCollaborateur()->getAdresse(); // Récupération de l'adresse de la commande
-            $adresseLivraison[$index]= $adresse; // Tableau associatif
+            $adresseLivraison[$index] = $adresse; // Tableau associatif
 
         }
         return new JsonResponse(['adressesDuClient' => $adresseLivraison]);

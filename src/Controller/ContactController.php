@@ -34,7 +34,7 @@ class ContactController extends AbstractController
         $prixDuPanier = 0;
         if ($derniereCommande) {
 
-            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
             if ($detailsCommandePanier) {
                 $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
             } else {
@@ -82,7 +82,7 @@ class ContactController extends AbstractController
         $prixDuPanier = 0;
         if ($derniereCommande) {
 
-            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
             if ($detailsCommandePanier) {
                 $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
             } else {

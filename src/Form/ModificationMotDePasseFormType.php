@@ -23,7 +23,7 @@ class ModificationMotDePasseFormType extends AbstractType
                     'label' => 'Mot de passe actuel',
                 ],
                 'second_options' => [
-                    'label' => 'Confirmation du mot de passe',
+                    'label' => 'Répéter le mot de passe',
                 ],
             ])
             ->add('newPassword', PasswordType::class, [

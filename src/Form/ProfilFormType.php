@@ -30,6 +30,7 @@ class ProfilFormType extends AbstractType
                 'expanded' => true,
                 'multiple' => true,
                 'required' => false,
+                'block_prefix' => 'custom_roles_widget',
             ])
             ->add('sexe', ChoiceType::class, [
                 'choices' => [

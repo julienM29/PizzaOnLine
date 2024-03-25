@@ -46,7 +46,7 @@ class AccueilController extends AbstractController
         $prixDuPanier = 0;
         if ($derniereCommande) {
 
-            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
             if ($detailsCommandePanier) {
                 $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
             } else {
@@ -106,7 +106,7 @@ class AccueilController extends AbstractController
     }
 
     #[Route('/detailPizza/{id}', name: '_detailPizza')]
-    public function detailPizza($id, Request $requete, ProduitRepository $produitRepository, TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, EntityManagerInterface $entityManager, EtatRepository $etatRepository, CollaborateurRepository $collaborateurRepository): Response
+    public function detailPizza($id, Request $requete, ProduitRepository $produitRepository,UserMessageRepository $userMessageRepository, TailleProduitRepository $tailleProduitRepository, CommandeRepository $commandeRepository, EntityManagerInterface $entityManager, EtatRepository $etatRepository, CollaborateurRepository $collaborateurRepository): Response
     {
 ////////////////////////////////////////// VARIABLES //////////////////////////////////////////////////////////////////////////////////////
         $pizza = $produitRepository->findOneBy(array('id' => $id));
@@ -120,7 +120,7 @@ class AccueilController extends AbstractController
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
 ////////////////////////////////////////// Liste Mot //////////////////////////////////////////////////////////////////
         $viandes = ["Jambon Cru", "Lardon", "Viande haché", "Merguez", "Jambon"];
-////////////////////////////////////////// FORMULAIRE ET TRAITEMENT //////////////////////////////////////////////////////////////////
+////////////////////////////////////////// Tooltip //////////////////////////////////////////////////////////////////
 
         $detailCommande->setProduit($pizza);
         $detailCommandeForm = $this->createForm(DetailCommandeFormType::class, $detailCommande);
@@ -132,7 +132,7 @@ class AccueilController extends AbstractController
         $prixDuPanier = 0;
         if ($derniereCommande) {
 
-            $detailsCommandePanier = $derniereCommande->getDetailsCommande(); // Detail commande envoyer directement au twig
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit(); // Detail commande envoyer directement au twig
             if ($detailsCommandePanier) {
                 $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
             } else {
@@ -141,6 +141,7 @@ class AccueilController extends AbstractController
         } else {
             $derniereCommande = [];
         }
+////////////////////////////////////////// FORMULAIRE ET TRAITEMENT //////////////////////////////////////////////////////////////////
 
         $detailCommandeForm->handleRequest($requete);
         if ($detailCommandeForm->isSubmitted() && $detailCommandeForm->isValid()) {

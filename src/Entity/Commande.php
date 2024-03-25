@@ -79,6 +79,30 @@ class Commande
         return $this->detailsCommande;
     }
 
+    public function getDetailsCommandeTrieesParNomProduit(): Collection
+    {
+        // Récupérer les détails de la commande
+        $detailsCommande = $this->getDetailsCommande();
+
+        // Créer un tableau temporaire pour stocker les détails triés
+        $detailsCommandeTriees = new ArrayCollection();
+
+        // Convertir la collection en tableau pour pouvoir trier
+        $detailsCommandeArray = $detailsCommande->toArray();
+
+        // Fonction de comparaison personnalisée pour trier par nom de produit
+        usort($detailsCommandeArray, function($a, $b) {
+            return strcmp($a->getProduit()->getNom(), $b->getProduit()->getNom());
+        });
+
+        // Ajouter les détails triés dans la collection
+        foreach ($detailsCommandeArray as $detailCommande) {
+            $detailsCommandeTriees->add($detailCommande);
+        }
+
+        // Retourner la collection triée
+        return $detailsCommandeTriees;
+    }
     public function addDetailsCommande(DetailCommande $detailsCommande): static
     {
         if (!$this->detailsCommande->contains($detailsCommande)) {

@@ -68,7 +68,7 @@ class RegistrationController extends AbstractController
             ['collaborateur' => $utilisateur],
             ['id' => 'DESC']
         );
-        $detailsCommandePanier = $derniereCommande->getDetailsCommande();
+        $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit();
         $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository,$detailsCommandePanier);
         $result =[];
         $result =[
