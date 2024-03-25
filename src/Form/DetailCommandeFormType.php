@@ -27,6 +27,7 @@ class DetailCommandeFormType extends AbstractType
                 'choice_label' => 'libelle',
                 'expanded' => true,
                 'multiple' => false,
+                'block_prefix' => 'custom_tailles_widget',
             ])
             ->add('ajouter', SubmitType::class)
         ;

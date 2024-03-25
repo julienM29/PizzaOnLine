@@ -97,4 +97,9 @@ body {
 .titrePizzaDuMoment {
      font-family: 'Pacifico', cursive;
  }
-
+.imageFiltre {
+    transition: opacity 0.3s ease;
+}
+.boutonFiltre:hover .imageFiltre {
+    opacity: 1;
+}

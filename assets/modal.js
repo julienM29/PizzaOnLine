@@ -9,13 +9,16 @@ function initModal() {
             // Cacher toutes les images
             let allImages = document.querySelectorAll('.w-8.h-8');
             Array.from(allImages).forEach(function(image) {
-                image.classList.add('hidden');
+                // image.classList.add('hidden');
+                image.classList.replace
+                ('opacity-1', 'opacity-0');
             });
 
             // Montrer l'image spécifique du bouton cliqué
             let imageSelectionnee = element.querySelector('.w-8.h-8');
             if (imageSelectionnee) {
-                imageSelectionnee.classList.remove('hidden');
+                imageSelectionnee.classList.replace
+                ('opacity-0', 'opacity-1');
             }
             // Appeler votre fonction de filtrage (filtreProduit())
             filtreProduit(element.textContent.trim()); // trim permet d'enlever les blancs avant et après le texte
@@ -36,6 +39,7 @@ function initModal() {
 
 window.initModal = initModal;
 let prixPizza = 0;
+
 
 ///////////////////////////// AFFICHAGE MODAL AJOUT ///////////////////////////////////////
 function openModal(id, nom, prix, type) {
@@ -62,11 +66,13 @@ function openModal(id, nom, prix, type) {
         document.querySelector('label[for="detail_commande_form_taille_6"]')
     ];
 
-    console.log('je passe ici');
-    console.log(type);
     if (type === 'Pizza') {
         console.log('je passe ici car pizza = type ');
 
+        document.getElementById('taille_choice_3').classList.add('hidden');
+        document.getElementById('taille_choice_4').classList.add('hidden');
+        document.getElementById('taille_choice_5').classList.add('hidden');
+        document.getElementById('taille_choice_6').classList.add('hidden');
         for (let i = 0; i < checkboxs.length; i++) {
             if (i === 0 || i === 1) {
                 checkboxs[i].classList.remove('hidden');
@@ -109,6 +115,7 @@ function openModal(id, nom, prix, type) {
     champQuantite.value = null;
     champId.value = id;
     document.getElementById('modalAjout').classList.remove('hidden');
+
 
     // document.getElementById('detail_commande_form_taille_1').addEventListener('click', function () {
     //     console.log(document.getElementById('prixPizza').innerText);
@@ -170,11 +177,10 @@ function modificationPrixModal() {
             let prixTotal = 0;
             if(quantiteChoisie === 0 || quantiteChoisie == null || quantiteChoisie === ''){ // Empêcher que quand une quantité est choisie et qu'on change de taille, de remettre le prix initial au lieu du prix total
                 prixTotal = 0;
-                console.log('bonjour');
             } else {
                 prixTotal = quantiteInt * prixInt;
             }
-            document.getElementById('prixPizza').innerText = prixTotal;
+            document.getElementById('prixPizza').innerText = prixTotal + ' euros';
         }
         if (detail_commande_form_taille_2.checked === true) { // Taille large
             let quantiteChoisie = document.getElementById('quantiteModal').value;
@@ -187,7 +193,7 @@ function modificationPrixModal() {
             } else {
                 prixTotal = quantiteInt * prixInt;
             }
-            document.getElementById('prixPizza').innerText = prixTotal;
+            document.getElementById('prixPizza').innerText = prixTotal + ' euros';
         }
     }
 }
