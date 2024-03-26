@@ -260,7 +260,9 @@ class CommandeController extends AbstractController
         $pizzas = $produitRepository->findAll();
         $commandesClient = $commandeRepository->findBy([
             'collaborateur' => $client,
+            'etat' => [2, 3, 4] // Filtrer par les états PAYER, EN PREPARATION, EN ATTENTE DE LIVRAISON
         ]);
+
         $utilisateur = $this->getUser();
 //////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);

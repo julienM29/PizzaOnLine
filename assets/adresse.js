@@ -92,8 +92,16 @@ function flyToAdresse(texte) {
 window.flyToAdresse = flyToAdresse;
 
 function flyToAdresseCoordonnee(latitude, longitude) {
-    mapAdresse.flyTo([latitude, longitude], 17);
+    var markerIcon = L.icon({
+        iconUrl: '/images/marker-icon.png',
+        iconSize: [50, 50],
+        iconAnchor: [20, 40],
+        shadowAnchor: [4, 62],
+        popupAnchor: [-3, -76]
+    });
 
+    mapAdresse.flyTo([latitude, longitude], 17);
+    L.marker([latitude, longitude], {icon: markerIcon}).addTo(mapAdresse);
 }
 window.flyToAdresseCoordonnee = flyToAdresseCoordonnee;
 function envoiCoordonnee(longitude, latitude){

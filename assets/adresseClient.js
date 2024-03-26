@@ -15,7 +15,7 @@ let clients = []; // Variable pour stocker les informations des routes
 
 function affichageMapVille() {
 
-    map = L.map('map').setView([47.2264, -1.62076], 15);
+    map = L.map('map').setView([47.2264, -1.62076], 6);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright"></a>'

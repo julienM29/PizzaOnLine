@@ -29,9 +29,16 @@ class GerantController extends AbstractController
     public function index(CommandeRepository $commandeRepository,UserMessageRepository $userMessageRepository, TailleProduitRepository $tailleProduitRepository, ProduitRepository $produitRepository): Response
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
-        $detailsCommandePanier = $result['detailsCommandePanier'];
-        $prixDuPanier = $result['prixDuPanier'];
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
+        } else {
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
+        }
+//////////////////////////////////////////////////////////////////////////////
 
 
         return $this->render('gerant/index.html.twig', compact('prixDuPanier', 'detailsCommandePanier','messagesNonLu'));
@@ -45,9 +52,16 @@ class GerantController extends AbstractController
         $ingredient = new Ingredient();
         $allIngredient = $ingredientRepository->findAll();
         $count = count($allIngredient) - 1;
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
-        $detailsCommandePanier = $result['detailsCommandePanier'];
-        $prixDuPanier = $result['prixDuPanier'];
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
+        } else {
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
+        }
+//////////////////////////////////////////////////////////////////////////////
 
         $ingredientForm = $this->createForm(IngredientFormType::class, $ingredient);
         $ingredientForm->handleRequest($requete);
@@ -67,9 +81,16 @@ class GerantController extends AbstractController
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $produit = new Produit();
         $produitForm = $this->createForm(ProduitFormType::class, $produit);
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
-        $detailsCommandePanier = $result['detailsCommandePanier'];
-        $prixDuPanier = $result['prixDuPanier'];
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
+        } else {
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
+        }
+//////////////////////////////////////////////////////////////////////////////
         $categories = $categorieIngredientRepository->findAll();
         $ingredients = $ingredientRepository->findAll();
         $categoriesByIngredient = [];
@@ -125,9 +146,16 @@ class GerantController extends AbstractController
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $allPizzas = $produitRepository->findAll();
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
-        $detailsCommandePanier = $result['detailsCommandePanier'];
-        $prixDuPanier = $result['prixDuPanier'];
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
+        } else {
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
+        }
+//////////////////////////////////////////////////////////////////////////////
         return $this->render('gerant/listeProduit.html.twig', compact('allPizzas', 'detailsCommandePanier', 'prixDuPanier','messagesNonLu'));
     }
 
@@ -135,9 +163,16 @@ class GerantController extends AbstractController
     public function modificationProduit($id, Request $requete,IngredientRepository $ingredientRepository, CategorieIngredientRepository $categorieIngredientRepository,UserMessageRepository $userMessageRepository, CommandeRepository $commandeRepository, SluggerInterface $slugger, TailleProduitRepository $tailleProduitRepository, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
-        $detailsCommandePanier = $result['detailsCommandePanier'];
-        $prixDuPanier = $result['prixDuPanier'];
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
+        } else {
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
+        }
+//////////////////////////////////////////////////////////////////////////////
         $pizza = $produitRepository->findOneBy(array('id' => $id));
 
         $produitForm = $this->createForm(ProduitFormType::class, $pizza);
@@ -193,9 +228,16 @@ class GerantController extends AbstractController
     {
         $messagesNonLu = $userMessageRepository->findBy(['checked' => 0]);
         $collaborateurs = $collaborateurRepository->findAll();
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
-        $detailsCommandePanier = $result['detailsCommandePanier'];
-        $prixDuPanier = $result['prixDuPanier'];
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
+        } else {
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
+        }
+//////////////////////////////////////////////////////////////////////////////
         return $this->render('gerant/gestionDesRoles.html.twig', compact('collaborateurs', 'prixDuPanier', 'detailsCommandePanier','messagesNonLu'));
     }
 
@@ -230,27 +272,37 @@ class GerantController extends AbstractController
         $categories = $categorieIngredientRepository->findAll();
 
 
+//////////////////////////////// TOOLTIP ///////////////////////////////////////////////////////////////////////////////////////////
         $result = $this->tooltip($commandeRepository, $tailleProduitRepository, $produitRepository);
-        $detailsCommandePanier = $result['detailsCommandePanier'];
-        $prixDuPanier = $result['prixDuPanier'];
+        if($result){
+            $detailsCommandePanier = $result['detailsCommandePanier'];
+            $prixDuPanier = $result['prixDuPanier'];
+        } else {
+            $detailsCommandePanier = [];
+            $prixDuPanier = 0;
+        }
+//////////////////////////////////////////////////////////////////////////////
 
         return $this->render('gerant/gestionStock.html.twig', compact('prixDuPanier', 'detailsCommandePanier', 'categories', 'ingredients','messagesNonLu'));
     }
 
     public function tooltip($commandeRepository, $tailleProduitRepository, $produitRepository)
     {
+        $result = [];
         $utilisateur = $this->getUser();
         $derniereCommande = $commandeRepository->findOneBy(
             ['collaborateur' => $utilisateur, 'etat' => '1'],
             ['id' => 'DESC']
         );
-        $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit();
-        $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
-        $result = [];
-        $result = [
-            'detailsCommandePanier' => $detailsCommandePanier,
-            'prixDuPanier' => $prixDuPanier,
-        ];
+        if ($derniereCommande) {
+            $detailsCommandePanier = $derniereCommande->getDetailsCommandeTrieesParNomProduit();
+            $prixDuPanier = $this->prixDuPanier($derniereCommande, $tailleProduitRepository, $produitRepository, $detailsCommandePanier);
+
+            $result = [
+                'detailsCommandePanier' => $detailsCommandePanier,
+                'prixDuPanier' => $prixDuPanier,
+            ];
+        }
         return $result;
     }
 

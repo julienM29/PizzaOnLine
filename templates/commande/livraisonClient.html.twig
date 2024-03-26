@@ -4,20 +4,24 @@
     <div class="invisible" id="premiereAdresse"> {{ premiereAdresseLivreur }}</div>
     {% if not is_granted('ROLE_LIVREUR') and (commandeDetailsClient is not empty) %}
         <div class="w-full flex flex-col justify-center items-center text-3xl ">
-            <div class="w-1/2 text-white justify-center items-center flex underline underline-offset-4 mb-4">Votre commande est en
+            <div class="w-1/2 text-gray-50 justify-center items-center flex underline underline-offset-4 mb-4 ">Votre
+                commande est en
                 cours de livraison
                 vers :
             </div>
-            <div class="w-1/2 text-xl text-white">{{ utilisateur.adresse }}
+            <div class="w-1/2 text-xl text-white text-center">{{ utilisateur.adresse }}
             </div>
         </div>
     {% endif %}
     {% if not is_granted('ROLE_LIVREUR') and (commandeDetailsClient is empty) %}
-        <div class="flex justify-center items-center text-4xl hover:text-red-500 duration-200">
-            <div>
-                <a href="{{ path('_commandeEnCours') }}">Vous n'avez pas de commande prête à être livré, veuillez voir
-                    l'état de votre commande !</a>
-            </div>
+        <div class="mt-24 flex flex-col justify-center items-center text-4xl ">
+            <p class="w-2/3 text-center">Vous n'avez pas de commande prête à être livré, veuillez voir
+                l'état de votre commande !</p>
+            <a href="{{ path('_commandeEnCours') }}"
+               class="mt-6 btn flex justify-center items-center text-xl text-white bg-blue-500 hover:bg-blue-700 font-bold border-transparent">
+                Voir vos commandes
+            </a>
+
 
         </div>
     {% endif %}
@@ -31,34 +35,37 @@
                     {% set i = 0 %}
                     {% for commandeId, commandeDetail in commandeDetailsClient %}
                         <div class="w-3/4 px-2 py-2 mx-3 mb-4 bg-gray-200 flex flex-col rounded border-4 border-gray-400">
-                            <div class="mb-2">
-                                <div class="flex text-2xl justify-center items-center text-black font-bold mb-4 border-b-2 border-black">
-                                    Commande n°
-                                    : {{ commandeId }}
-                                </div>
-                                <div class="w-4/5 mb-3 mx-5 text-black font-semibold text-xl underline underline-offset-4">
-                                    Produits :
-                                </div>
-                                <div class="flex w-4/5 text-xl text-black mb-1 mx-5">
-                                    <div class="flex flex-col w-1/2">
-                                        {% for detailCommande in commandeDetail %}
-                                            <div>{{ detailCommande.produit.nom }}</div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="flex-col flex w-1/2">
-                                        {% for detailCommande in commandeDetail %}
-                                            <div>
-                                                X {{ detailCommande.quantite }} {{ detailCommande.taille.libelle }}</div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex justify-center items-center mt-5 mb-2 ">
-                                <div class=" font-bold hover:text-red-500 duration-200 text-black text-xl reverseTexte">
-                                    Heure de Livraison
-                                    : {{ commandeDetail[0].commande.dateHeureLivraison|date(' H:i:s') }}
-                                </div>
-                            </div>
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" colspan="3" class="text-center px-6 py-3 text-lg w-1/4">
+                                        Commande n° : {{ commandeId }}
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody id="detailCommande_{{ commandeId }}">
+                                {% for detailCommande in commandeDetail %}
+                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 ">
+                                        <td class="text-lg px-6 py-4 font-semibold">
+                                            {{ detailCommande.produit.nom }}
+                                        </td>
+                                        <td class="text-lg px-6 py-4 font-semibold">
+                                            Quantité : {{ detailCommande.quantite }}
+                                        </td>
+                                        <td class="text-lg px-6 py-4 font-semibold">
+                                            Taille : {{ detailCommande.taille.libelle }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 ">
+                                    <td class="text-lg px-6 py-4 text-center font-bold " colspan="3">
+                                        Heure de livraison
+                                        : {{ commandesClient[i].dateHeureLivraison|date('d-m-Y H:i:s') }}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                         {% set i = i + 1 %}
                     {% endfor %}

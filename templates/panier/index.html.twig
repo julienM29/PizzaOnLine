@@ -5,7 +5,7 @@
 {% block body %}
 
 
-    <h2 class="flex item-center justify-center text-5xl mt-2"> Votre panier </h2>
+    <h2 class="flex item-center justify-center text-5xl mt-2 text-gray-50"> Votre panier </h2>
 
     {% if detailsCommandePanier is not empty %}
         <div class="w-full justify-center items-center flex mt-8 ">
@@ -75,7 +75,7 @@
     {% endif %}
     {% if detailsCommandePanier is empty %}
         <h3><a href="{{ path('_accueil') }}"
-               class="ml-7 flex item-center justify-center hover:text-red-500 duration-200 mt-20 text-4xl policePizza">Votre
+               class="ml-7 flex item-center justify-center hover:text-blue-500 mt-20 text-4xl policePizza text-blue-600 underline underline-offset-8">Votre
                 panier est vide, cliquer ici pour commander une pizza ! </a></h3>
     {% endif %}
 
